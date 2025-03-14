@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install Chrome Driver
  RUN wget -O /tmp/chromedriver_linux64.zip https://storage.googleapis.com/chrome-for-testing-public/131.0.6778.85/linux64/chromedriver-linux64.zip && \
-     unzip -o /tmp/chromedriver_linux64.zip -d /usr/localdocke/bin
+     unzip -o /tmp/chromedriver_linux64.zip -d /usr/local/bin
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
