@@ -14,4 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag tcgpricetracker:$(date +%s)
+      run: |
+        TAG="rmangana/tcgpricetracker:$(date +%s)"
+        docker build . --file Dockerfile --tag $TAG
