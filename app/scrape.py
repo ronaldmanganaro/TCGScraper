@@ -1,8 +1,9 @@
 import time
 import re
+
+import helper
 import argparse
 import gspread
-
 from oauth2client.service_account import ServiceAccountCredentials
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,9 +13,10 @@ from datetime import datetime
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+helper.writeDB()
+
 # Set the minimum listing threshold
 MIN_LISTINGS = 5
-
 # TCGPlayer search URL
 URL = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page=1&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare"
 

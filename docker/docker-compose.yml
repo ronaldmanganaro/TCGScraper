@@ -1,0 +1,27 @@
+services:
+  app:
+    container_name: TCGBot
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - db
+
+  db:
+    container_name: TCGPlayerDB
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=rmangana
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=TCGPlayerDB
+    ports: 
+      - "5432:5432"
+  
+  pgAdmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_PASSWORD=password
+      - PGADMIN_DEFAULT_EMAIL=ronaldmanganaro@gmail.com
+    ports:
+      - 80:80
