@@ -1,8 +1,6 @@
 selenium
 chromedriver_autoinstaller
 requests
-logging
 gspread
-oauth2client.service_account
-googleapiclient.discovery
-googleapiclient.errors
+oauth2client
+google-api-python-client
