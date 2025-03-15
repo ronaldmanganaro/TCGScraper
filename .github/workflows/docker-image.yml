@@ -16,4 +16,4 @@ jobs:
     - name: Build the Docker image
       run: |
         $tag = "rmangana/pricetracker:$(Get-Date -Format 'yyyyMMddHHmmss')"
-        docker build ../docker/Dockerfile --tag $tag
+        docker build ../ -f docker/Dockerfile --tag $tag
