@@ -16,6 +16,8 @@ services:
       - POSTGRES_DB=TCGPlayerDB
     ports: 
       - "5432:5432"
+    volumes:
+      - C:\Users\MrCool\Documents\Repos\postgres\data:/var/lib/postgresql/data
   
   pgAdmin:
     container_name: pgadmin
