@@ -28,7 +28,7 @@ RUN wget -O /tmp/chrome_linux64.zip https://storage.googleapis.com/chrome-for-te
 ENV PATH="/usr/local/bin/chrome-linux64:$PATH"
 
 # Install Python dependencies
-COPY app/requirements.txt /app/requirements.txt
+COPY /app/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
 COPY /app /app
