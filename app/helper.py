@@ -1,7 +1,8 @@
 import psycopg2
 import logging
 import sys 
-from psycopg2 import sql 
+from psycopg2.extensions import connection
+
 
 # Configure logging
 logging.basicConfig(
@@ -12,7 +13,7 @@ logging.basicConfig(
     ]
 )
 
-def writeDB():
+def connectDB() -> connection: 
 
     dbname = 'TCGPlayerDB'
     user = 'rmangana'
@@ -21,7 +22,7 @@ def writeDB():
     port = 5432
 
     try:
-        connection =  psycopg2.connect(
+        newConnection =  psycopg2.connect(
             dbname=dbname,
             user=user,
             password=password, 
@@ -29,16 +30,25 @@ def writeDB():
             port=port
         )
         
-        cursor = connection.cursor()
+        cursor = newConnection.cursor()
+    except Exception as e:
+        if cursor:
+            logging.error(f"unexpected error cursor {e}")
+            cursor.close()
+        if newConnection:
+            logging.error(f"unexpected error connection {e}")
+            connection.close()
+    
+    return newConnection
         
-        insert_query = "INSERT INTO test (column1, column2) VALUES (%s, %s)"
-        
-        data = ('test1', 'test2')
-        
+def writeDB(connection: connection, data):
+    insert_query = "INSERT INTO test (column1, column2) VALUES (%s, %s)"    
+    cursor = connection.cursor()
+    
+    try:    
         cursor.execute(insert_query, data)
-        
         connection.commit()
-        
+            
     except Exception as e:
         if cursor:
             logging.error(f"unexpected error cursor {e}")
@@ -46,7 +56,11 @@ def writeDB():
         if connection:
             logging.error(f"unexpected error connection {e}")
             connection.close()
-            
-    exit()
+    exit
+    
+def initTable():
+    pass
         
-        
+    
+
+    

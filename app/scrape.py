@@ -13,7 +13,9 @@ from datetime import datetime
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-helper.writeDB()
+data = ('test3', 'test4')
+connection = helper.connectDB()
+helper.writeDB(connection, data)
 
 # Set the minimum listing threshold
 MIN_LISTINGS = 5
