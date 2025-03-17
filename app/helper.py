@@ -56,11 +56,4 @@ def writeDB(connection: connection, data):
         if connection:
             logging.error(f"unexpected error connection {e}")
             connection.close()
-    exit
-    
-def initTable():
-    pass
-        
-    
-
-    
+    exit 
