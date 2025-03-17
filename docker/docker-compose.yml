@@ -3,13 +3,15 @@ services:
     container_name: TCGBot
     build: 
       context: ../
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.app
     depends_on:
       - db
 
   db:
     container_name: TCGPlayerDB
-    image: postgres:latest
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.db
     environment:
       - POSTGRES_USER=rmangana
       - POSTGRES_PASSWORD=password
