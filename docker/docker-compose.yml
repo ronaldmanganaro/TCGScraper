@@ -15,7 +15,7 @@ services:
     environment:
       - POSTGRES_USER=rmangana
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=TCGPlayerDB
+      - POSTGRES_DB=tcgplayerdb
     ports: 
       - "5432:5432"
     volumes:

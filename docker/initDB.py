@@ -1,11 +1,13 @@
 import psycopg2
 import logging
 import sys
+import subprocess
+from time import sleep 
 
 import psycopg2.errorcodes
 
 def createTable():
-    myDb = 'TCGPlayerDB'
+    myDb = 'tcgplayerdb'
     user = 'rmangana'
     password = 'password'
     host = 'localhost'
@@ -22,15 +24,21 @@ def createTable():
         initConnection.autocommit = True
         cursor = initConnection.cursor()
 
-        cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = 'postgres';")
-        exists = cursor.fetchone
+        # Check if database exists
+        cursor.execute(f"SELECT 1 FROM pg_database WHERE datname = '{myDb}';")
+        exists = cursor.fetchone()
+        logging.info(f"Database exists check result: {exists}")
 
         if not exists:
-            logging.info(f"The {myDb} does not exist executing query")
-            cursor.execute(f"CRAETE DATABASE '{myDb}';")
+            logging.info(f"The database {myDb} does not exist, creating it...")
+            cursor.execute(f"CREATE DATABASE {myDb};")
         else:
-            logging.info(f"The {myDb} exists skipping query")
+            logging.info(f"The database {myDb} exists, skipping creation.")
         
+        cursor.close()
+        initConnection.close()
+
+        # Connect to the new/existing database
         newConnection =  psycopg2.connect(
                 dbname=myDb,
                 user=user,
@@ -40,12 +48,13 @@ def createTable():
             )
         cursor = newConnection.cursor()
 
+        # Create table if it doesn't exist
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS TCGPlayerNew (
+            CREATE TABLE IF NOT EXISTS prices (
                 Card VARCHAR(100),
-                Listing_Quantity integer,
-                Lowest_Price MONEY,
-                Market_Price MONEY,
+                Listing_Quantity INTEGER,
+                Lowest_Price NUMERIC(10,2),
+                Market_Price NUMERIC(10,2),
                 Rarity VARCHAR(100),
                 Card_Number VARCHAR(100),
                 Set_Name VARCHAR(100),
@@ -55,12 +64,12 @@ def createTable():
         newConnection.commit()
         cursor.close()
         newConnection.close()
+        logging.info("Table creation complete.")
         
     except psycopg2.OperationalError as e:
-        logging.info(f"Connection error: {e.pgcode}")
+        logging.error(f"Connection error: {e}")
 
 if __name__ == "__main__":
-
     logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s [%(levelname)s] %(message)s",
@@ -68,5 +77,5 @@ if __name__ == "__main__":
             logging.StreamHandler(sys.stdout)  # Send logs to stdout
         ]
     )
-
+    
     createTable()

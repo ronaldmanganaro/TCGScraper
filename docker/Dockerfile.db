@@ -1,9 +1,15 @@
 FROM postgres:latest
 
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     python3 \
     python3-psycopg2
 
-COPY docker/initDB.py .
+# Copy initialization script and database script
+COPY docker/initDB.sh /initDB.sh
+COPY docker/initDB.py /initDB.py
 
-RUN [ "python3", "./initDB.py" ]
+# Make the script executable
+RUN chmod +x /initDB.sh
+
+ENTRYPOINT ["/initDB.sh"]
