@@ -19,7 +19,7 @@ services:
     ports: 
       - "5432:5432"
     volumes:
-      - C:\Users\WinMax2\Documents\Repos\postgres\data:/var/lib/postgresql/data
+      - C:\Users\MrCool\Documents\Repos\postgres\data:/var/lib/postgresql/data
   
   pgAdmin:
     container_name: pgadmin
