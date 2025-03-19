@@ -1,0 +1,5 @@
+FROM dpage/pgadmin4
+
+COPY db/tcgplayerdb.json /pgadmin4/tcgplayerdb.json
+USER root
+RUN chown pgadmin:root /pgadmin4/tcgplayerdb.json

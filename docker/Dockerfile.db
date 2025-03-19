@@ -11,5 +11,7 @@ COPY docker/initDB.py /initDB.py
 
 # Make the script executable
 RUN chmod +x /initDB.sh
+RUN chmod +x /initDB.py
+
 
 ENTRYPOINT ["/initDB.sh"]

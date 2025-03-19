@@ -9,6 +9,7 @@ services:
 
   db:
     container_name: TCGPlayerDB
+    image: tcgplayerdb:v2
     build:
       context: ../
       dockerfile: docker/Dockerfile.db
@@ -21,9 +22,12 @@ services:
     volumes:
       - C:\Users\MrCool\Documents\Repos\postgres\data:/var/lib/postgresql/data
   
-  pgAdmin:
+  pgadmin:
     container_name: pgadmin
-    image: dpage/pgadmin4
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile.pgadmin
+    image: dpage/pgadmin4:v1
     environment:
       - PGADMIN_DEFAULT_PASSWORD=password
       - PGADMIN_DEFAULT_EMAIL=ronaldmanganaro@gmail.com
