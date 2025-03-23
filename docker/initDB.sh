@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e  # Exit on error
 
 echo "Starting PostgreSQL..."

@@ -1,6 +1,7 @@
 services:
   app:
     container_name: TCGBot
+    image: rmangana/tcgbot:v1
     build: 
       context: ../
       dockerfile: docker/Dockerfile.app
@@ -9,7 +10,7 @@ services:
 
   db:
     container_name: TCGPlayerDB
-    image: tcgplayerdb:v2
+    image: rmangana/tcgplayerdb:v1
     build:
       context: ../
       dockerfile: docker/Dockerfile.db
@@ -20,7 +21,7 @@ services:
     ports: 
       - "5432:5432"
     volumes:
-      - C:\Users\MrCool\Documents\Repos\postgres\data:/var/lib/postgresql/data
+      - $VOLUME_PATH:/var/lib/postgresql/data
   
   pgadmin:
     container_name: pgadmin
