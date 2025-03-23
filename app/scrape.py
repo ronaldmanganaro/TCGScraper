@@ -13,9 +13,16 @@ from datetime import datetime
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-data = ('test3', 'test4')
-connection = helper.connectDB()
-helper.writeDB(connection, data)
+class Data:
+    def __init__(self, card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link):
+        self.card = card
+        self.listing_quantity = listing_quantity
+        self.lowest_price = lowest_price
+        self.market_price = market_price
+        self.rarity = rarity
+        self.card_number = card_number
+        self.set_name = set_name
+        self.link = link
 
 # Set the minimum listing threshold
 MIN_LISTINGS = 5
@@ -67,7 +74,7 @@ worksheet = spreadsheet.get_worksheet(0)  # Create a new worksheet
 
 # Add header row to the sheet
 headers = ["Product Name", "Number of Listings", "Lowest Price", "Market Price", "Rarity", "Card Number", "Set Name", "Product Link"]
-worksheet.append_row(headers)
+worksheet.append_row?(headers)
 
 # Share the sheet with your email (replace with your email address)
 try:
