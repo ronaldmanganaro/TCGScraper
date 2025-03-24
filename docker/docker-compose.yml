@@ -1,29 +1,38 @@
 services:
   app:
     container_name: TCGBot
+    image: rmangana/tcgbot:v1
     build: 
       context: ../
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile.app
     depends_on:
       - db
 
   db:
     container_name: TCGPlayerDB
-    image: postgres:latest
+    image: rmangana/tcgplayerdb:v1
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.db
     environment:
       - POSTGRES_USER=rmangana
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=TCGPlayerDB
+      - POSTGRES_DB=tcgplayerdb
     ports: 
       - "5432:5432"
     volumes:
-      - C:\Users\MrCool\Documents\Repos\postgres\data:/var/lib/postgresql/data
+      - $VOLUME_PATH:/var/lib/postgresql/data
   
-  pgAdmin:
+  pgadmin:
     container_name: pgadmin
-    image: dpage/pgadmin4
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile.pgadmin
+    image: dpage/pgadmin4:v1
     environment:
       - PGADMIN_DEFAULT_PASSWORD=password
       - PGADMIN_DEFAULT_EMAIL=ronaldmanganaro@gmail.com
+    volumes:
+      - $VOLUME_PATH/pgadmin:/var/lib/pgadmin/storage/
     ports:
       - 80:80

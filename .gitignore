@@ -1,0 +1,54 @@
+# Ignore Python bytecode and virtual environments
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+venv/
+env/
+*.venv/
+pip-log.txt
+pip-wheel-metadata/
+
+# Ignore logs and system files
+*.log
+*.DS_Store
+Thumbs.db
+
+# Ignore VS Code settings
+.vscode/
+*.code-workspace
+
+# Ignore Docker-related files
+docker-compose.override.yml
+.env
+*.tar
+*.log
+.dockerignore
+
+# Ignore Python packaging artifacts
+*.egg
+*.manifest
+*.spec
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore coverage reports
+.coverage
+htmlcov/
+.coverage.*
+nosetests.xml
+coverage.xml
+
+# Ignore pytest cache
+.pytest_cache/
+
+# Ignore mypy cache
+.mypy_cache/
+
+# Ignore compiled C extensions
+*.pyd
+*.pyo
+*.dll

@@ -17,7 +17,7 @@ class Listing:
         self.quantity = quantity
     
     def display(self):
-        return f"Seller Name: {self.seller} \nCard Price: {self.price} \nQuantity {self.quantity} \nCard Name: {self.cardName}"
+        return f"Seller Name: {self.seller} \nQuantity {self.quantity} \nCard Name: {self.cardName} \nCard Price: {self.price}"
 
 # Configure logging
 logging.basicConfig(
@@ -48,6 +48,12 @@ def send_discord_alert(message, webhook_url):
     data = {"content": message}
     requests.post(webhook_url, json=data)
 
+def shortenLink(url: str) -> str:
+    response = requests.get(f"https://tinyurl.com/api-create.php?url={url}")
+    if response.status_code == 200:
+        return response.text
+    return url
+    
 # Command-line argument for headless mode
 def parse_args():
     parser = argparse.ArgumentParser(description="Scrape TCGPlayer listings")
@@ -116,6 +122,10 @@ for card in cards:
                     myPrice = listing.price + '\n'
             logging.info("ALERT CHEAPER CARD!")
             cardID = card.split("/")[0]
-            msg = listings[0].display() + f"\nMy Price: {myPrice}" + "\nLINK: " + url + "\nSeller Link: " + f"https://store.tcgplayer.com/admin/product/manage/{cardID}?OnlyMyInventory=false&CategoryId=3&SetNameId=0&Rarity=0&DidSearch=true"
+            separator = "\n---\n"  # Markdown horizontal line
+
+            sellerLink = shortenLink(f"https://store.tcgplayer.com/admin/product/manage/{cardID}?OnlyMyInventory=false&CategoryId=3&SetNameId=0&Rarity=0&DidSearch=true")
+            url  = shortenLink(url)
+            msg = separator + listings[0].display() + f"\nMy Price: {myPrice}" + "\nLINK: " + url + "\nSeller Link: " + sellerLink + separator
             
             send_discord_alert( msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")

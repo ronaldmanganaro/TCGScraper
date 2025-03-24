@@ -1,0 +1,3 @@
+FROM dpage/pgadmin4
+
+COPY db/tcgplayerdb.json /pgadmin4/tcgplayerdb.json
