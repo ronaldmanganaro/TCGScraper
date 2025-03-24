@@ -1,7 +1,7 @@
 import time
 import re
 
-import helper
+import db
 import argparse
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -27,12 +27,14 @@ class Data:
 # Set the minimum listing threshold
 MIN_LISTINGS = 5
 # TCGPlayer search URL
-URL = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page=1&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare"
-
+#URL = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page=1&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare"
+# URL for teesting
+URL = "https://www.tcgplayer.com/search/pokemon/product?Condition=Near+Mint&productLineName=pokemon&q=break&view=grid&Rarity=Rare+BREAK&page=1"
 # Command-line argument for headless mode
 def parse_args():
     parser = argparse.ArgumentParser(description="Scrape TCGPlayer listings")
     parser.add_argument('--headless', action='store_true', help="Run the script in headless mode")
+    parser.add_argument('--sheets', action='store_true')
     return parser.parse_args()
 
 # Initialize command-line arguments
@@ -61,39 +63,43 @@ except:
 
 print(f"Total pages detected: {total_pages}")
 
-# Set up OAuth2 authentication with gspread
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-client = gspread.authorize(creds)
+def googleSheets(all_data):
+    # Set up OAuth2 authentication with gspread
+    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    creds = ServiceAccountCredentials.from_json_keyfile_name('app/credentials.json', scope)
+    client = gspread.authorize(creds)
 
-# Create a new sheet with the current date and time
-now = datetime.now()
-sheet_name = now.strftime("%Y-%m-%d_%H-%M-%S")
-spreadsheet = client.create(sheet_name)
-worksheet = spreadsheet.get_worksheet(0)  # Create a new worksheet
+    # Create a new sheet with the current date and time
+    now = datetime.now()
+    sheet_name = now.strftime("%Y-%m-%d_%H-%M-%S")
+    spreadsheet = client.create(sheet_name)
+    worksheet = spreadsheet.get_worksheet(0)  # Create a new worksheet
 
-# Add header row to the sheet
-headers = ["Product Name", "Number of Listings", "Lowest Price", "Market Price", "Rarity", "Card Number", "Set Name", "Product Link"]
-worksheet.append_row?(headers)
+    # Add header row to the sheet
+    headers = ["Product Name", "Number of Listings", "Lowest Price", "Market Price", "Rarity", "Card Number", "Set Name", "Product Link"]
+    worksheet.append_row(headers)
+    worksheet.append_rows(all_data)
+    print("✅ Scraping complete. Data has been added to Google Sheets.")
+    
+    # Share the sheet with your email (replace with your email address)
+    try:
+        drive_service = build('drive', 'v3', credentials=creds)
+        drive_service.permissions().create(
+            fileId=spreadsheet.id,
+            body={
+                'type': 'user',
+                'role': 'writer',  # You can change this to 'reader' if you only want view access
+                'emailAddress': 'ronaldmanganaro@gmail.com'  # Replace with your email address
+            }
+        ).execute()
 
-# Share the sheet with your email (replace with your email address)
-try:
-    drive_service = build('drive', 'v3', credentials=creds)
-    drive_service.permissions().create(
-        fileId=spreadsheet.id,
-        body={
-            'type': 'user',
-            'role': 'writer',  # You can change this to 'reader' if you only want view access
-            'emailAddress': 'ronaldmanganaro@gmail.com'  # Replace with your email address
-        }
-    ).execute()
-
-    print("Sheet shared successfully with ronaldmanganaro@gmail.com!")
-except HttpError as error:
-    print(f"An error occurred: {error}")
+        print("Sheet shared successfully with ronaldmanganaro@gmail.com!")
+    except HttpError as error:
+        print(f"An error occurred: {error}")
 
 # Collect data in a list before sending it to Google Sheets
 all_data = []
+databaseEntries: Data = []
 
 # Scraping loop for each page
 for page in range(1, total_pages + 1):
@@ -135,14 +141,18 @@ for page in range(1, total_pages + 1):
 
             # Store data in the list
             all_data.append([name, listing_count, lowest_price, market_price, rarity, card_number, set_name, product_link])
-
+            
+            entry = Data(name, listing_count, lowest_price, market_price, rarity, card_number, set_name, product_link)
+            databaseEntries.append(entry)
         except Exception as e:
             print(f"Error processing listing: {e}")
 
+if args.sheets and all_data:
+    googleSheets(all_data)
+
 # Send all collected data to Google Sheets at once
-if all_data:
-    worksheet.append_rows(all_data)
-    print("✅ Scraping complete. Data has been added to Google Sheets.")
+if databaseEntries:
+    db.writeDB(db.connectDB(), databaseEntries)
 
 # Close the WebDriver
 driver.quit()

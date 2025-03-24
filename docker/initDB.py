@@ -51,6 +51,7 @@ def createTable():
         # Create table if it doesn't exist
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS prices (
+                Date date,
                 Card VARCHAR(100),
                 Listing_Quantity INTEGER,
                 Lowest_Price NUMERIC(10,2),
