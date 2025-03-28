@@ -8,3 +8,6 @@ C:\Users\MrCool\Documents\Repos\actions-runner\run.cmd
 
 # pgadmin server config dir
 /var/lib/pgadmin/storage/ronaldmanganaro_gmail.com/
+
+# NPM
+npm install

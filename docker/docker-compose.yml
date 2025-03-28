@@ -22,21 +22,31 @@ services:
       - "5432:5432"
     volumes:
       - $VOLUME_PATH:/var/lib/postgresql/data
-  node:
-    image: "node:8"
-    user: "node"
-    working_dir: /home/node/app
+
+  frontend:
+    image: rmangana/node:v1
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
     environment:
       - NODE_ENV=production
-    volumes:
-      - ./:/home/node/app
-    expose:
-      - "8081"
-    ports: # use if it is necessary to expose the container to the host machine
-      - "8001:8001"
-    command: "npm start"
-    
+    ports:
+      - "3000:3000"
 
+  backend:
+    container_name: backend
+    image: rmangana/backend:v1
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.backend
+    ports:
+      - "5000:5000"
+    environment:
+      - AWS_REGION=us-west-2
+      - ECS_CLUSTER_NAME=my-cluster
+      - ECS_TASK_DEFINITION=my-task-definition
+      - ECS_SUBNET_ID=subnet-xxxxxxxx
+      
   pgadmin:
     container_name: pgadmin
     build: 
