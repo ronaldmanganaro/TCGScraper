@@ -7,6 +7,11 @@
             "label": "Start Git Runner",
             "type": "shell",
             "command": "C:\\Users\\MrCool\\Documents\\Repos\\actions-runner\\run.cmd"
+        },
+        {
+            "label": "Run streamlit",
+            "type": "shell",
+            "command": "cd C:\\Users\\MrCool\\Documents\\Repos\\TCGScraper\\streamlit && streamlit run app.py"
         }
     ]
 }

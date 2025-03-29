@@ -46,7 +46,18 @@ services:
       - ECS_CLUSTER_NAME=my-cluster
       - ECS_TASK_DEFINITION=my-task-definition
       - ECS_SUBNET_ID=subnet-xxxxxxxx
-      
+
+  streamlit:
+    container_name: streamlit
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile.streamlit
+    image: rmangana/steamlit:v1
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+
   pgadmin:
     container_name: pgadmin
     build: 
