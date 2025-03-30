@@ -11,7 +11,7 @@
         {
             "label": "Run streamlit",
             "type": "shell",
-            "command": "cd C:\\Users\\MrCool\\Documents\\Repos\\TCGScraper\\streamlit && streamlit run app.py"
+            "command": "cd C:\\Users\\MrCool\\Documents\\Repos\\TCGScraper\\streamlit && streamlit run app.py --server.enableCORS false --server.enableXsrfProtection false"
         }
     ]
 }

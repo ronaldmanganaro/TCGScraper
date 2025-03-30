@@ -84,3 +84,6 @@ yarn.lock
 # Cache files
 .cache/
 coverage/
+
+# AWS
+.awx
