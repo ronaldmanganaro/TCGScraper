@@ -11,3 +11,6 @@ C:\Users\MrCool\Documents\Repos\actions-runner\run.cmd
 
 # NPM
 npm install
+
+# To Do
+Need to save creds using github actions
