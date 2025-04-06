@@ -18,8 +18,16 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 COPY /streamlit/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+USER root
+
+#not working
 COPY /streamlit ./
+COPY /streamlit/.awx/config /root/.awx/config
+COPY /streamlit/.awx/credentials /root/.awx/credentials
+
+ENV AWS_ACCESS_KEY_ID AKIAR4PHQSUDHT5QEYOE
+ENV AWS_SECRET_ACCESS_KEY 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
+ENV AWS_DEFAULT_REGION us-west-1
 
 EXPOSE ${SERVER_PORT}
-
 ENTRYPOINT ["sh", "-c", "streamlit run app.py --server.port ${SERVER_PORT}"]
