@@ -1,6 +1,9 @@
 import streamlit as st
 import ecs
 st.title("My Cloud Control App 🚀")
+        
+def trigger_price_check():
+    print("Price check triggered")
 
 # Using "with" notation
 with st.sidebar:
@@ -62,9 +65,57 @@ with st.expander("EC2"):
         if st.button("EC2 Button3", use_container_width=True):
             st.write("Other Function")
 
+
+with st.expander("Price Check"):
+    st.divider()
+
+    # Initialize options in session state
+    if "options" not in st.session_state:
+        st.session_state.options = []
+
+    st.subheader("Add a new card")
+
+    # Create 3 columns
+    col1, col2, col3 = st.columns([2, 3, 1])
+
+    # Inputs and button
+    with col1:
+        new_name = st.text_input("Card Name",placeholder="Card Name", key="Card name", label_visibility="collapsed")
+
+    with col2:
+        new_url = st.text_input("URL", key="url_input", placeholder="URL", label_visibility="collapsed")
+
+    with col3:
+        if st.button("Add", use_container_width=True):
+            if new_name and new_url:
+                new_entry = (new_name.strip(), new_url.strip())
+                if new_entry not in st.session_state.options:
+                    st.session_state.options.append(new_entry)
+                else:
+                    st.warning("That option already exists.")
+            else:
+                st.error("Both name and URL are required.")
+
         
-def trigger_price_check():
-    ...
+    # Display checkboxes
+    st.subheader("Select Options")
+    checkbox_states = {}
+
+    for name, url in st.session_state.options:
+        checkbox_states[name] = st.checkbox(name, key=name)
+
+    # Show selected links
+    st.subheader("You selected:")
+    for name, url in st.session_state.options:
+        if checkbox_states.get(name):
+            st.markdown(f"- [{name}]({url})")
+        
+                
+                
+    if st.button("Run Price Check"):
+        trigger_price_check()
+        
+
 
 
 
