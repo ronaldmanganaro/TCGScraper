@@ -20,10 +20,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 USER root
 
-#not working
 COPY /streamlit ./
-COPY /streamlit/.awx/config /root/.awx/config
-COPY /streamlit/.awx/credentials /root/.awx/credentials
 
 ENV AWS_ACCESS_KEY_ID AKIAR4PHQSUDHT5QEYOE
 ENV AWS_SECRET_ACCESS_KEY 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
