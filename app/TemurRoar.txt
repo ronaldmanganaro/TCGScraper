@@ -1,3 +1,4 @@
+5 Forest <254> [THB]
 1 Arcane Signet [LCC]
 1 Atarka, World Render [TDC]
 1 Atsushi, the Blazing Sky [TDC]
@@ -25,7 +26,6 @@
 1 Farseek [TDC]
 1 Fellwar Stone [TDC]
 1 Flooded Grove [DSC]
-5 Forest <254> [THB]
 1 Frontier Bivouac [TDM]
 1 Frontier Siege [TDC]
 1 Gadrak, the Crown-Scourge [TDC]

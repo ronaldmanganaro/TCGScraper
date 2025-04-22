@@ -29,14 +29,21 @@ def search_card(name, set_code):
     
     return card['prices']['usd']
 
-
-
-with open("TemurRoar copy.txt", "r") as decklist:
+with open("TemurRoar.txt", "r") as decklist:
     EV = 0
     for line in decklist:
         line = line.strip()
         if not line: 
             continue
+        
+        #check if <> exists
+        if line.index('<'):
+            start = line.index('<')
+            end = line.index('>')
+            collector_number = line[start+1: end]
+            print("Collector Number:", collector_number)
+            exit
+            
         # Step 1: Extract set from brackets
         start = line.index('[')
         end = line.index(']')
