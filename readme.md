@@ -18,3 +18,6 @@ Need to save creds using github actions
 # Boto3
 instructions for how to setup credentials
 https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html
+
+# Scryfall Api
+https://scryfall.com/docs/syntax
