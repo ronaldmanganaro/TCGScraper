@@ -37,8 +37,8 @@ total_rarity = {
 pull_chances = {
     'common': 10,
     'uncommon': 3,
-    'rare': 1,
-    'mythic': 1/6  # Example, adjust accordingly for mythic slots
+    'rare': 2,
+    'mythic': 1/4  # Example, adjust accordingly for mythic slots
 }
 
 # Add probability field to each card

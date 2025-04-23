@@ -1,9 +1,19 @@
 import streamlit as st
 import ecs
+import sys 
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app')))
+import mtg_box_sim
+
+import pandas as pd
+import numpy as np
+
 st.title("My Cloud Control App 🚀")
         
 def trigger_price_check():
     print("Price check triggered")
+
+
 
 # Using "with" notation
 with st.sidebar:
@@ -115,7 +125,58 @@ with st.expander("Price Check"):
     if st.button("Run Price Check"):
         trigger_price_check()
         
+st.title("TCG Tools")
+with st.expander("EV Calculator"):
+    st.divider()
+    # Initialize session state to store EV results
+    if 'ev_history' not in st.session_state:
+        st.session_state.ev_history = []
 
+    # Initialize options in session state
+    if "options" not in st.session_state:
+        st.session_state.options = []
+
+
+
+    # Create 3 columns
+    col1, col2, col3 = st.columns([2, 3, 1])
+
+    # Inputs and button
+    with col1:
+        set = st.text_input("Set Name",placeholder="dft", key="Set Code", value="dft")
+
+    with col2:
+        boxes_to_open = st.number_input("Boxes to open", min_value=1, step=1)
+
+    with col3:
+        if st.button("Simulate!", use_container_width=True):
+            ev = mtg_box_sim.simulate(f"{set}", int(boxes_to_open))
+            # Add to history
+            st.session_state.ev_history.append({
+                "Set": set,
+                "Boxes Opened": int(boxes_to_open),
+                "EV": round(ev, 2)
+            })
+        if st.button("clear",use_container_width=True ):
+            st.session_state.ev_history = []
+
+    
+    
+    # Display table with 2 columns
+    if st.session_state.ev_history:
+        df = pd.DataFrame(st.session_state.ev_history)
+        # Center align the entire DataFrame
+        styled_data = df.style.set_properties(**{'text-align': 'center'})
+        styled_data.set_table_styles([{
+            'selector': 'th',
+            'props': [('text-align', 'center')]
+        }])
+
+        # Display with Streamlit
+        st.dataframe(styled_data, use_container_width=True)
+        #st.table(df)
+                    
+            
 
 
 

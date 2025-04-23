@@ -70,11 +70,16 @@ def simulate_multiple_boxes(cards, num_boxes=10):
 
     average_ev = total_ev_all_boxes / num_boxes if num_boxes > 0 else 0
     print(f"\nAverage EV across {num_boxes} boxes: ${average_ev:.2f}")
+    return average_ev
 
-# Load the cards from the JSON file
-with open('dsk_cards.json', 'r', encoding='utf-8') as f:
-    cards = json.load(f)
+def simulate(set, boxes):
+    
+    # Load the cards from the JSON file
+    with open(f'{set}_cards.json', 'r', encoding='utf-8') as f:
+        cards = json.load(f)
 
-# Choose how many boxes to simulate
-num_boxes_to_simulate = 10000
-simulate_multiple_boxes(cards, num_boxes=num_boxes_to_simulate)
+    # Choose how many boxes to simulate
+    num_boxes_to_simulate = boxes
+    
+
+    return simulate_multiple_boxes(cards, num_boxes=num_boxes_to_simulate)
