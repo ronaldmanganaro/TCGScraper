@@ -8,3 +8,16 @@ C:\Users\MrCool\Documents\Repos\actions-runner\run.cmd
 
 # pgadmin server config dir
 /var/lib/pgadmin/storage/ronaldmanganaro_gmail.com/
+
+# NPM
+npm install
+
+# To Do
+Need to save creds using github actions
+
+# Boto3
+instructions for how to setup credentials
+https://boto3.amazonaws.com/v1/documentation/api/latest/guide/quickstart.html
+
+# Scryfall Api
+https://scryfall.com/docs/syntax

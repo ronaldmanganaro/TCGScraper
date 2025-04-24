@@ -22,7 +22,42 @@ services:
       - "5432:5432"
     volumes:
       - $VOLUME_PATH:/var/lib/postgresql/data
-  
+
+  frontend:
+    image: rmangana/node:v1
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.frontend
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+
+  backend:
+    container_name: backend
+    image: rmangana/backend:v1
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.backend
+    ports:
+      - "5000:5000"
+    environment:
+      - AWS_REGION=us-west-2
+      - ECS_CLUSTER_NAME=my-cluster
+      - ECS_TASK_DEFINITION=my-task-definition
+      - ECS_SUBNET_ID=subnet-xxxxxxxx
+
+  streamlit:
+    container_name: streamlit
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile.streamlit
+    image: rmangana/steamlit:v1
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+
   pgadmin:
     container_name: pgadmin
     build: 

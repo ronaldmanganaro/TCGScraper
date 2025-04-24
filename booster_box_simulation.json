@@ -1,0 +1,3962 @@
+[
+    {
+        "pack_number": 1,
+        "cards": [
+            {
+                "card_name": "Piercing Exhale",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Champion of Dusan",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Jeskai Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Watcher of the Wayside",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Stormplain Detainment",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Agent of Kotis",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Focus the Mind",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Dismal Backwater",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Snakeskin Veil",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Dragonstorm Globe",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Wingblade Disciple",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Breaching Dragonstorm",
+                "rarity": "uncommon",
+                "price_usd": 0.16,
+                "probability": 0.03,
+                "expected_value": 0.0048
+            },
+            {
+                "card_name": "Opulent Palace",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            },
+            {
+                "card_name": "Avenger of the Fallen",
+                "rarity": "rare",
+                "price_usd": 0.53,
+                "probability": 0.016667,
+                "expected_value": 0.008833510000000001
+            },
+            {
+                "card_name": "Unending Whisper",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            }
+        ]
+    },
+    {
+        "pack_number": 2,
+        "cards": [
+            {
+                "card_name": "Jeskai Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Bloodfell Caves",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Reigning Victor",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Kin-Tree Nurturer",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Riling Dawnbreaker // Signaling Roar",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Gurmag Nightwatch",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Sandskitter Outrider",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Snowmelt Stag",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Stormshriek Feral // Flush Out",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Unsparing Boltcaster",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Opulent Palace",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            },
+            {
+                "card_name": "Formation Breaker",
+                "rarity": "uncommon",
+                "price_usd": 0.04,
+                "probability": 0.03,
+                "expected_value": 0.0012
+            },
+            {
+                "card_name": "Clarion Conqueror",
+                "rarity": "rare",
+                "price_usd": 1.37,
+                "probability": 0.016667,
+                "expected_value": 0.022833790000000003
+            },
+            {
+                "card_name": "Dragonback Assault",
+                "rarity": "mythic",
+                "price_usd": 3.19,
+                "probability": 0.00625,
+                "expected_value": 0.0199375
+            }
+        ]
+    },
+    {
+        "pack_number": 3,
+        "cards": [
+            {
+                "card_name": "Cruel Truths",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Blossoming Sands",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Jade-Cast Sentinel",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Riling Dawnbreaker // Signaling Roar",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Arashin Sunshield",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Monastery Messenger",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Dispelling Exhale",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Swamp",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            },
+            {
+                "card_name": "Breaching Dragonstorm",
+                "rarity": "uncommon",
+                "price_usd": 0.16,
+                "probability": 0.03,
+                "expected_value": 0.0048
+            },
+            {
+                "card_name": "Kishla Skimmer",
+                "rarity": "uncommon",
+                "price_usd": 0.1,
+                "probability": 0.03,
+                "expected_value": 0.003
+            },
+            {
+                "card_name": "Fleeting Effigy",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Kishla Village",
+                "rarity": "rare",
+                "price_usd": 0.37,
+                "probability": 0.016667,
+                "expected_value": 0.00616679
+            },
+            {
+                "card_name": "Marshal of the Lost",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            }
+        ]
+    },
+    {
+        "pack_number": 4,
+        "cards": [
+            {
+                "card_name": "Ringing Strike Mastery",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Island",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Champion of Dusan",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Swiftwater Cliffs",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Sandskitter Outrider",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Wind-Scarred Crag",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Jungle Hollow",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Dispelling Exhale",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Rainveil Rejuvenator",
+                "rarity": "uncommon",
+                "price_usd": 0.13,
+                "probability": 0.03,
+                "expected_value": 0.0039
+            },
+            {
+                "card_name": "Lie in Wait",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Hardened Tactician",
+                "rarity": "uncommon",
+                "price_usd": 0.25,
+                "probability": 0.03,
+                "expected_value": 0.0075
+            },
+            {
+                "card_name": "Scavenger Regent // Exude Toxin",
+                "rarity": "rare",
+                "price_usd": 0.66,
+                "probability": 0.016667,
+                "expected_value": 0.011000220000000002
+            },
+            {
+                "card_name": "Cori Mountain Stalwart",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            }
+        ]
+    },
+    {
+        "pack_number": 5,
+        "cards": [
+            {
+                "card_name": "Champion of Dusan",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Summit Intimidator",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Salt Road Packbeast",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Osseous Exhale",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Sagu Pummeler",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Mountain",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Aggressive Negotiations",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Abzan Devotee",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Kin-Tree Nurturer",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Rescue Leopard",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Rite of Renewal",
+                "rarity": "uncommon",
+                "price_usd": 0.04,
+                "probability": 0.03,
+                "expected_value": 0.0012
+            },
+            {
+                "card_name": "Strategic Betrayal",
+                "rarity": "uncommon",
+                "price_usd": 0.16,
+                "probability": 0.03,
+                "expected_value": 0.0048
+            },
+            {
+                "card_name": "Essence Anchor",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Great Arashin City",
+                "rarity": "rare",
+                "price_usd": 0.37,
+                "probability": 0.016667,
+                "expected_value": 0.00616679
+            },
+            {
+                "card_name": "Cruel Truths",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            }
+        ]
+    },
+    {
+        "pack_number": 6,
+        "cards": [
+            {
+                "card_name": "Seize Opportunity",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Humbling Elder",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Tempest Hawk",
+                "rarity": "common",
+                "price_usd": 0.57,
+                "probability": 0.104167,
+                "expected_value": 0.059375189999999994
+            },
+            {
+                "card_name": "Narset's Rebuke",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Evolving Wilds",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Feral Deathgorger // Dusk Sight",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Snakeskin Veil",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Worthy Cost",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Embermouth Sentinel",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Stormshriek Feral // Flush Out",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Breaching Dragonstorm",
+                "rarity": "uncommon",
+                "price_usd": 0.16,
+                "probability": 0.03,
+                "expected_value": 0.0048
+            },
+            {
+                "card_name": "Twinmaw Stormbrood // Charring Bite",
+                "rarity": "uncommon",
+                "price_usd": 0.13,
+                "probability": 0.03,
+                "expected_value": 0.0039
+            },
+            {
+                "card_name": "Host of the Hereafter",
+                "rarity": "uncommon",
+                "price_usd": 0.13,
+                "probability": 0.03,
+                "expected_value": 0.0039
+            },
+            {
+                "card_name": "Stadium Headliner",
+                "rarity": "rare",
+                "price_usd": 0.51,
+                "probability": 0.016667,
+                "expected_value": 0.008500170000000001
+            },
+            {
+                "card_name": "Bewildering Blizzard",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            }
+        ]
+    },
+    {
+        "pack_number": 7,
+        "cards": [
+            {
+                "card_name": "Summit Intimidator",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Alesha's Legacy",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Delta Bloodflies",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Caustic Exhale",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Plains",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            },
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Wild Ride",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Dragonstorm Globe",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Arashin Sunshield",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Dismal Backwater",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Reverberating Summons",
+                "rarity": "uncommon",
+                "price_usd": 0.04,
+                "probability": 0.03,
+                "expected_value": 0.0012
+            },
+            {
+                "card_name": "Effortless Master",
+                "rarity": "uncommon",
+                "price_usd": 0.04,
+                "probability": 0.03,
+                "expected_value": 0.0012
+            },
+            {
+                "card_name": "Channeled Dragonfire",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Nature's Rhythm",
+                "rarity": "rare",
+                "price_usd": 3.16,
+                "probability": 0.016667,
+                "expected_value": 0.05266772000000001
+            },
+            {
+                "card_name": "Swamp",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            }
+        ]
+    },
+    {
+        "pack_number": 8,
+        "cards": [
+            {
+                "card_name": "Osseous Exhale",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Fortress Kin-Guard",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Alesha's Legacy",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Nightblade Brigade",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Salt Road Packbeast",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Krotiq Nestguard",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Focus the Mind",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Snakeskin Veil",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Underfoot Underdogs",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Trade Route Envoy",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Frontline Rush",
+                "rarity": "uncommon",
+                "price_usd": 0.22,
+                "probability": 0.03,
+                "expected_value": 0.0066
+            },
+            {
+                "card_name": "Glacial Dragonhunt",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            },
+            {
+                "card_name": "Fleeting Effigy",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Lasyd Prowler",
+                "rarity": "rare",
+                "price_usd": 0.17,
+                "probability": 0.016667,
+                "expected_value": 0.0028333900000000003
+            },
+            {
+                "card_name": "Monastery Messenger",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            }
+        ]
+    },
+    {
+        "pack_number": 9,
+        "cards": [
+            {
+                "card_name": "Seize Opportunity",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Trade Route Envoy",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Sarkhan's Resolve",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Swiftwater Cliffs",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Fortress Kin-Guard",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Narset's Rebuke",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Reputable Merchant",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Watcher of the Wayside",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Adorned Crocodile",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Defibrillating Current",
+                "rarity": "uncommon",
+                "price_usd": 0.04,
+                "probability": 0.03,
+                "expected_value": 0.0012
+            },
+            {
+                "card_name": "Wail of War",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Desperate Measures",
+                "rarity": "uncommon",
+                "price_usd": 0.11,
+                "probability": 0.03,
+                "expected_value": 0.0033
+            },
+            {
+                "card_name": "Mistrise Village",
+                "rarity": "rare",
+                "price_usd": 8.52,
+                "probability": 0.016667,
+                "expected_value": 0.14200284
+            },
+            {
+                "card_name": "Unrooted Ancestor",
+                "rarity": "uncommon",
+                "price_usd": 0.03,
+                "probability": 0.03,
+                "expected_value": 0.0009
+            }
+        ]
+    },
+    {
+        "pack_number": 10,
+        "cards": [
+            {
+                "card_name": "Temur Tawnyback",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Cruel Truths",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Salt Road Packbeast",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Plains",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            },
+            {
+                "card_name": "Snowmelt Stag",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Poised Practitioner",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Dragonstorm Globe",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Sandskitter Outrider",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Mardu Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Rugged Highlands",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Whirlwing Stormbrood // Dynamic Soar",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Fresh Start",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Hundred-Battle Veteran",
+                "rarity": "uncommon",
+                "price_usd": 0.04,
+                "probability": 0.03,
+                "expected_value": 0.0012
+            },
+            {
+                "card_name": "Roar of Endless Song",
+                "rarity": "rare",
+                "price_usd": 0.13,
+                "probability": 0.016667,
+                "expected_value": 0.00216671
+            },
+            {
+                "card_name": "Dragonbroods' Relic",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            }
+        ]
+    },
+    {
+        "pack_number": 11,
+        "cards": [
+            {
+                "card_name": "Thornwood Falls",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Adorned Crocodile",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Wild Ride",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Sandskitter Outrider",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Island",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Dirgur Island Dragon // Skimming Strike",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Salt Road Packbeast",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Summit Intimidator",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Swamp",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            },
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Wayspeaker Bodyguard",
+                "rarity": "uncommon",
+                "price_usd": 0.02,
+                "probability": 0.03,
+                "expected_value": 0.0006
+            },
+            {
+                "card_name": "Disruptive Stormbrood // Petty Revenge",
+                "rarity": "uncommon",
+                "price_usd": 0.1,
+                "probability": 0.03,
+                "expected_value": 0.003
+            },
+            {
+                "card_name": "Hardened Tactician",
+                "rarity": "uncommon",
+                "price_usd": 0.25,
+                "probability": 0.03,
+                "expected_value": 0.0075
+            },
+            {
+                "card_name": "Rediscover the Way",
+                "rarity": "rare",
+                "price_usd": 0.17,
+                "probability": 0.016667,
+                "expected_value": 0.0028333900000000003
+            },
+            {
+                "card_name": "Zurgo's Vanguard",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            }
+        ]
+    },
+    {
+        "pack_number": 12,
+        "cards": [
+            {
+                "card_name": "Kin-Tree Nurturer",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Aggressive Negotiations",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Poised Practitioner",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Adorned Crocodile",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Heritage Reclamation",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Focus the Mind",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Arashin Sunshield",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Forest",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Kheru Goldkeeper",
+                "rarity": "uncommon",
+                "price_usd": 0.18,
+                "probability": 0.03,
+                "expected_value": 0.005399999999999999
+            },
+            {
+                "card_name": "Twinmaw Stormbrood // Charring Bite",
+                "rarity": "uncommon",
+                "price_usd": 0.13,
+                "probability": 0.03,
+                "expected_value": 0.0039
+            },
+            {
+                "card_name": "Dragonstorm Forecaster",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Dalkovan Encampment",
+                "rarity": "rare",
+                "price_usd": 0.43,
+                "probability": 0.016667,
+                "expected_value": 0.00716681
+            },
+            {
+                "card_name": "Sagu Pummeler",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            }
+        ]
+    },
+    {
+        "pack_number": 13,
+        "cards": [
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Dragonstorm Globe",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Underfoot Underdogs",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Jungle Hollow",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Plains",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            },
+            {
+                "card_name": "Sultai Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Aggressive Negotiations",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Agent of Kotis",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Shock Brigade",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Kin-Tree Nurturer",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Jeskai Brushmaster",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Constrictor Sage",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Sunpearl Kirin",
+                "rarity": "uncommon",
+                "price_usd": 0.24,
+                "probability": 0.03,
+                "expected_value": 0.0072
+            },
+            {
+                "card_name": "Craterhoof Behemoth",
+                "rarity": "mythic",
+                "price_usd": 14.55,
+                "probability": 0.00625,
+                "expected_value": 0.0909375
+            },
+            {
+                "card_name": "New Way Forward",
+                "rarity": "rare",
+                "price_usd": 0.15,
+                "probability": 0.016667,
+                "expected_value": 0.00250005
+            }
+        ]
+    },
+    {
+        "pack_number": 14,
+        "cards": [
+            {
+                "card_name": "Kin-Tree Nurturer",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Scoured Barrens",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Focus the Mind",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Highspire Bell-Ringer",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Piercing Exhale",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Adorned Crocodile",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Roamer's Routine",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Shock Brigade",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Nightblade Brigade",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Forest",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Twinmaw Stormbrood // Charring Bite",
+                "rarity": "uncommon",
+                "price_usd": 0.13,
+                "probability": 0.03,
+                "expected_value": 0.0039
+            },
+            {
+                "card_name": "Abzan Monument",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Dragonbroods' Relic",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Stormscale Scion",
+                "rarity": "mythic",
+                "price_usd": 6.19,
+                "probability": 0.00625,
+                "expected_value": 0.03868750000000001
+            },
+            {
+                "card_name": "Call the Spirit Dragons",
+                "rarity": "mythic",
+                "price_usd": 4.92,
+                "probability": 0.00625,
+                "expected_value": 0.03075
+            }
+        ]
+    },
+    {
+        "pack_number": 15,
+        "cards": [
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Roamer's Routine",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Poised Practitioner",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Sagu Pummeler",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Bearer of Glory",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Mardu Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Meticulous Artisan",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Stormshriek Feral // Flush Out",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Aggressive Negotiations",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Dragonstorm Globe",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Kishla Skimmer",
+                "rarity": "uncommon",
+                "price_usd": 0.1,
+                "probability": 0.03,
+                "expected_value": 0.003
+            },
+            {
+                "card_name": "Glacial Dragonhunt",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            },
+            {
+                "card_name": "Sultai Monument",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Voice of Victory",
+                "rarity": "rare",
+                "price_usd": 10.75,
+                "probability": 0.016667,
+                "expected_value": 0.17917025
+            },
+            {
+                "card_name": "Osseous Exhale",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            }
+        ]
+    },
+    {
+        "pack_number": 16,
+        "cards": [
+            {
+                "card_name": "Osseous Exhale",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Wingspan Stride",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Champion of Dusan",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Molten Exhale",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Temur Tawnyback",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Snakeskin Veil",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Evolving Wilds",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Dismal Backwater",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Monastery Messenger",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Narset's Rebuke",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Unrooted Ancestor",
+                "rarity": "uncommon",
+                "price_usd": 0.03,
+                "probability": 0.03,
+                "expected_value": 0.0009
+            },
+            {
+                "card_name": "Dalkovan Packbeasts",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            },
+            {
+                "card_name": "Purging Stormbrood // Absorb Essence",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Scavenger Regent // Exude Toxin",
+                "rarity": "rare",
+                "price_usd": 0.66,
+                "probability": 0.016667,
+                "expected_value": 0.011000220000000002
+            },
+            {
+                "card_name": "Teval, Arbiter of Virtue",
+                "rarity": "mythic",
+                "price_usd": 1.86,
+                "probability": 0.00625,
+                "expected_value": 0.011625000000000002
+            }
+        ]
+    },
+    {
+        "pack_number": 17,
+        "cards": [
+            {
+                "card_name": "Fortress Kin-Guard",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Reputable Merchant",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Jeskai Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Devoted Duelist",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Sultai Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Rescue Leopard",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Evolving Wilds",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Forest",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Ringing Strike Mastery",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Corroding Dragonstorm",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Stormbeacon Blade",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Frontier Bivouac",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            },
+            {
+                "card_name": "Barrensteppe Siege",
+                "rarity": "rare",
+                "price_usd": 0.41,
+                "probability": 0.016667,
+                "expected_value": 0.00683347
+            },
+            {
+                "card_name": "Abzan Devotee",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            }
+        ]
+    },
+    {
+        "pack_number": 18,
+        "cards": [
+            {
+                "card_name": "Sultai Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Salt Road Packbeast",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Delta Bloodflies",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Dispelling Exhale",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Undergrowth Leopard",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Bearer of Glory",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Temur Tawnyback",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Temur Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Nightblade Brigade",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Fleeting Effigy",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Attuned Hunter",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Dragonstorm Forecaster",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Hollowmurk Siege",
+                "rarity": "rare",
+                "price_usd": 0.37,
+                "probability": 0.016667,
+                "expected_value": 0.00616679
+            },
+            {
+                "card_name": "Scoured Barrens",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            }
+        ]
+    },
+    {
+        "pack_number": 19,
+        "cards": [
+            {
+                "card_name": "Stormshriek Feral // Flush Out",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Temur Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Sarkhan's Resolve",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Dragonstorm Globe",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Champion of Dusan",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Riling Dawnbreaker // Signaling Roar",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Twin Bolt",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Fortress Kin-Guard",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Dragonback Lancer",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Trade Route Envoy",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Spectral Denial",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Jeskai Brushmaster",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Sunset Strikemaster",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            },
+            {
+                "card_name": "Tersa Lightshatter",
+                "rarity": "rare",
+                "price_usd": 1.0,
+                "probability": 0.016667,
+                "expected_value": 0.016667
+            },
+            {
+                "card_name": "Gurmag Nightwatch",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            }
+        ]
+    },
+    {
+        "pack_number": 20,
+        "cards": [
+            {
+                "card_name": "Underfoot Underdogs",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Seize Opportunity",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Narset's Rebuke",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Sarkhan's Resolve",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Agent of Kotis",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Swiftwater Cliffs",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Osseous Exhale",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Salt Road Packbeast",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Dirgur Island Dragon // Skimming Strike",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Jeskai Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Dragonbroods' Relic",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Sunset Strikemaster",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            },
+            {
+                "card_name": "Aegis Sculptor",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Revival of the Ancestors",
+                "rarity": "rare",
+                "price_usd": 0.14,
+                "probability": 0.016667,
+                "expected_value": 0.0023333800000000003
+            },
+            {
+                "card_name": "Strategic Betrayal",
+                "rarity": "uncommon",
+                "price_usd": 0.16,
+                "probability": 0.03,
+                "expected_value": 0.0048
+            }
+        ]
+    },
+    {
+        "pack_number": 21,
+        "cards": [
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Dusyut Earthcarver",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Embermouth Sentinel",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Worthy Cost",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Humbling Elder",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Watcher of the Wayside",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Shock Brigade",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Mountain",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Dismal Backwater",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Unburied Earthcarver",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Spectral Denial",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Furious Forebear",
+                "rarity": "uncommon",
+                "price_usd": 0.03,
+                "probability": 0.03,
+                "expected_value": 0.0009
+            },
+            {
+                "card_name": "Rainveil Rejuvenator",
+                "rarity": "uncommon",
+                "price_usd": 0.13,
+                "probability": 0.03,
+                "expected_value": 0.0039
+            },
+            {
+                "card_name": "Call the Spirit Dragons",
+                "rarity": "mythic",
+                "price_usd": 4.92,
+                "probability": 0.00625,
+                "expected_value": 0.03075
+            },
+            {
+                "card_name": "Descendant of Storms",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            }
+        ]
+    },
+    {
+        "pack_number": 22,
+        "cards": [
+            {
+                "card_name": "Wingspan Stride",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Tranquil Cove",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Narset's Rebuke",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Rugged Highlands",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Roamer's Routine",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Champion of Dusan",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Temur Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Riverwalk Technique",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Meticulous Artisan",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Attuned Hunter",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Stalwart Successor",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Bewildering Blizzard",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Clarion Conqueror",
+                "rarity": "rare",
+                "price_usd": 1.37,
+                "probability": 0.016667,
+                "expected_value": 0.022833790000000003
+            },
+            {
+                "card_name": "Swiftwater Cliffs",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            }
+        ]
+    },
+    {
+        "pack_number": 23,
+        "cards": [
+            {
+                "card_name": "Sultai Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Tranquil Cove",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Dirgur Island Dragon // Skimming Strike",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Aggressive Negotiations",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Rescue Leopard",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Undergrowth Leopard",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Reigning Victor",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Rebellious Strike",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Sandskitter Outrider",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Armament Dragon",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Riverwheel Sweep",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Loxodon Battle Priest",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Severance Priest",
+                "rarity": "rare",
+                "price_usd": 0.21,
+                "probability": 0.016667,
+                "expected_value": 0.00350007
+            },
+            {
+                "card_name": "Inspirited Vanguard",
+                "rarity": "uncommon",
+                "price_usd": 0.03,
+                "probability": 0.03,
+                "expected_value": 0.0009
+            }
+        ]
+    },
+    {
+        "pack_number": 24,
+        "cards": [
+            {
+                "card_name": "Summit Intimidator",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Rescue Leopard",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Feral Deathgorger // Dusk Sight",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Caustic Exhale",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Jade-Cast Sentinel",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Monastery Messenger",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Plains",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            },
+            {
+                "card_name": "Twin Bolt",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Tempest Hawk",
+                "rarity": "common",
+                "price_usd": 0.57,
+                "probability": 0.104167,
+                "expected_value": 0.059375189999999994
+            },
+            {
+                "card_name": "Alchemist's Assistant",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Sunset Strikemaster",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            },
+            {
+                "card_name": "Bewildering Blizzard",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Rot-Curse Rakshasa",
+                "rarity": "mythic",
+                "price_usd": 4.02,
+                "probability": 0.00625,
+                "expected_value": 0.025124999999999998
+            },
+            {
+                "card_name": "Eshki Dragonclaw",
+                "rarity": "rare",
+                "price_usd": 0.19,
+                "probability": 0.016667,
+                "expected_value": 0.0031667300000000004
+            }
+        ]
+    },
+    {
+        "pack_number": 25,
+        "cards": [
+            {
+                "card_name": "Fire-Rim Form",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Delta Bloodflies",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Sagu Pummeler",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Dispelling Exhale",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Agent of Kotis",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Temur Tawnyback",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Jade-Cast Sentinel",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Unending Whisper",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Rebellious Strike",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Dragon's Prey",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Desperate Measures",
+                "rarity": "uncommon",
+                "price_usd": 0.11,
+                "probability": 0.03,
+                "expected_value": 0.0033
+            },
+            {
+                "card_name": "Teeming Dragonstorm",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Krumar Initiate",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Ambling Stormshell",
+                "rarity": "rare",
+                "price_usd": 0.15,
+                "probability": 0.016667,
+                "expected_value": 0.00250005
+            },
+            {
+                "card_name": "Unrooted Ancestor",
+                "rarity": "uncommon",
+                "price_usd": 0.03,
+                "probability": 0.03,
+                "expected_value": 0.0009
+            }
+        ]
+    },
+    {
+        "pack_number": 26,
+        "cards": [
+            {
+                "card_name": "Temur Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Rebellious Strike",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Arashin Sunshield",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Adorned Crocodile",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Reigning Victor",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Champion of Dusan",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Rescue Leopard",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Forest",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Tempest Hawk",
+                "rarity": "common",
+                "price_usd": 0.57,
+                "probability": 0.104167,
+                "expected_value": 0.059375189999999994
+            },
+            {
+                "card_name": "Abzan Monument",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Sunpearl Kirin",
+                "rarity": "uncommon",
+                "price_usd": 0.24,
+                "probability": 0.03,
+                "expected_value": 0.0072
+            },
+            {
+                "card_name": "Rally the Monastery",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            },
+            {
+                "card_name": "Frostcliff Siege",
+                "rarity": "rare",
+                "price_usd": 1.0,
+                "probability": 0.016667,
+                "expected_value": 0.016667
+            },
+            {
+                "card_name": "Sagu Wildling // Roost Seek",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            }
+        ]
+    },
+    {
+        "pack_number": 27,
+        "cards": [
+            {
+                "card_name": "Feral Deathgorger // Dusk Sight",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Bloodfell Caves",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Watcher of the Wayside",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Humbling Elder",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Roamer's Routine",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Rebellious Strike",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Stormshriek Feral // Flush Out",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Mardu Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Swamp",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            },
+            {
+                "card_name": "Osseous Exhale",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Sunset Strikemaster",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            },
+            {
+                "card_name": "Kishla Skimmer",
+                "rarity": "uncommon",
+                "price_usd": 0.1,
+                "probability": 0.03,
+                "expected_value": 0.003
+            },
+            {
+                "card_name": "Starry-Eyed Skyrider",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Songcrafter Mage",
+                "rarity": "rare",
+                "price_usd": 0.33,
+                "probability": 0.016667,
+                "expected_value": 0.005500110000000001
+            },
+            {
+                "card_name": "Marang River Regent // Coil and Catch",
+                "rarity": "rare",
+                "price_usd": 1.03,
+                "probability": 0.016667,
+                "expected_value": 0.017167010000000003
+            }
+        ]
+    },
+    {
+        "pack_number": 28,
+        "cards": [
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Meticulous Artisan",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Swamp",
+                "rarity": "common",
+                "price_usd": 0.1,
+                "probability": 0.104167,
+                "expected_value": 0.010416700000000001
+            },
+            {
+                "card_name": "Riling Dawnbreaker // Signaling Roar",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Evolving Wilds",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Monastery Messenger",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Sagu Wildling // Roost Seek",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Lightfoot Technique",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Summit Intimidator",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Underfoot Underdogs",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Sage of the Fang",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Wingblade Disciple",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Frontier Bivouac",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            },
+            {
+                "card_name": "Rot-Curse Rakshasa",
+                "rarity": "mythic",
+                "price_usd": 4.02,
+                "probability": 0.00625,
+                "expected_value": 0.025124999999999998
+            },
+            {
+                "card_name": "Mystic Monastery",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            }
+        ]
+    },
+    {
+        "pack_number": 29,
+        "cards": [
+            {
+                "card_name": "Bearer of Glory",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Narset's Rebuke",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Underfoot Underdogs",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Snowmelt Stag",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Molten Exhale",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Champion of Dusan",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Kin-Tree Nurturer",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Sagu Pummeler",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Gurmag Rakshasa",
+                "rarity": "uncommon",
+                "price_usd": 0.02,
+                "probability": 0.03,
+                "expected_value": 0.0006
+            },
+            {
+                "card_name": "Rally the Monastery",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            },
+            {
+                "card_name": "Spectral Denial",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Dracogenesis",
+                "rarity": "mythic",
+                "price_usd": 16.26,
+                "probability": 0.00625,
+                "expected_value": 0.10162500000000002
+            },
+            {
+                "card_name": "Bloodfell Caves",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            }
+        ]
+    },
+    {
+        "pack_number": 30,
+        "cards": [
+            {
+                "card_name": "Sandskitter Outrider",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Sultai Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Ringing Strike Mastery",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Dusyut Earthcarver",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Narset's Rebuke",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Riverwalk Technique",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Focus the Mind",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Stormshriek Feral // Flush Out",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Forest",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Iceridge Serpent",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Unsparing Boltcaster",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Formation Breaker",
+                "rarity": "uncommon",
+                "price_usd": 0.04,
+                "probability": 0.03,
+                "expected_value": 0.0012
+            },
+            {
+                "card_name": "Desperate Measures",
+                "rarity": "uncommon",
+                "price_usd": 0.11,
+                "probability": 0.03,
+                "expected_value": 0.0033
+            },
+            {
+                "card_name": "Mistrise Village",
+                "rarity": "rare",
+                "price_usd": 8.52,
+                "probability": 0.016667,
+                "expected_value": 0.14200284
+            },
+            {
+                "card_name": "Mystic Monastery",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            }
+        ]
+    },
+    {
+        "pack_number": 31,
+        "cards": [
+            {
+                "card_name": "Twin Bolt",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Forest",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Dispelling Exhale",
+                "rarity": "common",
+                "price_usd": 0.08,
+                "probability": 0.104167,
+                "expected_value": 0.00833336
+            },
+            {
+                "card_name": "Piercing Exhale",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Seize Opportunity",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Jeskai Devotee",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Bearer of Glory",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Ainok Wayfarer",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Meticulous Artisan",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Wind-Scarred Crag",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Mardu Monument",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Constrictor Sage",
+                "rarity": "uncommon",
+                "price_usd": 0.06,
+                "probability": 0.03,
+                "expected_value": 0.0018
+            },
+            {
+                "card_name": "Spectral Denial",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "United Battlefront",
+                "rarity": "rare",
+                "price_usd": 0.53,
+                "probability": 0.016667,
+                "expected_value": 0.008833510000000001
+            },
+            {
+                "card_name": "Skirmish Rhino",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            }
+        ]
+    },
+    {
+        "pack_number": 32,
+        "cards": [
+            {
+                "card_name": "Temur Tawnyback",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Scoured Barrens",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Wild Ride",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Trade Route Envoy",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Sultai Devotee",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Tranquil Cove",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Snakeskin Veil",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Fire-Rim Form",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Devoted Duelist",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Reigning Victor",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Kheru Goldkeeper",
+                "rarity": "uncommon",
+                "price_usd": 0.18,
+                "probability": 0.03,
+                "expected_value": 0.005399999999999999
+            },
+            {
+                "card_name": "Dalkovan Packbeasts",
+                "rarity": "uncommon",
+                "price_usd": 0.15,
+                "probability": 0.03,
+                "expected_value": 0.0045
+            },
+            {
+                "card_name": "Duty Beyond Death",
+                "rarity": "uncommon",
+                "price_usd": 0.2,
+                "probability": 0.03,
+                "expected_value": 0.006
+            },
+            {
+                "card_name": "Sarkhan, Dragon Ascendant",
+                "rarity": "rare",
+                "price_usd": 0.29,
+                "probability": 0.016667,
+                "expected_value": 0.00483343
+            },
+            {
+                "card_name": "Ambling Stormshell",
+                "rarity": "rare",
+                "price_usd": 0.15,
+                "probability": 0.016667,
+                "expected_value": 0.00250005
+            }
+        ]
+    },
+    {
+        "pack_number": 33,
+        "cards": [
+            {
+                "card_name": "Wingspan Stride",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Shock Brigade",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Unburied Earthcarver",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Bloodfell Caves",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Delta Bloodflies",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Unending Whisper",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Stormshriek Feral // Flush Out",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Piercing Exhale",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Dragonback Lancer",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Rite of Renewal",
+                "rarity": "uncommon",
+                "price_usd": 0.04,
+                "probability": 0.03,
+                "expected_value": 0.0012
+            },
+            {
+                "card_name": "Frontier Bivouac",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            },
+            {
+                "card_name": "Karakyk Guardian",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Ureni, the Song Unending",
+                "rarity": "mythic",
+                "price_usd": 3.49,
+                "probability": 0.00625,
+                "expected_value": 0.021812500000000002
+            },
+            {
+                "card_name": "Salt Road Packbeast",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            }
+        ]
+    },
+    {
+        "pack_number": 34,
+        "cards": [
+            {
+                "card_name": "Riverwalk Technique",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Dragonback Lancer",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Kin-Tree Nurturer",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Rescue Leopard",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Thornwood Falls",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Dusyut Earthcarver",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Delta Bloodflies",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Abzan Devotee",
+                "rarity": "common",
+                "price_usd": 0.01,
+                "probability": 0.104167,
+                "expected_value": 0.00104167
+            },
+            {
+                "card_name": "Sagu Wildling // Roost Seek",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Twin Bolt",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Yathan Tombguard",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Sage of the Fang",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Frontier Bivouac",
+                "rarity": "uncommon",
+                "price_usd": 0.12,
+                "probability": 0.03,
+                "expected_value": 0.0036
+            },
+            {
+                "card_name": "Ureni, the Song Unending",
+                "rarity": "mythic",
+                "price_usd": 3.49,
+                "probability": 0.00625,
+                "expected_value": 0.021812500000000002
+            },
+            {
+                "card_name": "Reigning Victor",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            }
+        ]
+    },
+    {
+        "pack_number": 35,
+        "cards": [
+            {
+                "card_name": "Snakeskin Veil",
+                "rarity": "common",
+                "price_usd": 0.06,
+                "probability": 0.104167,
+                "expected_value": 0.006250019999999999
+            },
+            {
+                "card_name": "Wild Ride",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Sagu Pummeler",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Bearer of Glory",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Dragon's Prey",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            },
+            {
+                "card_name": "Lightfoot Technique",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Island",
+                "rarity": "common",
+                "price_usd": 0.09,
+                "probability": 0.104167,
+                "expected_value": 0.00937503
+            },
+            {
+                "card_name": "Thornwood Falls",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Shock Brigade",
+                "rarity": "common",
+                "price_usd": 0.07,
+                "probability": 0.104167,
+                "expected_value": 0.00729169
+            },
+            {
+                "card_name": "Runescale Stormbrood // Chilling Screech",
+                "rarity": "uncommon",
+                "price_usd": 0.08,
+                "probability": 0.03,
+                "expected_value": 0.0024
+            },
+            {
+                "card_name": "Marshal of the Lost",
+                "rarity": "uncommon",
+                "price_usd": 0.09,
+                "probability": 0.03,
+                "expected_value": 0.0026999999999999997
+            },
+            {
+                "card_name": "Furious Forebear",
+                "rarity": "uncommon",
+                "price_usd": 0.03,
+                "probability": 0.03,
+                "expected_value": 0.0009
+            },
+            {
+                "card_name": "Dalkovan Encampment",
+                "rarity": "rare",
+                "price_usd": 0.43,
+                "probability": 0.016667,
+                "expected_value": 0.00716681
+            },
+            {
+                "card_name": "The Sibsig Ceremony",
+                "rarity": "rare",
+                "price_usd": 0.47,
+                "probability": 0.016667,
+                "expected_value": 0.00783349
+            }
+        ]
+    },
+    {
+        "pack_number": 36,
+        "cards": [
+            {
+                "card_name": "Heritage Reclamation",
+                "rarity": "common",
+                "price_usd": 0.12,
+                "probability": 0.104167,
+                "expected_value": 0.012500039999999999
+            },
+            {
+                "card_name": "Undergrowth Leopard",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Rebellious Strike",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Thornwood Falls",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Tranquil Cove",
+                "rarity": "common",
+                "price_usd": 0.04,
+                "probability": 0.104167,
+                "expected_value": 0.00416668
+            },
+            {
+                "card_name": "Summit Intimidator",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Bearer of Glory",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Wingspan Stride",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Piercing Exhale",
+                "rarity": "common",
+                "price_usd": 0.03,
+                "probability": 0.104167,
+                "expected_value": 0.0031250099999999997
+            },
+            {
+                "card_name": "Sibsig Appraiser",
+                "rarity": "common",
+                "price_usd": 0.05,
+                "probability": 0.104167,
+                "expected_value": 0.0052083500000000005
+            },
+            {
+                "card_name": "Synchronized Charge",
+                "rarity": "uncommon",
+                "price_usd": 0.1,
+                "probability": 0.03,
+                "expected_value": 0.003
+            },
+            {
+                "card_name": "Purging Stormbrood // Absorb Essence",
+                "rarity": "uncommon",
+                "price_usd": 0.05,
+                "probability": 0.03,
+                "expected_value": 0.0015
+            },
+            {
+                "card_name": "Riverwheel Sweep",
+                "rarity": "uncommon",
+                "price_usd": 0.07,
+                "probability": 0.03,
+                "expected_value": 0.0021000000000000003
+            },
+            {
+                "card_name": "Inevitable Defeat",
+                "rarity": "rare",
+                "price_usd": 0.34,
+                "probability": 0.016667,
+                "expected_value": 0.005666780000000001
+            },
+            {
+                "card_name": "Watcher of the Wayside",
+                "rarity": "common",
+                "price_usd": 0.02,
+                "probability": 0.104167,
+                "expected_value": 0.00208334
+            }
+        ]
+    }
+]
