@@ -1,5 +1,6 @@
 import os
 import sys 
+import json
 
 from functions import ecs
 from functions import  mtg_box_sim
@@ -168,22 +169,26 @@ with st.expander("Booster Box EV Calculator"):
                     
 with st.expander("Precon EV Calculator"):
     sets = []
-    cwd = os.getcwd()
-    path = os.path.join(cwd, "data", "precons")
+    cwd = os.getcwd()  # Get the current working directory
+    path = os.path.join(cwd, "data", "precons")  # Construct the full path to the "precons" folder
+
+    precons = []  # Initialize precons list
     for root, dirs, files in os.walk(path):
-            sets += dirs
-            precons = files
+        sets.extend(dirs)  # Add directories to sets
+        precons.extend([file.replace(".txt", "") for file in files])  # Process files and remove ".txt"
+
+    # Clear the precons list if no precons are found
+    if not precons:
+        precons = []  # Ensure the list is empty
+
+    # Debugging output (optional)
     print(sets)
     print(precons)
-    
+
     st.divider()
     # Initialize session state to store EV results
     if 'ev_history' not in st.session_state:
         st.session_state.ev_history = []
-
-    # Initialize options in session state
-    if "options" not in st.session_state:
-        st.session_state.options = []
 
     # Create 3 columns
     col1, col2, col3 = st.columns([2, 3, 1])
@@ -192,49 +197,14 @@ with st.expander("Precon EV Calculator"):
     with col1:
         set_selectbox = st.selectbox(
             "Please select a set code",
-            ("tdc", "lcc"),      
+            sets,  # Use the dynamically populated sets list
         )
 
     with col2:
         precon = st.selectbox(
             "Precon Name",
-            ("test"),    
+            precons,  # Use the dynamically populated precons list
         )
 
     with col3:
         st.number_input("EV", min_value=1)
-            
-
-
-
-# def page2():
-#     st.title("Second page")
-
-# pg = st.navigation([
-#     st.Page("pages/page_1.py", title="First page", icon="🔥"),
-#     st.Page(page2, title="Second page", icon=":material/favorite:"),
-# ])
-# pg.run()
-        
-        
-        
-
-# if st.button("Click Me"):
-#     st.write("Button Clicked! 🎉")
-    
-# Using object notation
-# add_selectbox = st.sidebar.selectbox(
-#     "How would you like to be contacted?",
-#     ("Email", "Home phone", "Mobile phone")
-# tab1, tab2, tab3 = st.tabs(["Cat", "Dog", "Owl"])
-
-# with tab1:
-#     st.header("A cat")
-#     st.image("https://static.streamlit.io/examples/cat.jpg", width=200)
-# with tab2:
-#     st.header("A dog")
-#     st.image("https://static.streamlit.io/examples/dog.jpg", width=200)
-# with tab3:
-#     st.header("An owl")
-#     st.image("https://static.streamlit.io/examples/owl.jpg", width=200)
-# )
