@@ -49,8 +49,7 @@ with st.expander("ECS"):
             st.write("Expander Test")
     with col3:
         if st.button("Third Function", use_container_width=True):
-            st.write("Other Function")
-            
+            st.write("Other Function")       
 
 with st.expander("EC2"):
     st.divider()
@@ -117,7 +116,7 @@ with st.expander("Price Check"):
         trigger_price_check()
         
 st.title("TCG Tools")
-with st.expander("EV Calculator"):
+with st.expander("Booster Box EV Calculator"):
     st.divider()
     # Initialize session state to store EV results
     if 'ev_history' not in st.session_state:
@@ -134,7 +133,7 @@ with st.expander("EV Calculator"):
 
     # Inputs and button
     with col1:
-        set = st.text_input("Set Name",placeholder="dft", key="Set Code", value="dft")
+        precon = st.text_input("Set Name",placeholder="dft", value="dft")
 
     with col2:
         boxes_to_open = st.number_input("Boxes to open", min_value=1, step=1)
@@ -167,6 +166,43 @@ with st.expander("EV Calculator"):
         st.dataframe(styled_data, use_container_width=True)
         #st.table(df)
                     
+with st.expander("Precon EV Calculator"):
+    sets = []
+    cwd = os.getcwd()
+    path = os.path.join(cwd, "data", "precons")
+    for root, dirs, files in os.walk(path):
+            sets += dirs
+            precons = files
+    print(sets)
+    print(precons)
+    
+    st.divider()
+    # Initialize session state to store EV results
+    if 'ev_history' not in st.session_state:
+        st.session_state.ev_history = []
+
+    # Initialize options in session state
+    if "options" not in st.session_state:
+        st.session_state.options = []
+
+    # Create 3 columns
+    col1, col2, col3 = st.columns([2, 3, 1])
+
+    # Inputs and button
+    with col1:
+        set_selectbox = st.selectbox(
+            "Please select a set code",
+            ("tdc", "lcc"),      
+        )
+
+    with col2:
+        precon = st.selectbox(
+            "Precon Name",
+            ("test"),    
+        )
+
+    with col3:
+        st.number_input("EV", min_value=1)
             
 
 
