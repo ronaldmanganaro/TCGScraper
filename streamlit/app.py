@@ -1,10 +1,10 @@
-import streamlit as st
-import ecs
-import sys 
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app')))
-import mtg_box_sim
+import sys 
 
+from functions import ecs
+from functions import  mtg_box_sim
+
+import streamlit as st
 import pandas as pd
 import numpy as np
 
@@ -13,18 +13,9 @@ st.title("My Cloud Control App 🚀")
 def trigger_price_check():
     print("Price check triggered")
 
-
-
 # Using "with" notation
 with st.sidebar:
     st.header("Sidebar")
-    # add_radio = st.radio(
-    #     "Choose a shipping method",
-    #     ("Standard (5-15 days)", "Express (2-5 days)")
-    # )
-    # st.checkbox(
-    #     "test"
-    # )
     with st.expander("AWS Shortcuts"):
         st.link_button("AWS Dashboard", "https://us-east-1.console.aws.amazon.com/console/home?region=us-east-1", use_container_width=True)
         st.link_button("ECS Dashboard", "https://us-east-1.console.aws.amazon.com/ecs/home?region=us-east-1#Home:", use_container_width=True)
@@ -180,14 +171,14 @@ with st.expander("EV Calculator"):
 
 
 
-def page2():
-    st.title("Second page")
+# def page2():
+#     st.title("Second page")
 
-pg = st.navigation([
-    st.Page("page_1.py", title="First page", icon="🔥"),
-    st.Page(page2, title="Second page", icon=":material/favorite:"),
-])
-pg.run()
+# pg = st.navigation([
+#     st.Page("pages/page_1.py", title="First page", icon="🔥"),
+#     st.Page(page2, title="Second page", icon=":material/favorite:"),
+# ])
+# pg.run()
         
         
         

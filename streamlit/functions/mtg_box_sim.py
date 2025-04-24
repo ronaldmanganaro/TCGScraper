@@ -1,5 +1,6 @@
 import random
 import json
+import os
 
 # Function to simulate a single booster pack opening
 def open_booster_pack(cards):
@@ -73,13 +74,17 @@ def simulate_multiple_boxes(cards, num_boxes=10):
     return average_ev
 
 def simulate(set, boxes):
-    
+    # Get the current working directory
+    cwd = os.path.dirname(os.path.abspath(__file__))
+
+    # Construct the full path to the JSON file
+    file_path = os.path.join(cwd, 'data', 'card_by_set', f'{set}_cards.json')
+
     # Load the cards from the JSON file
-    with open(f'{set}_cards.json', 'r', encoding='utf-8') as f:
+    with open(file_path, 'r', encoding='utf-8') as f:
         cards = json.load(f)
 
     # Choose how many boxes to simulate
     num_boxes_to_simulate = boxes
-    
 
     return simulate_multiple_boxes(cards, num_boxes=num_boxes_to_simulate)
