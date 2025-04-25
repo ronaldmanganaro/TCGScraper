@@ -21,7 +21,7 @@
 1 Elemental Bond [TDC]
 1 Encroaching Dragonstorm [TDM]
 1 Eshki, Temur's Roar <borderless> [TDC] (F)
-1 Evolving Wilds [TDC]
+1 Evolving Wilds [TDM]
 1 Exotic Orchard [TDC]
 1 Farseek [TDC]
 1 Fellwar Stone [TDC]

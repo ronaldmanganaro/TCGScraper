@@ -78,7 +78,7 @@ def simulate(set, boxes):
     cwd = os.path.dirname(os.path.abspath(__file__))
 
     # Construct the full path to the JSON file
-    file_path = os.path.join(cwd, 'data', 'card_by_set', f'{set}_cards.json')
+    file_path = os.path.join(cwd, "..", 'data', 'cards_by_set', f'{set}_cards.json')
 
     # Load the cards from the JSON file
     with open(file_path, 'r', encoding='utf-8') as f:
