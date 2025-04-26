@@ -1,7 +1,10 @@
 import streamlit as st
 import os 
 import pandas as pd
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..function')))
 
+from functions import mtg_box_sim, commander_ev
 
 st.title("TCG Tools")
 with st.expander("Booster Box EV Calculator"):
