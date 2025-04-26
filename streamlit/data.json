@@ -5,52 +5,54 @@
     "data": [
         {
             "object": "card",
-            "id": "15750fb6-4141-4ad9-937d-e18c76154a85",
-            "oracle_id": "3f372107-6c52-4f1f-8bf0-7b3fa21b2cae",
+            "id": "2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc",
+            "oracle_id": "626a979f-bed7-4cb1-9ab7-c3f2bbe37781",
             "multiverse_ids": [
-                692445
+                692108
             ],
-            "mtgo_id": 137363,
-            "tcgplayer_id": 615098,
-            "cardmarket_id": 808361,
-            "name": "Lord of the Accursed",
+            "mtgo_id": 137591,
+            "tcgplayer_id": 615293,
+            "name": "Lost Monarch of Ifnir",
             "lang": "en",
             "released_at": "2025-02-14",
-            "uri": "https://api.scryfall.com/cards/15750fb6-4141-4ad9-937d-e18c76154a85",
-            "scryfall_uri": "https://scryfall.com/card/drc/95/lord-of-the-accursed?utm_source=api",
+            "uri": "https://api.scryfall.com/cards/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc",
+            "scryfall_uri": "https://scryfall.com/card/drc/27/lost-monarch-of-ifnir?utm_source=api",
             "layout": "normal",
             "highres_image": true,
             "image_status": "highres_scan",
             "image_uris": {
-                "small": "https://cards.scryfall.io/small/front/1/5/15750fb6-4141-4ad9-937d-e18c76154a85.jpg?1738355774",
-                "normal": "https://cards.scryfall.io/normal/front/1/5/15750fb6-4141-4ad9-937d-e18c76154a85.jpg?1738355774",
-                "large": "https://cards.scryfall.io/large/front/1/5/15750fb6-4141-4ad9-937d-e18c76154a85.jpg?1738355774",
-                "png": "https://cards.scryfall.io/png/front/1/5/15750fb6-4141-4ad9-937d-e18c76154a85.png?1738355774",
-                "art_crop": "https://cards.scryfall.io/art_crop/front/1/5/15750fb6-4141-4ad9-937d-e18c76154a85.jpg?1738355774",
-                "border_crop": "https://cards.scryfall.io/border_crop/front/1/5/15750fb6-4141-4ad9-937d-e18c76154a85.jpg?1738355774"
+                "small": "https://cards.scryfall.io/small/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415",
+                "normal": "https://cards.scryfall.io/normal/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415",
+                "large": "https://cards.scryfall.io/large/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415",
+                "png": "https://cards.scryfall.io/png/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.png?1738355415",
+                "art_crop": "https://cards.scryfall.io/art_crop/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415",
+                "border_crop": "https://cards.scryfall.io/border_crop/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415"
             },
-            "mana_cost": "{2}{B}",
-            "cmc": 3.0,
-            "type_line": "Creature \u2014 Zombie",
-            "oracle_text": "Other Zombies you control get +1/+1.\n{1}{B}, {T}: All Zombies gain menace until end of turn.",
-            "power": "2",
-            "toughness": "3",
+            "mana_cost": "{3}{B}",
+            "cmc": 4.0,
+            "type_line": "Creature \u2014 Zombie Noble",
+            "oracle_text": "Afflict 3 (Whenever this creature becomes blocked, defending player loses 3 life.)\nOther Zombies you control have afflict 3.\nAt the beginning of your second main phase, if a player was dealt combat damage by a Zombie this turn, mill three cards, then you may return a creature card from your graveyard to your hand.",
+            "power": "4",
+            "toughness": "4",
             "colors": [
                 "B"
             ],
             "color_identity": [
                 "B"
             ],
-            "keywords": [],
+            "keywords": [
+                "Afflict",
+                "Mill"
+            ],
             "legalities": {
                 "standard": "not_legal",
                 "future": "not_legal",
-                "historic": "legal",
-                "timeless": "legal",
-                "gladiator": "legal",
-                "pioneer": "legal",
-                "explorer": "legal",
-                "modern": "legal",
+                "historic": "not_legal",
+                "timeless": "not_legal",
+                "gladiator": "not_legal",
+                "pioneer": "not_legal",
+                "explorer": "not_legal",
+                "modern": "not_legal",
                 "legacy": "legal",
                 "pauper": "not_legal",
                 "vintage": "legal",
@@ -58,7 +60,7 @@
                 "commander": "legal",
                 "oathbreaker": "legal",
                 "standardbrawl": "not_legal",
-                "brawl": "legal",
+                "brawl": "not_legal",
                 "alchemy": "not_legal",
                 "paupercommander": "not_legal",
                 "duel": "legal",
@@ -79,7 +81,7 @@
             ],
             "oversized": false,
             "promo": false,
-            "reprint": true,
+            "reprint": false,
             "variation": false,
             "set_id": "d33ef7a4-41bb-4f16-bad3-b3ee13c257e6",
             "set": "drc",
@@ -88,44 +90,46 @@
             "set_uri": "https://api.scryfall.com/sets/d33ef7a4-41bb-4f16-bad3-b3ee13c257e6",
             "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adrc&unique=prints",
             "scryfall_set_uri": "https://scryfall.com/sets/drc?utm_source=api",
-            "rulings_uri": "https://api.scryfall.com/cards/15750fb6-4141-4ad9-937d-e18c76154a85/rulings",
-            "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3f372107-6c52-4f1f-8bf0-7b3fa21b2cae&unique=prints",
-            "collector_number": "95",
+            "rulings_uri": "https://api.scryfall.com/cards/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc/rulings",
+            "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A626a979f-bed7-4cb1-9ab7-c3f2bbe37781&unique=prints",
+            "collector_number": "27",
             "digital": false,
-            "rarity": "uncommon",
-            "flavor_text": "The Curse of Wandering leaves only hatred.",
+            "rarity": "rare",
             "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
-            "artist": "Grzegorz Rutkowski",
+            "artist": "Piotr Dura",
             "artist_ids": [
-                "b5f49d0d-8056-48e3-b614-090e656b4f9c"
+                "aff176e8-1d15-432e-ad1d-207a474decba"
             ],
-            "illustration_id": "f5fa472f-6a19-4297-a0b6-bd67022284c8",
+            "illustration_id": "0a921917-8745-409c-8fc2-a281d75332d5",
             "border_color": "black",
             "frame": "2015",
+            "frame_effects": [
+                "extendedart"
+            ],
+            "security_stamp": "oval",
             "full_art": false,
             "textless": false,
             "booster": false,
             "story_spotlight": false,
-            "edhrec_rank": 1584,
-            "penny_rank": 435,
+            "edhrec_rank": 5193,
             "prices": {
-                "usd": "0.11",
+                "usd": "3.87",
                 "usd_foil": null,
                 "usd_etched": null,
-                "eur": "0.19",
+                "eur": null,
                 "eur_foil": null,
-                "tix": "0.05"
+                "tix": "0.67"
             },
             "related_uris": {
-                "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=692445&printed=false",
-                "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fcontent&u=https%3A%2F%2Fwww.tcgplayer.com%2Fcontent%2Fsearch%3FcontentMode%3Darticle%26game%3Dmagic%26q%3DLord%2Bof%2Bthe%2BAccursed",
-                "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fcontent&u=https%3A%2F%2Fwww.tcgplayer.com%2Fcontent%2Fsearch%3FcontentMode%3Ddeck%26game%3Dmagic%26q%3DLord%2Bof%2Bthe%2BAccursed",
-                "edhrec": "https://edhrec.com/route/?cc=Lord+of+the+Accursed"
+                "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=692108&printed=false",
+                "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fcontent&u=https%3A%2F%2Fwww.tcgplayer.com%2Fcontent%2Fsearch%3FcontentMode%3Darticle%26game%3Dmagic%26q%3DLost%2BMonarch%2Bof%2BIfnir",
+                "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fcontent&u=https%3A%2F%2Fwww.tcgplayer.com%2Fcontent%2Fsearch%3FcontentMode%3Ddeck%26game%3Dmagic%26q%3DLost%2BMonarch%2Bof%2BIfnir",
+                "edhrec": "https://edhrec.com/route/?cc=Lost+Monarch+of+Ifnir"
             },
             "purchase_uris": {
-                "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F615098%3Fpage%3D1",
-                "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Singles/Commander-Aetherdrift/Lord-of-the-Accursed?referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-                "cardhoarder": "https://www.cardhoarder.com/cards/137363?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+                "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F615293%3Fpage%3D1",
+                "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Lost+Monarch+of+Ifnir&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+                "cardhoarder": "https://www.cardhoarder.com/cards/137591?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
             }
         }
     ]
