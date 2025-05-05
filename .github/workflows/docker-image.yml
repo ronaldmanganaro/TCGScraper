@@ -68,7 +68,7 @@ jobs:
       
     - name: Build Docker image
       run: |
-        tag="***/streamlit:${SANITIZED_BRANCH_NAME}"
+        tag="rmangana/streamlit:${SANITIZED_BRANCH_NAME}"
         docker build . -f docker/Dockerfile.streamlit --tag $tag
     
     - name: Upload streamlit image to Dockerhub
