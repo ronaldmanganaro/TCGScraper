@@ -63,7 +63,7 @@ jobs:
     - name: Sanitize branch name for Docker tag
       run: |
         RAW_BRANCH_NAME="${GITHUB_REF_NAME}"
-        SANITIZED_BRANCH_NAME=$(echo "$RAW_BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_.-' '-')
+        SANITIZED_BRANCH_NAME=$(echo "$RAW_BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_.-' '-' | sed 's/-*$//')
         echo "SANITIZED_BRANCH_NAME=$SANITIZED_BRANCH_NAME" >> $GITHUB_ENV
       
     - name: Build Docker image
