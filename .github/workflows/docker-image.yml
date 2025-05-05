@@ -9,19 +9,30 @@ on:
       - 'streamlit/**'
   
 jobs:
-  code-checkout:
+  filter:
     runs-on: self-hosted
+    outputs:
+      ai: ${{ steps.filter.outputs.ai }}
+      streamlit: ${{ steps.filter.outputs.streamlit }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with: 
-        clean: true
-      
-    - name: Upload Code as Artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: source-code
-        path: ./
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Upload source
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-code
+          path: ./
+
+      - name: Filter paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            ai:
+              - 'docker/docker.ai'
+            streamlit:
+              - 'streamlit/**'
 
   build-ai:
     if: contains(github.event.head_commit.message, 'build:ai')
@@ -39,8 +50,8 @@ jobs:
         aws s3 cp s3://your-bucket-name/path/to/your-file ./local-file-name
 
   build-streamlit:
-    if: github.event_name == 'push' && contains(join(github.event.commits.*.modified), 'streamlit/')
-    needs: code-checkout
+    needs: filter
+    if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
     - name: Build streamlit Docker image
