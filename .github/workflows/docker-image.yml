@@ -60,16 +60,19 @@ jobs:
         echo "VOLUME_PATH=./streamlit" >> .env
         echo "OLLAMA_VOLUME_PATH=./ollama" >> .env
     
-    - name: Build streamlit Docker image
+    - name: Sanitize branch name
       run: |
-        branch_name=${{ github.ref_name}}
+        branch_name=${{ github.ref_name }}
         sanitized_branch_name=$(echo "$branch_name" | tr -c 'a-zA-Z0-9_.-' '-')
         echo "SANITIZED_BRANCH_NAME=$sanitized_branch_name" >> $GITHUB_ENV
-        tag="rmangana/streamlit:${sanitized_branch_name}"
+
+    - name: Build streamlit Docker image
+      run: |
+        tag="rmangana/streamlit:${SANITIZED_BRANCH_NAME}"
         docker build . -f docker/Dockerfile.streamlit --tag $tag
-          
+
     - name: Upload streamlit image to Dockerhub
       run: |
-        tag="rmangana/streamlit:${sanitized_branch_name}"
+        tag="rmangana/streamlit:${SANITIZED_BRANCH_NAME}"
         echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME}}" --password-stdin
         docker push $tag
