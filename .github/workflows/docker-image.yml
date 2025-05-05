@@ -63,11 +63,11 @@ jobs:
     - name: Build streamlit Docker image
       run: |
         branch_name=${{ github.ref_name}}
-        $tag = "rmangana/streamlit:${branch_name}
+        tag = "rmangana/streamlit:${branch_name}"
         docker build . -f docker/Dockerfile.streamlit --tag $tag
           
     - name: Upload streamlit image to Dockerhub
       run: |
-        $tag = "rmangana/streamlit:${branch_name}"
+        tag = "rmangana/streamlit:${branch_name}"
         echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME}}" --password-stdin
         docker push $tag
