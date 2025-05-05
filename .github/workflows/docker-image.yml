@@ -14,11 +14,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-    
+      
     - name: Upload Code as Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: souirce-code
+        name: source-code
         path: .
 
   build-ai:
