@@ -54,11 +54,17 @@ jobs:
     if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
+    - name: Create .env file
+      run: |
+        echo "SERVER_PORT=80" > .env
+        echo "VOLUME_PATH=./streamlit" >> .env
+        echo "OLLAMA_VOLUME_PATH=./ollama" >> .env
+    
     - name: Build streamlit Docker image
       run: |
         branch_name=${{ github.ref_name}}
         $tag = "rmangana/streamlit:${branch_name}
-        docker build . -f docker/Dockerfile.streamlit --build-arg VOLUME_PATH=./ --tag $tag
+        docker build . -f docker/Dockerfile.streamlit --tag $tag
           
     - name: Upload streamlit image to Dockerhub
       run: |
