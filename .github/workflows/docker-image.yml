@@ -39,7 +39,7 @@ jobs:
         aws s3 cp s3://your-bucket-name/path/to/your-file ./local-file-name
 
   build-streamlit:
-    if: contains(github.event.head_commit.message, 'build:streamlit')
+    if: github.event_name == 'push' && contains(join(github.event.commits.*.modified), 'streamlit/')
     needs: code-checkout
     runs-on: self-hosted
     steps:
