@@ -58,7 +58,7 @@ jobs:
       run: |
         branch_name=${{ github.ref_name}}
         $tag = "rmangana/streamlit:${branch_name}
-        docker build . -f docker/Dockerfile.streamlit --tag $tag
+        docker build . -f docker/Dockerfile.streamlit --build-arg VOLUME_PATH=./ --tag $tag
           
     - name: Upload streamlit image to Dockerhub
       run: |
