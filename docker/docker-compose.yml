@@ -71,3 +71,14 @@ services:
       - $VOLUME_PATH/pgadmin:/var/lib/pgadmin/storage/
     ports:
       - 80:80
+
+  ai:
+    container_name: ai
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - $OLLAMA_VOLUME_PATH/ollama:/root/.ollama
+    env_file:
+    - .env
+

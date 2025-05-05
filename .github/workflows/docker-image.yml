@@ -4,19 +4,51 @@ on:
   push:
     branches: 
       - '*'
+    paths: 
+      - 'docker/docker.ai'
+      - 'streamlit/**'
   
 jobs:
-  build:
+  code-checkout:
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Upload Code as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: souirce-code
+        path: .
+
+  build-ai:
+    if: contains(github.event.head_commit.message, 'build:ai')
+    needs: code-checkout
+    runs-on: self-hosted
+    steps:
+    - uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+    # Build and push ai image
+    - name: Download ai model from s3
+      run: |
+        aws s3 cp s3://your-bucket-name/path/to/your-file ./local-file-name
+
+  build-streamlit:
+    if: contains(github.event.head_commit.message, 'build:streamlit')
+    needs: code-checkout
+    runs-on: self-hosted
+    steps:
     - name: Build streamlit Docker image
       run: |
-        $tag = "rmangana/pricetracker:$(Get-Date -Format 'yyyyMMddHHmmss')"
-        docker build . -f docker/Dockerfile.streamlit --tag $tag 
-   
-    - uses: actions/checkout@v4
-    - name: Build db docker image
+        branch_name=${{ github.ref_name}}
+        $tag = "rmangana/streamlit:${branch_name}
+        docker build . -f docker/Dockerfile.streamlit --tag $tag
+          
+    - name: Upload streamlit image to Dockerhub
       run: |
-        $tag = "rmangana/pricetrackerdb:$(Get-Date -Format 'yyyyMMddHHmmss')"
-        docker build . -f docker/Dockerfile.db --tag $tag
+        $tag = "rmangana/streamlit:${branch_name}"
+        echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME}}" --password-stdin
+        docker push $tag
