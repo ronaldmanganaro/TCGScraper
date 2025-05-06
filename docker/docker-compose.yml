@@ -23,16 +23,6 @@ services:
     volumes:
       - $VOLUME_PATH:/var/lib/postgresql/data
 
-  frontend:
-    image: rmangana/node:v1
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.frontend
-    environment:
-      - NODE_ENV=production
-    ports:
-      - "3000:3000"
-
   backend:
     container_name: backend
     image: rmangana/backend:v1
@@ -81,4 +71,3 @@ services:
       - $OLLAMA_VOLUME_PATH:/root/.ollama
     env_file:
     - .env
-

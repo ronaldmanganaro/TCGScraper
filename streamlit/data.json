@@ -5,63 +5,67 @@
     "data": [
         {
             "object": "card",
-            "id": "2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc",
-            "oracle_id": "626a979f-bed7-4cb1-9ab7-c3f2bbe37781",
+            "id": "78c71a23-8e73-406e-bbd0-4474c17c1d04",
+            "oracle_id": "7da0e5de-3e4c-420a-8685-991206100b9d",
             "multiverse_ids": [
-                692108
+                696298
             ],
-            "mtgo_id": 137591,
-            "tcgplayer_id": 615293,
-            "name": "Lost Monarch of Ifnir",
+            "mtgo_id": 138221,
+            "tcgplayer_id": 624669,
+            "cardmarket_id": 818756,
+            "name": "Zetalpa, Primal Dawn",
             "lang": "en",
-            "released_at": "2025-02-14",
-            "uri": "https://api.scryfall.com/cards/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc",
-            "scryfall_uri": "https://scryfall.com/card/drc/27/lost-monarch-of-ifnir?utm_source=api",
+            "released_at": "2025-04-11",
+            "uri": "https://api.scryfall.com/cards/78c71a23-8e73-406e-bbd0-4474c17c1d04",
+            "scryfall_uri": "https://scryfall.com/card/tdc/142/zetalpa-primal-dawn?utm_source=api",
             "layout": "normal",
-            "highres_image": true,
-            "image_status": "highres_scan",
+            "highres_image": false,
+            "image_status": "lowres",
             "image_uris": {
-                "small": "https://cards.scryfall.io/small/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415",
-                "normal": "https://cards.scryfall.io/normal/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415",
-                "large": "https://cards.scryfall.io/large/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415",
-                "png": "https://cards.scryfall.io/png/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.png?1738355415",
-                "art_crop": "https://cards.scryfall.io/art_crop/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415",
-                "border_crop": "https://cards.scryfall.io/border_crop/front/2/a/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc.jpg?1738355415"
+                "small": "https://cards.scryfall.io/small/front/7/8/78c71a23-8e73-406e-bbd0-4474c17c1d04.jpg?1744479495",
+                "normal": "https://cards.scryfall.io/normal/front/7/8/78c71a23-8e73-406e-bbd0-4474c17c1d04.jpg?1744479495",
+                "large": "https://cards.scryfall.io/large/front/7/8/78c71a23-8e73-406e-bbd0-4474c17c1d04.jpg?1744479495",
+                "png": "https://cards.scryfall.io/png/front/7/8/78c71a23-8e73-406e-bbd0-4474c17c1d04.png?1744479495",
+                "art_crop": "https://cards.scryfall.io/art_crop/front/7/8/78c71a23-8e73-406e-bbd0-4474c17c1d04.jpg?1744479495",
+                "border_crop": "https://cards.scryfall.io/border_crop/front/7/8/78c71a23-8e73-406e-bbd0-4474c17c1d04.jpg?1744479495"
             },
-            "mana_cost": "{3}{B}",
-            "cmc": 4.0,
-            "type_line": "Creature \u2014 Zombie Noble",
-            "oracle_text": "Afflict 3 (Whenever this creature becomes blocked, defending player loses 3 life.)\nOther Zombies you control have afflict 3.\nAt the beginning of your second main phase, if a player was dealt combat damage by a Zombie this turn, mill three cards, then you may return a creature card from your graveyard to your hand.",
+            "mana_cost": "{6}{W}{W}",
+            "cmc": 8.0,
+            "type_line": "Legendary Creature \u2014 Elder Dinosaur",
+            "oracle_text": "Flying, double strike, vigilance, trample, indestructible",
             "power": "4",
-            "toughness": "4",
+            "toughness": "8",
             "colors": [
-                "B"
+                "W"
             ],
             "color_identity": [
-                "B"
+                "W"
             ],
             "keywords": [
-                "Afflict",
-                "Mill"
+                "Flying",
+                "Indestructible",
+                "Vigilance",
+                "Trample",
+                "Double strike"
             ],
             "legalities": {
-                "standard": "not_legal",
-                "future": "not_legal",
-                "historic": "not_legal",
-                "timeless": "not_legal",
-                "gladiator": "not_legal",
-                "pioneer": "not_legal",
-                "explorer": "not_legal",
-                "modern": "not_legal",
+                "standard": "legal",
+                "future": "legal",
+                "historic": "legal",
+                "timeless": "legal",
+                "gladiator": "legal",
+                "pioneer": "legal",
+                "explorer": "legal",
+                "modern": "legal",
                 "legacy": "legal",
                 "pauper": "not_legal",
                 "vintage": "legal",
-                "penny": "not_legal",
+                "penny": "legal",
                 "commander": "legal",
                 "oathbreaker": "legal",
-                "standardbrawl": "not_legal",
-                "brawl": "not_legal",
-                "alchemy": "not_legal",
+                "standardbrawl": "legal",
+                "brawl": "legal",
+                "alchemy": "legal",
                 "paupercommander": "not_legal",
                 "duel": "legal",
                 "oldschool": "not_legal",
@@ -81,55 +85,57 @@
             ],
             "oversized": false,
             "promo": false,
-            "reprint": false,
+            "reprint": true,
             "variation": false,
-            "set_id": "d33ef7a4-41bb-4f16-bad3-b3ee13c257e6",
-            "set": "drc",
-            "set_name": "Aetherdrift Commander",
+            "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+            "set": "tdc",
+            "set_name": "Tarkir: Dragonstorm Commander",
             "set_type": "commander",
-            "set_uri": "https://api.scryfall.com/sets/d33ef7a4-41bb-4f16-bad3-b3ee13c257e6",
-            "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Adrc&unique=prints",
-            "scryfall_set_uri": "https://scryfall.com/sets/drc?utm_source=api",
-            "rulings_uri": "https://api.scryfall.com/cards/2a404d57-d822-4f9b-b3c0-4b8a54bbb5fc/rulings",
-            "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A626a979f-bed7-4cb1-9ab7-c3f2bbe37781&unique=prints",
-            "collector_number": "27",
+            "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+            "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+            "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+            "rulings_uri": "https://api.scryfall.com/cards/78c71a23-8e73-406e-bbd0-4474c17c1d04/rulings",
+            "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A7da0e5de-3e4c-420a-8685-991206100b9d&unique=prints",
+            "collector_number": "142",
             "digital": false,
             "rarity": "rare",
+            "flavor_text": "The sky takes flight and the earth\ntrembles.",
             "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
-            "artist": "Piotr Dura",
+            "artist": "Chris Rallis",
             "artist_ids": [
-                "aff176e8-1d15-432e-ad1d-207a474decba"
+                "a8e7b854-b15a-421a-b66d-6e68187ae285"
             ],
-            "illustration_id": "0a921917-8745-409c-8fc2-a281d75332d5",
+            "illustration_id": "f690a34d-1d22-4aa4-9fcb-d28997a5fd1c",
             "border_color": "black",
             "frame": "2015",
             "frame_effects": [
-                "extendedart"
+                "legendary"
             ],
             "security_stamp": "oval",
             "full_art": false,
             "textless": false,
             "booster": false,
             "story_spotlight": false,
-            "edhrec_rank": 5193,
+            "edhrec_rank": 1354,
+            "penny_rank": 1974,
             "prices": {
-                "usd": "3.87",
+                "usd": "0.15",
                 "usd_foil": null,
                 "usd_etched": null,
-                "eur": null,
+                "eur": "0.14",
                 "eur_foil": null,
-                "tix": "0.67"
+                "tix": "0.05"
             },
             "related_uris": {
-                "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=692108&printed=false",
-                "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fcontent&u=https%3A%2F%2Fwww.tcgplayer.com%2Fcontent%2Fsearch%3FcontentMode%3Darticle%26game%3Dmagic%26q%3DLost%2BMonarch%2Bof%2BIfnir",
-                "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fcontent&u=https%3A%2F%2Fwww.tcgplayer.com%2Fcontent%2Fsearch%3FcontentMode%3Ddeck%26game%3Dmagic%26q%3DLost%2BMonarch%2Bof%2BIfnir",
-                "edhrec": "https://edhrec.com/route/?cc=Lost+Monarch+of+Ifnir"
+                "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=696298&printed=false",
+                "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fcontent&u=https%3A%2F%2Fwww.tcgplayer.com%2Fcontent%2Fsearch%3FcontentMode%3Darticle%26game%3Dmagic%26q%3DZetalpa%252C%2BPrimal%2BDawn",
+                "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fcontent&u=https%3A%2F%2Fwww.tcgplayer.com%2Fcontent%2Fsearch%3FcontentMode%3Ddeck%26game%3Dmagic%26q%3DZetalpa%252C%2BPrimal%2BDawn",
+                "edhrec": "https://edhrec.com/route/?cc=Zetalpa%2C+Primal+Dawn"
             },
             "purchase_uris": {
-                "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F615293%3Fpage%3D1",
-                "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Lost+Monarch+of+Ifnir&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
-                "cardhoarder": "https://www.cardhoarder.com/cards/137591?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+                "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624669%3Fpage%3D1",
+                "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Singles/Commander-Tarkir-Dragonstorm/Zetalpa-Primal-Dawn?referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+                "cardhoarder": "https://www.cardhoarder.com/cards/138221?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
             }
         }
     ]
