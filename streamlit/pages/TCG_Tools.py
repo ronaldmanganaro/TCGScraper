@@ -87,6 +87,8 @@ with st.expander("Precon EV Calculator"):
         precon = st.selectbox(
             "Precon Name",
             [precon.replace(".txt", "") for precon in precons_by_set[set_selectbox]],  # Use the dynamically populated precons list
+            key="precon_selectbox",
+            on_change=lambda: st.session_state.update({"precon_ev": 0})  # Reset EV to 0 when a new precon is selected
         )
 
     with col3:
