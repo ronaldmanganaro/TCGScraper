@@ -20,12 +20,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Upload source
-        uses: actions/upload-artifact@v4
-        with:
-          name: source-code
-          path: ./
-
       - name: Filter paths
         id: filter
         uses: dorny/paths-filter@v3
@@ -41,6 +35,9 @@ jobs:
     if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
+    - name: Checkout code with authentication
+      uses: actions/checkout@v4
+
     - name: Create .env file
       run: |
         echo "SERVER_PORT=80" > .env
@@ -49,7 +46,7 @@ jobs:
     - name: Build Docker image
       run: |
         tag="rmangana/streamlit:latest"
-        docker build . -f docker/Dockerfile.streamlit --tag $tag
+        docker build --no-cache . -f docker/Dockerfile.streamlit --tag $tag 
     
     - name: Upload streamlit image to Dockerhub
       run: |
