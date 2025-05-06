@@ -71,13 +71,17 @@ jobs:
     - name: Download ai model from s3
       run: |
         mkdir -p /home/ubuntu/ollama
-        aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip
-        unzip -o /home/ubuntu/ollama/ollama.zip -d .
+        if [ ! -f /home/ubuntu/ollama/ollama.zip ]; then
+          aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip
+        else
+          echo "File already exists. Skipping download."
+        fi
+        unzip -o /home/ubuntu/ollama/ollama.zip -d /home/ubuntu/ollama 
         rm ./ollama/ollama.zip
       
     - name: Create .env file
       run: |
-        echo "OLLAMA_VOLUME_PATH= /home/ubuntu/ollama" >> .env
+        echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> .env
 
     - name: Deploy Latest Version of Streamlit
       run: |
