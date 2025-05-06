@@ -66,5 +66,6 @@ jobs:
       run: |
         docker pull rmangana/streamlit:latest
         docker rm -f streamlit
-        docker compose -f /home/ubuntu/TCGScraper/docker/docker-compose.yml up ai -d
+        cd /home/ubuntu/TCGScraper/docker
+        docker compose up ai -d
 
