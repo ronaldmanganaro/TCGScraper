@@ -71,7 +71,9 @@ jobs:
     - name: Download ai model from s3
       run: |
         mkdir -p /home/ubuntu/ollama
+        
         if [ ! -f /home/ubuntu/ollama/ollama.zip ]; then
+          echo "Downloading ollama.zip from S3..."
           aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip > /dev/null
         else
           echo "File already exists. Skipping download."
