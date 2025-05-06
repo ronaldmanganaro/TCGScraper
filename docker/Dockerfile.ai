@@ -1,0 +1,5 @@
+FROM ollama/ollama:latest
+
+RUN echo "test" 
+
+ENTRYPOINT ["ollama", "run", "llama3"]

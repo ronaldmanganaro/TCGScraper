@@ -42,7 +42,7 @@ services:
     build: 
       context: ../
       dockerfile: docker/Dockerfile.streamlit
-    image: rmangana/steamlit:v1
+    image: rmangana/steamlit:latest
     env_file:
       - .env
     ports:
@@ -61,12 +61,13 @@ services:
       - $VOLUME_PATH/pgadmin:/var/lib/pgadmin/storage/
     ports:
       - 80:80
-    
+
   ai:
-    container_name: ollama
-    image: ollama/ollama:latest
+    container_name: ai
+    image: ollama/ollama
     ports:
       - "11434:11434"
     volumes:
-      - $VOLUME_PATH/ollama:/var/lib/pgadmin/storage/
-    
+      - $OLLAMA_VOLUME_PATH:/root/.ollama
+    env_file:
+    - .env

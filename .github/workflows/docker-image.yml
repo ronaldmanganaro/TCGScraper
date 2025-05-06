@@ -4,19 +4,98 @@ on:
   push:
     branches: 
       - '*'
+    paths: 
+      - 'docker/docker.ai'
+      - 'streamlit/**'
   
 jobs:
-  build:
+  filter:
+    runs-on: self-hosted
+    outputs:
+      ai: ${{ steps.filter.outputs.ai }}
+      streamlit: ${{ steps.filter.outputs.streamlit }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Upload source
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-code
+          path: ./
+
+      - name: Filter paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            ai:
+              - 'docker/docker.ai'
+            streamlit:
+              - 'streamlit/**'
+
+  build-ai:
+    needs: filter
+    if: needs.filter.outputs.ai == 'true'
     runs-on: self-hosted
     steps:
-    - uses: actions/checkout@v4
-    - name: Build app Docker image
+    - uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Download ai model from s3
       run: |
-        $tag = "rmangana/pricetracker:$(Get-Date -Format 'yyyyMMddHHmmss')"
-        docker build . -f docker/Dockerfile.app --tag $tag 
-   
-    - uses: actions/checkout@v4
-    - name: Build db docker image
+        mkdir ollama
+        aws s3 cp s3://rfmawsfreebucket/ollama.zip ./ollama/ollama.zip
+        unzip -o ./ollama/ollama.zip -d ./ollama
+        rm ./ollama/ollama.zip
+      
+    - name: Create .env file
       run: |
-        $tag = "rmangana/pricetrackerdb:$(Get-Date -Format 'yyyyMMddHHmmss')"
-        docker build . -f docker/Dockerfile.db --tag $tag
+        echo "OLLAMA_VOLUME_PATH=./ollama" >> .env
+
+    - name: Sanitize branch name for Docker tag
+      run: |
+        RAW_BRANCH_NAME="${GITHUB_REF_NAME}"
+        SANITIZED_BRANCH_NAME=$(echo "$RAW_BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_.-' '-' | sed 's/-*$//')
+        echo "SANITIZED_BRANCH_NAME=$SANITIZED_BRANCH_NAME" >> $GITHUB_ENV
+      
+    - name: Build Docker image
+      run: |
+        tag="rmangana/streamlit:${SANITIZED_BRANCH_NAME}"
+        docker build . -f docker/Dockerfile.streamlit --tag $tag
+    
+    - name: Upload streamlit image to Dockerhub
+      run: |
+        tag="rmangana/streamlit:${SANITIZED_BRANCH_NAME}"
+        echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME}}" --password-stdin
+        docker push $tag
+
+  build-streamlit:
+    needs: filter
+    if: needs.filter.outputs.streamlit == 'true'
+    runs-on: self-hosted
+    steps:
+    - name: Create .env file
+      run: |
+        echo "SERVER_PORT=80" > .env
+        echo "VOLUME_PATH=./streamlit" >> .env
+    
+    - name: Sanitize branch name for Docker tag
+      run: |
+        RAW_BRANCH_NAME="${GITHUB_REF_NAME}"
+        SANITIZED_BRANCH_NAME=$(echo "$RAW_BRANCH_NAME" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_.-' '-' | sed 's/-*$//')
+        echo "SANITIZED_BRANCH_NAME=$SANITIZED_BRANCH_NAME" >> $GITHUB_ENV
+      
+    - name: Build Docker image
+      run: |
+        tag="rmangana/streamlit:${SANITIZED_BRANCH_NAME}"
+        docker build . -f docker/Dockerfile.streamlit --tag $tag
+    
+    - name: Upload streamlit image to Dockerhub
+      run: |
+        tag="rmangana/streamlit:${SANITIZED_BRANCH_NAME}"
+        echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME}}" --password-stdin
+        docker push $tag

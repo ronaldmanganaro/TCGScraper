@@ -1,0 +1,70 @@
+name: Continious Deployment
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+    paths:
+      - 'docker/docker.ai'
+      - 'streamlit/**'
+
+jobs:
+  filter:
+    runs-on: self-hosted
+    outputs:
+      ai: ${{ steps.filter.outputs.ai }}
+      streamlit: ${{ steps.filter.outputs.streamlit }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        branch: main
+
+      - name: Upload source
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-code
+          path: ./
+
+      - name: Filter paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            ai:
+              - 'docker/docker.ai'
+            streamlit:
+              - 'streamlit/**'
+
+  build-streamlit:
+    needs: filter
+    if: needs.filter.outputs.streamlit == 'true'
+    runs-on: self-hosted
+    steps:
+    - name: Create .env file
+      run: |
+        echo "SERVER_PORT=80" > .env
+        echo "VOLUME_PATH=./streamlit" >> .env
+    
+    - name: Build Docker image
+      run: |
+        tag="rmangana/streamlit:latest"
+        docker build . -f docker/Dockerfile.streamlit --tag $tag
+    
+    - name: Upload streamlit image to Dockerhub
+      run: |
+        tag="rmangana/streamlit:latest"
+        echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME}}" --password-stdin
+        docker push $tag
+
+  deploy-ec2:
+    needs: filter
+    if: needs.filter.outputs.streamlit == 'true' && github.event.pull_request.merged == true
+    runs-on: self-hosted
+    steps:
+    - name: Deploy Latest Version of Streamlit
+      run: |
+        docker pull rmangana/streamlit:latest
+        docker rm -f streamlit
+        docker compose -f /home/ubuntu/TCGScraper/docker/docker-compose.yml up ai -d
+
