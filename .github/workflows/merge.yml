@@ -64,8 +64,7 @@ jobs:
     steps:
     - name: Checkout code with authentication
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.CM_PAT }}
+
     
     - name: Deploy Latest Version of Streamlit
       run: |
