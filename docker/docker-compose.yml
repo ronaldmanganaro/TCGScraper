@@ -52,7 +52,7 @@ services:
     build: 
       context: ../
       dockerfile: docker/Dockerfile.streamlit
-    image: rmangana/steamlit:v1
+    image: rmangana/steamlit:latest
     env_file:
       - .env
     ports:
@@ -78,7 +78,7 @@ services:
     ports:
       - "11434:11434"
     volumes:
-      - $OLLAMA_VOLUME_PATH/ollama:/root/.ollama
+      - $OLLAMA_VOLUME_PATH:/root/.ollama
     env_file:
     - .env
 
