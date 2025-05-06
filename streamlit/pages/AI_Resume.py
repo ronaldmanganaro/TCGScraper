@@ -4,9 +4,6 @@ from io import StringIO
 import pandas as pd
 import sys
 from PyPDF2 import PdfReader
-from docx import Document
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..function')))
-
 
 st.title("AI Tools")
 with st.expander("Augment Resume"):
@@ -35,21 +32,9 @@ with st.expander("Augment Resume"):
                 for page in pdf_reader.pages:
                     text += page.extract_text()
                 st.write(text)
-            elif uploaded_file.type in ["application/vnd.openxmlformats-officedocument.wordprocessingml.document", "application/msword"]:
-                doc = Document(uploaded_file)
-                text = "\n".join([paragraph.text for paragraph in doc.paragraphs])
-                st.write(text)
             else:
                 st.error("Unsupported file type. Please upload a PDF or Word document.")
 
     with col3:
         if st.button("Simulate!", use_container_width=True):
-            ev = mtg_box_sim.simulate(f"{set}", int(boxes_to_open))
-            # Add to history
-            st.session_state.ev_history.append({
-                "Set": set,
-                "Boxes Opened": int(boxes_to_open),
-                "EV": round(ev, 2)
-            })
-        if st.button("clear",use_container_width=True ):
-            st.session_state.ev_history = []
+            pass
