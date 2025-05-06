@@ -42,7 +42,7 @@ services:
     build: 
       context: ../
       dockerfile: docker/Dockerfile.streamlit
-    image: rmangana/steamlit:latest
+    image: rmangana/streamlit:latest
     env_file:
       - .env
     ports:
