@@ -70,9 +70,9 @@ jobs:
     
     - name: Download ai model from s3
       run: |
-        mkdir /home/ubuntu/ollama
+        mkdir -p /home/ubuntu/ollama
         aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip
-        unzip -o /home/ubuntu/ollama/ollama.zip -d ./ollama
+        unzip -o /home/ubuntu/ollama/ollama.zip -d .
         rm ./ollama/ollama.zip
       
     - name: Create .env file
