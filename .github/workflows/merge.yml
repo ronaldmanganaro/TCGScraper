@@ -59,10 +59,13 @@ jobs:
     if: needs.build-streamlit.result == 'success'
     runs-on: self-hosted
     steps:
+    - name: Checkout latest main
+      uses: actions/checkout@v4
+      with:
+        ref: main
+        fetch-depth: 0  # Ensures full history in case you need it
     - name: Deploy Latest Version of Streamlit
       run: |
-        git -c /home/ubuntu/TCGScraper checkout main
-        git -c /home/ubuntu/TCGScraper pull
         echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> /home/ubuntu/TCGScraper/docker/.env
         docker rm -f streamlit
         docker system prune -af
