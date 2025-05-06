@@ -48,7 +48,7 @@ jobs:
     - name: Download ai model from s3
       run: |
         mkdir ollama
-        aws s3 cp s3://your-bucket-name/path/to/your-file ./ollama/ollama.zip
+        aws s3 cp s3://rfmawsfreebucket/ollama.zip ./ollama/ollama.zip
         unzip -o ./ollama/ollama.zip -d ./ollama
         rm ./ollama/ollama.zip
       
