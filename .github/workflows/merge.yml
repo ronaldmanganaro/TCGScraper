@@ -71,5 +71,5 @@ jobs:
         docker pull rmangana/streamlit:latest
         docker rm -f streamlit
         cd /home/ubuntu/TCGScraper/docker
-        docker compose up streamlit -d
+        docker compose up streamlit -d --no-build
 
