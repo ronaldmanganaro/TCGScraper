@@ -59,7 +59,7 @@ jobs:
 
   deploy-ec2:
     needs: filter
-    if: needs.filter.outputs.streamlit == 'true' && github.event.pull_request.merged == true
+    if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
     - name: Deploy Latest Version of Streamlit
