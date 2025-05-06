@@ -67,7 +67,7 @@ jobs:
 
     - name: Deploy Latest Version of Streamlit
       run: |
-        echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> .env
+        echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> /home/ubuntu/TCGScraper/docker/.env
         docker pull rmangana/streamlit:latest
         docker rm -f streamlit
         cd /home/ubuntu/TCGScraper/docker
