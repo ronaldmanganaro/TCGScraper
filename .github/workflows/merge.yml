@@ -62,28 +62,6 @@ jobs:
     if: needs.build-streamlit.result == 'success'
     runs-on: self-hosted
     steps:
-    - uses: aws-actions/configure-aws-credentials@v3
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
-    
-    - name: Download ai model from s3
-      run: |
-        mkdir -p /home/ubuntu/ollama
-        
-        if [ ! -f /home/ubuntu/ollama/ollama.zip ]; then
-          echo "Downloading ollama.zip from S3..."
-          aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip > /dev/null
-        else
-          echo "File already exists. Skipping download."
-        fi
-        unzip -o /home/ubuntu/ollama/ollama.zip -d /home/ubuntu/ollama 
-      
-    - name: Create .env file
-      run: |
-        echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> .env
-
     - name: Deploy Latest Version of Streamlit
       run: |
         git checkout main
@@ -91,5 +69,5 @@ jobs:
         docker pull rmangana/streamlit:latest
         docker rm -f streamlit
         cd /home/ubuntu/TCGScraper/docker
-        docker compose up ai -d
+        docker compose up streamlit -d
 

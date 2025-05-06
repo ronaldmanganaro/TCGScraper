@@ -45,17 +45,22 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-1
-
+    
     - name: Download ai model from s3
       run: |
-        mkdir ollama
-        aws s3 cp s3://rfmawsfreebucket/ollama.zip ./ollama/ollama.zip
-        unzip -o ./ollama/ollama.zip -d ./ollama
-        rm ./ollama/ollama.zip
+        mkdir -p /home/ubuntu/ollama
+        
+        if [ ! -f /home/ubuntu/ollama/ollama.zip ]; then
+          echo "Downloading ollama.zip from S3..."
+          aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip > /dev/null
+        else
+          echo "File already exists. Skipping download."
+        fi
+        unzip -o /home/ubuntu/ollama/ollama.zip -d /home/ubuntu/ollama 
       
     - name: Create .env file
       run: |
-        echo "OLLAMA_VOLUME_PATH=./ollama" >> .env
+        echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> .env
 
     - name: Sanitize branch name for Docker tag
       run: |
