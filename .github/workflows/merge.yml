@@ -62,6 +62,17 @@ jobs:
     if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
+    - name: Download ai model from s3
+      run: |
+        mkdir /home/ubuntu/ollama
+        aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip
+        unzip -o /home/ubuntu/ollama/ollama.zip -d ./ollama
+        rm ./ollama/ollama.zip
+      
+    - name: Create .env file
+      run: |
+        echo "OLLAMA_VOLUME_PATH= /home/ubuntu/ollama" >> .env
+
     - name: Deploy Latest Version of Streamlit
       run: |
         git checkout main
