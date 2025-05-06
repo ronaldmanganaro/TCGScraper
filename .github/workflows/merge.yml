@@ -58,8 +58,8 @@ jobs:
         docker push $tag
 
   deploy-ec2:
-    needs: filter
-    if: needs.filter.outputs.streamlit == 'true'
+    needs: build-streamlit
+    if: needs.build-streamlit.result == 'success'
     runs-on: self-hosted
     steps:
     - name: Download ai model from s3
