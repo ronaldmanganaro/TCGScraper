@@ -72,12 +72,11 @@ jobs:
       run: |
         mkdir -p /home/ubuntu/ollama
         if [ ! -f /home/ubuntu/ollama/ollama.zip ]; then
-          aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip
+          aws s3 cp s3://rfmawsfreebucket/ollama.zip /home/ubuntu/ollama/ollama.zip > /dev/null
         else
           echo "File already exists. Skipping download."
         fi
         unzip -o /home/ubuntu/ollama/ollama.zip -d /home/ubuntu/ollama 
-        rm ./ollama/ollama.zip
       
     - name: Create .env file
       run: |
