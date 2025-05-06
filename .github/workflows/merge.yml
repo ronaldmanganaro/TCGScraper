@@ -64,6 +64,8 @@ jobs:
     steps:
     - name: Deploy Latest Version of Streamlit
       run: |
+        git checkout main
+        git pull origin main
         docker pull rmangana/streamlit:latest
         docker rm -f streamlit
         cd /home/ubuntu/TCGScraper/docker
