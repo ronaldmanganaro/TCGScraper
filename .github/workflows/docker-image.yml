@@ -81,10 +81,6 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: Update repo
-      run: |
-        cp -rf ./* /home/ubuntu/TCGScraper
-
     - name: Create .env file
       run: |
         echo "SERVER_PORT=80" > .env
