@@ -35,6 +35,10 @@ jobs:
     if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
+    # - name: Cleanup workspace
+    #   run: |
+    #     sudo rm -rf .[^.]* * 
+
     - name: Checkout code with authentication
       uses: actions/checkout@v4
       with:
@@ -77,5 +81,6 @@ jobs:
         docker rm -f streamlit
         docker system prune -af
         docker pull rmangana/streamlit:latest
-        docker compose up -f docker/docker-compose.yml streamlit -d --no-build
+        cd docker
+        docker compose up streamlit -d --no-build
 
