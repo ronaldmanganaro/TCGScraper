@@ -59,11 +59,18 @@ jobs:
     if: needs.build-streamlit.result == 'success'
     runs-on: self-hosted
     steps:
-
+    - name: Checkout code with authentication
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.CM_PAT }}
+        sparse-checkout: |
+          docker/Dockerfile.streamlit
+          docker/docker-compose.yml
+        sparse-checkout-cone-mode: false
+    
     - name: Deploy Latest Version of Streamlit
       run: |
-        git checkout main
-        git pull origin main
+        cp -r docker/* /home/ubuntu/TCGScraper/docker/
         echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> /home/ubuntu/TCGScraper/docker/.env
         docker rm -f streamlit
         docker system prune -af
