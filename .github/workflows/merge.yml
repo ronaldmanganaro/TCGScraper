@@ -35,9 +35,9 @@ jobs:
     if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
-    # - name: Cleanup workspace
-    #   run: |
-    #     sudo rm -rf .[^.]* * 
+    - name: Cleanup workspace
+      run: |
+        sudo rm -rf /home/ubuntu/actions-runner/_work/TCGScraper/TCGScraper/.[^.]* * 
 
     - name: Checkout code with authentication
       uses: actions/checkout@v4
