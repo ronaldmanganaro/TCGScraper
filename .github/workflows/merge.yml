@@ -89,6 +89,8 @@ jobs:
     - name: Deploy Latest Version of Streamlit
       run: |
         echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> docker/.env
+        echo "SERVER_PORT=80" >> docker/.env
+        echo "VOLUME_PATH=/home/ubuntu/postgres" >> docker/.env
         docker rm -f streamlit
         docker system prune -af
         docker pull rmangana/streamlit:latest
