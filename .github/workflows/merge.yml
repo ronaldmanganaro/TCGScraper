@@ -37,7 +37,7 @@ jobs:
     steps:
     - name: Cleanup workspace
       run: |
-        sudo rm -rf /home/ubuntu/actions-runner/_work/TCGScraper/TCGScraper/a*
+        sudo rm -rf /home/ubuntu/actions-runner/_work/TCGScraper/TCGScraper/*
 
     - name: Checkout code with authentication
       uses: actions/checkout@v4
