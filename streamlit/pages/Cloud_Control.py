@@ -1,7 +1,6 @@
 from functions import ecs
 import streamlit as st
-
-
+        
 st.title("My Cloud Control App 🚀")
         
 def trigger_price_check():
@@ -87,4 +86,3 @@ with st.expander("Price Check"):
                 
     if st.button("Run Price Check"):
         trigger_price_check()
-        
