@@ -61,11 +61,22 @@ jobs:
         echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME}}" --password-stdin
         docker push $tag
 
+    - name: upload streamlit app
+      uses: actions/upload-artifact@v4
+      with:
+        name: streamlit
+        path: streamlit/
+
   deploy-ec2:
     needs: build-streamlit
     if: needs.build-streamlit.result == 'success'
     runs-on: self-hosted
     steps:
+    - name: Download the streamlit code
+      uses: actions/download-artifact@v4
+      with:
+        name: streamlit
+
     - name: Checkout code with authentication
       uses: actions/checkout@v4
       with:
