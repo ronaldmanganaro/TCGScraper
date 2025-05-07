@@ -37,11 +37,16 @@ jobs:
     steps:
     - name: Checkout code with authentication
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.CM_PAT }}
+        sparse-checkout: |
+          docker/Dockerfile.streamlit
+        sparse-checkout-cone-mode: false
 
     - name: Create .env file
       run: |
-        echo "SERVER_PORT=80" > .env
-        echo "VOLUME_PATH=./streamlit" >> .env
+        echo "SERVER_PORT=80" > docker/.env
+        echo "VOLUME_PATH=./streamlit" >> docker/.env
     
     - name: Build Docker image
       run: |
@@ -70,11 +75,9 @@ jobs:
     
     - name: Deploy Latest Version of Streamlit
       run: |
-        cp -r docker/* /home/ubuntu/TCGScraper/docker/
         echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> /home/ubuntu/TCGScraper/docker/.env
         docker rm -f streamlit
         docker system prune -af
         docker pull rmangana/streamlit:latest
-        cd /home/ubuntu/TCGScraper/docker
         docker compose up streamlit -d --no-build
 
