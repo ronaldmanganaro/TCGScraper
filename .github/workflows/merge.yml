@@ -2,11 +2,11 @@ name: Continious Deployment
 
 on:
   workflow_dispatch:
-  inputs:
-    branch:
-      description: 'Branch to deploy'
-      required: true
-      default: 'main'
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
   pull_request:
     types: [closed]
     branches:
