@@ -19,12 +19,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Upload source
-        uses: actions/upload-artifact@v4
-        with:
-          name: source-code
-          path: ./
-
       - name: Filter paths
         id: filter
         uses: dorny/paths-filter@v3
@@ -84,6 +78,13 @@ jobs:
     if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Update repo
+      run: |
+        cp -rf ./* /home/ubuntu/TCGScraper
+
     - name: Create .env file
       run: |
         echo "SERVER_PORT=80" > .env
