@@ -35,10 +35,6 @@ jobs:
     if: needs.filter.outputs.streamlit == 'true'
     runs-on: self-hosted
     steps:
-    - name: Cleanup workspace
-      run: |
-        sudo rm -rf ./*
-
     - name: Checkout code with authentication
       uses: actions/checkout@v4
       with:
