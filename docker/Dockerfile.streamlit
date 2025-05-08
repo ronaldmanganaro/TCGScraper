@@ -24,7 +24,7 @@ COPY /streamlit ./
 
 ENV AWS_ACCESS_KEY_ID AKIAR4PHQSUDHT5QEYOE
 ENV AWS_SECRET_ACCESS_KEY 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
-ENV AWS_DEFAULT_REGION us-west-1
+ENV AWS_DEFAULT_REGION us-east-1
 
 EXPOSE ${SERVER_PORT}
-ENTRYPOINT ["sh", "-c", "streamlit run app.py --server.port ${SERVER_PORT}"]
+ENTRYPOINT ["sh", "-c", "streamlit run Home.py --server.port ${SERVER_PORT}"]
