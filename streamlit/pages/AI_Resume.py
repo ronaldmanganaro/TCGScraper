@@ -6,7 +6,7 @@ import sys
 from PyPDF2 import PdfReader
 import requests
 
-st.title("AI Tools NEW")
+st.title("AI Tools")
 with st.expander("Augment Resume"):
     st.divider()
 
