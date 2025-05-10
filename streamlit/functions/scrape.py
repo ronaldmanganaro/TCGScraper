@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import time
 import re
 import db
@@ -28,9 +30,9 @@ class Data:
 
 def scrape_tcgplayer():
     # TCGPlayer search URL
-    #URL = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page=1&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare"
+    URL = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page=1&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare"
     # URL for teesting
-    URL = "https://www.tcgplayer.com/search/pokemon/product?Condition=Near+Mint&productLineName=pokemon&q=break&view=grid&Rarity=Rare+BREAK&page=1"
+    #URL = "https://www.tcgplayer.com/search/pokemon/product?Condition=Near+Mint&productLineName=pokemon&q=break&view=grid&Rarity=Rare+BREAK&page=1"
     # Command-line argument for headless mode
 
     # Initialize command-line arguments
@@ -92,8 +94,7 @@ def scrape_tcgplayer():
                 rarity = rarity_parts[0].text.strip() if len(rarity_parts) > 0 else "Unknown"
                 card_number = rarity_parts[1].text.strip() if len(rarity_parts) > 1 else "Unknown"
 
-                set_name = listing.find_element(By.CLASS_NAME, "product-card__set-name__variant").text.strip()
-
+                set_name = listing.find_element(By.CLASS_NAME, "product-card__set-name__variant").text.strip()  
                 market_price = listing.find_element(By.XPATH, ".//span[contains(@class, 'product-card__market-price--value')]").text.strip().replace("$", "")
 
                 product_link_element = listing.find_element(By.XPATH, ".//a[contains(@data-testid, 'product-card__image')]")
@@ -115,4 +116,5 @@ def scrape_tcgplayer():
 
     # Close the WebDriver
     driver.quit()
+
 scrape_tcgplayer()

@@ -10,7 +10,7 @@ services:
 
   db:
     container_name: TCGPlayerDB
-    image: rmangana/tcgplayerdb:v1
+    image: rmangana/tcgplayerdb:latest
     build:
       context: ../
       dockerfile: docker/Dockerfile.db
