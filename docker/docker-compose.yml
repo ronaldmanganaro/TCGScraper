@@ -5,8 +5,7 @@ services:
     build: 
       context: ../
       dockerfile: docker/Dockerfile.app
-    depends_on:
-      - db
+
 
   db:
     container_name: TCGPlayerDB

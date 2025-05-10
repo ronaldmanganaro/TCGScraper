@@ -18,7 +18,7 @@ def connectDB() -> connection:
     dbname = 'tcgplayerdb'
     user = 'rmangana'
     password = 'password'
-    host = 'localhost'
+    host = '52.73.212.127'
     port = 5432
 
     try:

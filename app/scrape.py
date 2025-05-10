@@ -1,7 +1,6 @@
 import time
 import re
 
-import db
 import argparse
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
@@ -12,6 +11,76 @@ from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+
+
+import psycopg2
+import logging
+import sys 
+from psycopg2.extensions import connection
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,  # Set log level (INFO, DEBUG, WARNING, ERROR, CRITICAL)
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(sys.stdout)  # Send logs to stdout
+    ]
+)
+
+def connectDB() -> connection: 
+
+    dbname = 'tcgplayerdb'
+    user = 'rmangana'
+    password = 'password'
+    host = '52.73.212.127'
+    port = 5432
+
+    try:
+        newConnection =  psycopg2.connect(
+            dbname=dbname,
+            user=user,
+            password=password, 
+            host=host,
+            port=port
+        )
+        
+        cursor = newConnection.cursor()
+    except Exception as e:
+        if cursor:
+            logging.error(f"unexpected error cursor {e}")
+            cursor.close()
+        if newConnection:
+            logging.error(f"unexpected error connection {e}")
+            connection.close()
+    
+    return newConnection
+        
+def writeDB(connection: connection, databaseEntries):
+    today = datetime.now()  # Keeps full timestamp
+
+    cursor = connection.cursor()
+
+    for entry in databaseEntries:
+        cleaned_rarity = entry.rarity.replace(',', '')
+
+        insert_query = """INSERT INTO public.prices  
+            (card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link, date) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+
+        values = (
+            entry.card, entry.listing_quantity, entry.lowest_price, 
+            entry.market_price, cleaned_rarity, entry.card_number, 
+            entry.set_name, entry.link, today
+        )
+
+        try:
+            cursor.execute(insert_query, values)
+            connection.commit()
+        except Exception as e:
+            print("Error inserting data:", e)
+            connection.rollback()
+
+    cursor.close()
 
 class Data:
     def __init__(self, card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link):
@@ -27,9 +96,9 @@ class Data:
 # Set the minimum listing threshold
 MIN_LISTINGS = 5
 # TCGPlayer search URL
-#URL = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page=1&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare"
+URL = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page=1&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare"
 # URL for teesting
-URL = "https://www.tcgplayer.com/search/pokemon/product?Condition=Near+Mint&productLineName=pokemon&q=break&view=grid&Rarity=Rare+BREAK&page=1"
+#URL = "https://www.tcgplayer.com/search/pokemon/product?Condition=Near+Mint&productLineName=pokemon&q=break&view=grid&Rarity=Rare+BREAK&page=1"
 # Command-line argument for headless mode
 def parse_args():
     parser = argparse.ArgumentParser(description="Scrape TCGPlayer listings")
@@ -42,10 +111,11 @@ args = parse_args()
 
 # Set headless mode based on the flag
 options = webdriver.ChromeOptions()
-if args.headless:
-    options.add_argument("--headless")
-else:
-    options.add_argument("--start-maximized")
+options.add_argument('--headless')
+options.add_argument('--no-sandbox')
+options.add_argument('--disable-dev-shm-usage')
+options.add_argument('--disable-gpu')
+options.add_argument('--remote-debugging-port=9222')
 
 # Initialize Selenium WebDriver
 driver = webdriver.Chrome(options=options)
@@ -152,7 +222,7 @@ if args.sheets and all_data:
 
 # Send all collected data to Google Sheets at once
 if databaseEntries:
-    db.writeDB(db.connectDB(), databaseEntries)
+    writeDB(connectDB(), databaseEntries)
 
 # Close the WebDriver
 driver.quit()

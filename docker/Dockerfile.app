@@ -31,7 +31,7 @@ ENV PATH="/usr/local/bin/chrome-linux64:$PATH"
 COPY /app/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-COPY /app /app
-WORKDIR /app
+COPY app ./app
+WORKDIR ./app
 
-ENTRYPOINT ["python3", "watch.py"]
+ENTRYPOINT ["python3", "scrape.py"]
