@@ -115,3 +115,4 @@ def scrape_tcgplayer():
 
     # Close the WebDriver
     driver.quit()
+scrape_tcgplayer()
