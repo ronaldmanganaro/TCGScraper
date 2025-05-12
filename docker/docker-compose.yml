@@ -6,6 +6,15 @@ services:
       context: ../
       dockerfile: docker/Dockerfile.app
 
+  playwright:
+    container_name: TCGScaper-Playwright
+    image: rmangana/tcgbot:playwright
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile.playwright
+    environment:
+      - PYTHONUNBUFFERED=1
+
 
   db:
     container_name: TCGPlayerDB

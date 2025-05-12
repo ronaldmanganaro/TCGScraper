@@ -1,6 +1,9 @@
-FROM python:3.10-slim
+FROM python:3.11.12-slim-bullseye
 
 ENV PYTHONUNBUFFERED=1
+
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get install -y \
     wget \

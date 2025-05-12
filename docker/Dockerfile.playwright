@@ -1,0 +1,28 @@
+FROM python:3.11-slim
+
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+# Install necessary dependencies including xvfb and Playwright deps
+RUN apt-get update && apt-get install -y \
+    wget gnupg ca-certificates \
+    xvfb xauth x11-utils \
+    fonts-liberation libnss3 libxss1 libasound2 \
+    libatk1.0-0 libatk-bridge2.0-0 libgtk-3-0 \
+    libx11-xcb1 libxcb-dri3-0 libxcomposite1 \
+    libxdamage1 libxrandr2 libgbm1 libxshmfence1 \
+    libxext6 libxfixes3 \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Python deps and Playwright
+RUN pip install --no-cache-dir playwright && playwright install
+
+# Set working directory
+WORKDIR /app
+COPY app /app
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Run your script using xvfb-run to simulate an X display
+ENTRYPOINT ["python3", "scrape-playwright.py"]

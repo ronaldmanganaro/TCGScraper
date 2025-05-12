@@ -1,86 +1,25 @@
-import time
-import re
-
-import argparse
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-
-
-import psycopg2
+import re
+import requests
+import db
+import sys
+import argparse
 import logging
-import sys 
-from psycopg2.extensions import connection
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Set log level (INFO, DEBUG, WARNING, ERROR, CRITICAL)
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout)  # Send logs to stdout
-    ]
-)
 
-def connectDB() -> connection: 
+def send_discord_alert(message, webhook_url):
+    data = {"content": message}
+    requests.post(webhook_url, json=data)
 
-    dbname = 'tcgplayerdb'
-    user = 'rmangana'
-    password = 'password'
-    host = '52.73.212.127'
-    port = 5432
-
-    try:
-        newConnection =  psycopg2.connect(
-            dbname=dbname,
-            user=user,
-            password=password, 
-            host=host,
-            port=port
-        )
-        
-        cursor = newConnection.cursor()
-    except Exception as e:
-        if cursor:
-            logging.error(f"unexpected error cursor {e}")
-            cursor.close()
-        if newConnection:
-            logging.error(f"unexpected error connection {e}")
-            connection.close()
-    
-    return newConnection
-        
-def writeDB(connection: connection, databaseEntries):
-    today = datetime.now()  # Keeps full timestamp
-
-    cursor = connection.cursor()
-
-    for entry in databaseEntries:
-        cleaned_rarity = entry.rarity.replace(',', '')
-
-        insert_query = """INSERT INTO public.prices  
-            (card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link, date) 
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
-
-        values = (
-            entry.card, entry.listing_quantity, entry.lowest_price, 
-            entry.market_price, cleaned_rarity, entry.card_number, 
-            entry.set_name, entry.link, today
-        )
-
-        try:
-            cursor.execute(insert_query, values)
-            connection.commit()
-        except Exception as e:
-            print("Error inserting data:", e)
-            connection.rollback()
-
-    cursor.close()
+# Logging and startup message
+start = datetime.now()
+msg = f"Started Scraping {start.strftime('%Y-%m-%d %I:%M:%S %p')}"
+send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", handlers=[logging.StreamHandler(sys.stdout)])
 
 class Data:
     def __init__(self, card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link):
@@ -93,136 +32,87 @@ class Data:
         self.set_name = set_name
         self.link = link
 
-# Set the minimum listing threshold
-MIN_LISTINGS = 5
-# TCGPlayer search URL
-URL = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page=1&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare"
-# URL for teesting
-#URL = "https://www.tcgplayer.com/search/pokemon/product?Condition=Near+Mint&productLineName=pokemon&q=break&view=grid&Rarity=Rare+BREAK&page=1"
-# Command-line argument for headless mode
+URL_TEMPLATE = "https://www.tcgplayer.com/search/pokemon/product?productLineName=pokemon&view=grid&ProductTypeName=Cards&page={page}&Condition=Near+Mint&Rarity=Ultra+Rare|Illustration+Rare|Special+Illustration+Rare|Hyper+Rare|Rare+BREAK|Amazing+Rare|Shiny+Ultra+Rare|Prism+Rare|Secret+Rare&inStock=true&Language=English&ListingType=standard"
+
 def parse_args():
-    parser = argparse.ArgumentParser(description="Scrape TCGPlayer listings")
-    parser.add_argument('--headless', action='store_true', help="Run the script in headless mode")
-    parser.add_argument('--sheets', action='store_true')
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--headless', action='store_true')
     return parser.parse_args()
 
-# Initialize command-line arguments
 args = parse_args()
 
-# Set headless mode based on the flag
 options = webdriver.ChromeOptions()
-options.add_argument('--headless')
+options.add_argument('--headless=new')
 options.add_argument('--no-sandbox')
 options.add_argument('--disable-dev-shm-usage')
-options.add_argument('--disable-gpu')
-options.add_argument('--remote-debugging-port=9222')
+options.add_argument("blink-settings=imagesEnabled=false")
 
-# Initialize Selenium WebDriver
 driver = webdriver.Chrome(options=options)
-driver.get(URL)
-
-# Wait for the page to load
 wait = WebDriverWait(driver, 10)
 
-# Get the total number of pages
+# Determine total pages
+driver.get(URL_TEMPLATE.format(page=1))
 try:
     pagination = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "search-pagination")))
     total_pages = int(pagination.find_elements(By.TAG_NAME, "a")[-2].text)
 except:
-    total_pages = 1  # If no pagination is found, assume only one page
-
+    total_pages = 1
 print(f"Total pages detected: {total_pages}")
 
-def googleSheets(all_data):
-    # Set up OAuth2 authentication with gspread
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name('app/credentials.json', scope)
-    client = gspread.authorize(creds)
-
-    # Create a new sheet with the current date and time
-    now = datetime.now()
-    sheet_name = now.strftime("%Y-%m-%d_%H-%M-%S")
-    spreadsheet = client.create(sheet_name)
-    worksheet = spreadsheet.get_worksheet(0)  # Create a new worksheet
-
-    # Add header row to the sheet
-    headers = ["Product Name", "Number of Listings", "Lowest Price", "Market Price", "Rarity", "Card Number", "Set Name", "Product Link"]
-    worksheet.append_row(headers)
-    worksheet.append_rows(all_data)
-    print("✅ Scraping complete. Data has been added to Google Sheets.")
-    
-    # Share the sheet with your email (replace with your email address)
-    try:
-        drive_service = build('drive', 'v3', credentials=creds)
-        drive_service.permissions().create(
-            fileId=spreadsheet.id,
-            body={
-                'type': 'user',
-                'role': 'writer',  # You can change this to 'reader' if you only want view access
-                'emailAddress': 'ronaldmanganaro@gmail.com'  # Replace with your email address
-            }
-        ).execute()
-
-        print("Sheet shared successfully with ronaldmanganaro@gmail.com!")
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-
-# Collect data in a list before sending it to Google Sheets
+# Scrape each page sequentially
 all_data = []
-databaseEntries: Data = []
 
-# Scraping loop for each page
+# Inside your scraping loop
 for page in range(1, total_pages + 1):
-    print(f"Scraping page {page} of {total_pages}...")
-    driver.get(URL.replace("page=1", f"page={page}"))
-    time.sleep(3)
+    page_start = datetime.now()
+    print(f"Scraping page {page}")
+    driver.get(URL_TEMPLATE.format(page=page))
 
     try:
         wait.until(EC.presence_of_element_located((By.CLASS_NAME, "search-result")))
     except:
-        print(f"Skipping page {page}, no listings found.")
+        print(f"No listings on page {page}")
         continue
 
     listings = driver.find_elements(By.CLASS_NAME, "search-result")
     for listing in listings:
         try:
-            name = WebDriverWait(listing, 10).until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "[class*='product-card__title']"))
-            ).text.strip()
-
+            name = listing.find_element(By.CSS_SELECTOR, "[class*='product-card__title']").text.strip()
             listing_count_text = listing.find_element(By.XPATH, ".//span[contains(@class, 'inventory__listing-count')]").text.strip()
             listing_count = int(re.search(r"\d+", listing_count_text).group())
 
             lowest_price = listing.find_element(By.XPATH, ".//span[contains(@class, 'inventory__price-with-shipping')]").text.strip().replace("$", "")
-
             rarity_section = listing.find_element(By.CLASS_NAME, "product-card__rarity__variant")
             rarity_parts = rarity_section.find_elements(By.TAG_NAME, "span")
             rarity = rarity_parts[0].text.strip() if len(rarity_parts) > 0 else "Unknown"
             card_number = rarity_parts[1].text.strip() if len(rarity_parts) > 1 else "Unknown"
 
             set_name = listing.find_element(By.CLASS_NAME, "product-card__set-name__variant").text.strip()
-
             market_price = listing.find_element(By.XPATH, ".//span[contains(@class, 'product-card__market-price--value')]").text.strip().replace("$", "")
 
-            product_link_element = listing.find_element(By.XPATH, ".//a[contains(@data-testid, 'product-card__image')]")
-            product_link = product_link_element.get_attribute("href")
-            if product_link and not product_link.startswith("http"):
+            link_el = listing.find_element(By.XPATH, ".//a[contains(@data-testid, 'product-card__image')]")
+            product_link = link_el.get_attribute("href")
+            if not product_link.startswith("http"):
                 product_link = "https://www.tcgplayer.com" + product_link
 
-            # Store data in the list
-            all_data.append([name, listing_count, lowest_price, market_price, rarity, card_number, set_name, product_link])
-            
-            entry = Data(name, listing_count, lowest_price, market_price, rarity, card_number, set_name, product_link)
-            databaseEntries.append(entry)
+            all_data.append(Data(name, listing_count, lowest_price, market_price, rarity, card_number, set_name, product_link))
         except Exception as e:
-            print(f"Error processing listing: {e}")
+            print(f"Error on page {page}: {e}")
+    
+    # Print time taken for this page
+    page_end = datetime.now()
+    page_elapsed = page_end - page_start
+    p_min, p_sec = divmod(page_elapsed.total_seconds(), 60)
+    print(f"Finished page {page} in {int(p_min)} min {int(p_sec)} sec")
 
-if args.sheets and all_data:
-    googleSheets(all_data)
 
-# Send all collected data to Google Sheets at once
-if databaseEntries:
-    writeDB(connectDB(), databaseEntries)
-
-# Close the WebDriver
 driver.quit()
+
+if all_data:
+    db.writeDB(db.connectDB(), all_data)
+
+end = datetime.now()
+elapsed = end - start
+minutes, seconds = divmod(elapsed.total_seconds(), 60)
+msg = f"Finished Scraping {end.strftime('%Y-%m-%d %I:%M:%S %p')}\nTime elapsed: {int(minutes)} min {int(seconds)} sec"
+send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
