@@ -1,6 +1,9 @@
-FROM python:3.10-slim
+FROM python:3.11.12-slim-bullseye
 
 ENV PYTHONUNBUFFERED=1
+
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get install -y \
     wget \
@@ -31,7 +34,7 @@ ENV PATH="/usr/local/bin/chrome-linux64:$PATH"
 COPY /app/requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-COPY /app /app
-WORKDIR /app
+COPY app ./app
+WORKDIR ./app
 
 ENTRYPOINT ["python3", "watch.py"]

@@ -3,5 +3,5 @@ chromedriver_autoinstaller
 requests
 gspread
 oauth2client
-google-api-python-client
 psycopg2-binary
+playwright
