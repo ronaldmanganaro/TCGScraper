@@ -96,5 +96,26 @@ async def run():
         time.sleep(5)
         #await browser.close()
 
+
 # Run the async function
 asyncio.run(run())
+
+
+'''
+How do I use the data scraped from the table?
+
+Scrape card history from TCGPlayer
+1. Scrape the sales table
+2. Convert date from format "MM/DD/YYYY" to "YYYY-MM-DD"
+3. lookup card number from database by parsing url for card number
+4. Add database entry by copying
+    - card name
+    - rarity
+    - set name
+    - link
+5. calculate pull lowest price in sales table
+6. calculate pull average price in sales table for market price
+
+How do I use the date scraped from the graph?
+Recreate the graph on webpage
+'''
