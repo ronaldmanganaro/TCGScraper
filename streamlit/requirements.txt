@@ -3,3 +3,4 @@ boto3
 PyPDF2
 psycopg2
 selenium
+matplotlib

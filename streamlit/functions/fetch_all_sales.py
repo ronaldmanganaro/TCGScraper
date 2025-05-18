@@ -1,6 +1,8 @@
 import asyncio
 import time
 import csv
+import datetime
+import db
 from playwright.async_api import async_playwright, Page
 
 async def scrape_sales_table(page: Page):
@@ -9,15 +11,15 @@ async def scrape_sales_table(page: Page):
     
     await page.wait_for_selector(selector,timeout=20000)
     await page.locator(selector).click() 
-    while True:
-        try:
-            # Check if the selector is available
-            await page.wait_for_selector("button:has-text('Load More Sales')", timeout=20000)
-            await page.click("button:has-text('Load More Sales')")
+    # while True:
+    #     try:
+    #         # Check if the selector is available
+    #         await page.wait_for_selector("button:has-text('Load More Sales')", timeout=20000)
+    #         await page.click("button:has-text('Load More Sales')")
             
-        except Exception as e:
-            print(f"Selector not found, retrying... {e}")
-            break
+    #     except Exception as e:
+    #         print(f"Selector not found, retrying... {e}")
+    #         break
     
     await page.wait_for_selector(".latest-sales-table__tbody")
 
@@ -80,25 +82,59 @@ async def scrape_graph(page: Page):
         for row in data:
             writer.writerow(row)
 
-async def run():
+async def add_to_db(sales_data, url):
+    print(sales_data)
+    daily_totals = {}
+    average_prices = {}
+
+    for sale in sales_data:        
+        # need to get the average cost by adding up all the prices on each date and dividing by the number of prices
+        if sale['date'] not in daily_totals:
+            daily_totals[sale['date']] = {'total_price': 0, 'count': 0}
+            daily_totals[sale['date']]['total_price'] += sale['price']
+            daily_totals[sale['date']]['count'] += 1
+
+        for date, totals in daily_totals.items():
+            average_prices[date] = totals['total_price'] / totals['count']
+            print(f"Date: {date}, Average Price: {average_prices[date]}")
+        
+    for day in average_prices:
+        try:
+            converted_date = datetime.datetime.strptime(sale['date'], "%m/%d/%y").strftime("%Y-%m-%d")
+        except ValueError as e:
+            print(f"Error parsing date '{sale['date']}': {e}")
+            continue
+        card_number_numerator = url.split("?")[0].split("-")[-1]
+        card_number_denominator = url.split("?")[0].split("-")[-2]
+        card_number = "#" + card_number_numerator + "/" + card_number_denominator
+        print(f"Card Number: {card_number}")
+        
+        # Add to database
+        db.add_card_data(converted_date, card_number, average_prices[day])
+    ...
+
+async def main():
     async with async_playwright() as p:
         # Launch browser
         browser = await p.chromium.launch(headless=False)  # headless=False to see the browser
         page: Page = await browser.new_page()
         
         # Navigate to the page
-        await page.goto("https://www.tcgplayer.com/product/517052/pokemon-sv-scarlet-and-violet-151-switch-206-165?Condition=Near+Mint&page=1&Language=English9909")  # Replace with the correct URL
+        url  = "https://www.tcgplayer.com/product/517052/pokemon-sv-scarlet-and-violet-151-switch-206-165?Condition=Near+Mint&page=1&Language=English9909"
+        await page.goto(url)  # Replace with the correct URL
 
         # Wait for the page to load
         await scrape_graph(page)
-        await scrape_sales_table(page)
+        sales_data = await scrape_sales_table(page)
+        await add_to_db(sales_data, url)
         # Close the browser
         time.sleep(5)
         #await browser.close()
 
 
-# Run the async function
-asyncio.run(run())
+if __name__ == "__main__":
+    asyncio.run(main())
+
 
 
 '''

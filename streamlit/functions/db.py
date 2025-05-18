@@ -3,6 +3,8 @@ import logging
 import sys 
 from datetime import datetime
 from psycopg2.extensions import connection
+import pandas as pd
+import streamlit as st
 
 # Configure logging
 logging.basicConfig(
@@ -15,7 +17,7 @@ logging.basicConfig(
 
 def connectDB() -> connection: 
 
-    dbname = 'tcgplayerdb'
+    dbname = 'tcgplayerdbtest'
     user = 'rmangana'
     password = 'password'
     host = '52.73.212.127'
@@ -67,4 +69,144 @@ def writeDB(connection: connection, databaseEntries):
             connection.rollback()
 
     cursor.close()
-    
+
+def get_cards_by_listing_quantity(connection: connection, min_quantity: int):
+    cursor = connection.cursor()
+    query = """
+        SELECT DISTINCT card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link, date
+        FROM public.prices
+        WHERE listing_quantity <= %s
+        ORDER BY card ASC
+    """
+    try:
+        cursor.execute(query, (min_quantity,))
+        results = cursor.fetchall()
+        return results
+    except Exception as e:
+        logging.error(f"Error querying cards by listing quantity: {e}")
+        return []
+    finally:
+        cursor.close()
+
+def get_card_name(connection: connection, min_quantity: int):
+    cursor = connection.cursor()
+    query = """
+        SELECT DISTINCT card, card_number
+        FROM public.prices
+        WHERE listing_quantity <= %s
+        ORDER BY card ASC
+    """
+    try:
+        cursor.execute(query, (min_quantity,))
+        results = cursor.fetchall()
+        return results
+    except Exception as e:
+        logging.error(f"Error querying cards by listing quantity: {e}")
+        return []
+    finally:
+        cursor.close()
+        
+def get_card_data(connection: connection, card_name, card_number):
+    cursor = connection.cursor()
+    query = """
+        SELECT date, card, listing_quantity, lowest_price, market_price, link, rarity, card_number, set_name
+        FROM public.prices
+        WHERE card = %s AND card_number = %s
+       ORDER BY date DESC
+        LIMIT 1 
+    """
+    try: 
+        cursor.execute(query, (card_name, card_number,))
+        result = cursor.fetchall()
+        return result
+    except Exception as e:
+        logging.error(f"Error querying card data: {e}")
+        return []
+    finally:
+        cursor.close()
+        
+def get_price_date(connection: connection, card_name, card_number):
+    cursor = connection.cursor()
+    query = """
+        SELECT date, lowest_price, market_price, listing_quantity
+        FROM public.prices
+        WHERE card = %s AND card_number = %s
+        ORDER BY date DESC
+    """
+    try:
+        cursor.execute(query, (card_name, card_number,))
+        result = cursor.fetchall()
+        return result
+    except Exception as e:
+        logging.error(f"Error querying price date: {e}")
+        return None
+    finally:
+        cursor.close()
+        
+def estimate_velocity(connection: connection, card_name, card_number):
+    cursor = connection.cursor()
+    query = """
+        SELECT 
+        date,
+        lowest_price,
+        market_price,
+        listing_quantity,
+        -- Calculate velocity sold as the drop in listing quantity from previous day
+        COALESCE(
+            LAG(listing_quantity) OVER (ORDER BY date) - listing_quantity,
+            0
+        ) AS velocity_sold
+        FROM public.prices
+        WHERE card = %s AND card_number = %s
+        ORDER BY date DESC
+    """
+    try:
+        cursor.execute(query, (card_name, card_number,))
+        result = cursor.fetchall()
+        return result
+    except Exception as e:
+        logging.error(f"Error estimating velocity: {e}")
+        return None
+    finally:
+        cursor.close()
+        
+
+def add_card_data(converted_date, card_number, price):
+    connection = connectDB()
+    if not connection:
+        logging.error("Failed to connect to the database.")
+        return
+
+    try:
+        cursor = connection.cursor()
+
+        # Pull data for card already in DB
+        query = """
+            SELECT card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link
+            FROM public.prices
+            WHERE card_number ILIKE %s
+            ORDER BY date DESC
+            LIMIT 1
+        """
+        cursor.execute(query, (card_number,))
+        result = cursor.fetchone()
+
+        if result is None:
+            logging.error(f"No existing card found in DB for card_number: {card_number}. Cannot insert new price entry.")
+            return  # or handle as needed
+
+        # Insert new price entry
+        insert_query = """
+            INSERT INTO public.prices (date, card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (converted_date, result[0], 999, price, result[3], result[4], card_number, result[6], result[7]))
+        connection.commit()
+        logging.info(f"Successfully added new price entry for card_number: {card_number}")
+
+    except Exception as e:
+        logging.error(f"Error in add_card_data: {e}")
+        connection.rollback()
+    finally:
+        if connection:
+            connection.close()
