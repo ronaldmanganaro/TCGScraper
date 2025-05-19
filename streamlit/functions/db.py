@@ -1,6 +1,6 @@
 import psycopg2
 import logging
-import sys 
+import sys
 from datetime import datetime
 from psycopg2.extensions import connection
 import pandas as pd
@@ -8,14 +8,16 @@ import streamlit as st
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,  # Set log level (INFO, DEBUG, WARNING, ERROR, CRITICAL)
+    # Set log level (INFO, DEBUG, WARNING, ERROR, CRITICAL)
+    level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
         logging.StreamHandler(sys.stdout)  # Send logs to stdout
     ]
 )
 
-def connectDB() -> connection: 
+
+def connectDB() -> connection:
 
     dbname = 'tcgplayerdbtest'
     user = 'rmangana'
@@ -24,14 +26,14 @@ def connectDB() -> connection:
     port = 5432
 
     try:
-        newConnection =  psycopg2.connect(
+        newConnection = psycopg2.connect(
             dbname=dbname,
             user=user,
-            password=password, 
+            password=password,
             host=host,
             port=port
         )
-        
+
         cursor = newConnection.cursor()
     except Exception as e:
         if cursor:
@@ -40,9 +42,10 @@ def connectDB() -> connection:
         if newConnection:
             logging.error(f"unexpected error connection {e}")
             connection.close()
-    
+
     return newConnection
-        
+
+
 def writeDB(connection: connection, databaseEntries):
     today = datetime.now()  # Keeps full timestamp
 
@@ -56,8 +59,8 @@ def writeDB(connection: connection, databaseEntries):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         values = (
-            entry.card, entry.listing_quantity, entry.lowest_price, 
-            entry.market_price, cleaned_rarity, entry.card_number, 
+            entry.card, entry.listing_quantity, entry.lowest_price,
+            entry.market_price, cleaned_rarity, entry.card_number,
             entry.set_name, entry.link, today
         )
 
@@ -69,6 +72,7 @@ def writeDB(connection: connection, databaseEntries):
             connection.rollback()
 
     cursor.close()
+
 
 def get_cards_by_listing_quantity(connection: connection, min_quantity: int):
     cursor = connection.cursor()
@@ -88,6 +92,7 @@ def get_cards_by_listing_quantity(connection: connection, min_quantity: int):
     finally:
         cursor.close()
 
+
 def get_card_name(connection: connection, min_quantity: int):
     cursor = connection.cursor()
     query = """
@@ -105,7 +110,8 @@ def get_card_name(connection: connection, min_quantity: int):
         return []
     finally:
         cursor.close()
-        
+
+
 def get_card_data(connection: connection, card_name, card_number):
     cursor = connection.cursor()
     query = """
@@ -115,7 +121,7 @@ def get_card_data(connection: connection, card_name, card_number):
        ORDER BY date DESC
         LIMIT 1 
     """
-    try: 
+    try:
         cursor.execute(query, (card_name, card_number,))
         result = cursor.fetchall()
         return result
@@ -124,7 +130,8 @@ def get_card_data(connection: connection, card_name, card_number):
         return []
     finally:
         cursor.close()
-        
+
+
 def get_price_date(connection: connection, card_name, card_number):
     cursor = connection.cursor()
     query = """
@@ -142,7 +149,8 @@ def get_price_date(connection: connection, card_name, card_number):
         return None
     finally:
         cursor.close()
-        
+
+
 def estimate_velocity(connection: connection, card_name, card_number):
     cursor = connection.cursor()
     query = """
@@ -169,9 +177,9 @@ def estimate_velocity(connection: connection, card_name, card_number):
         return None
     finally:
         cursor.close()
-        
 
-def add_card_data(converted_date, card_number, price):
+
+def add_card_data(converted_date, card_number, market_price, lowest_price):
     connection = connectDB()
     if not connection:
         logging.error("Failed to connect to the database.")
@@ -190,9 +198,11 @@ def add_card_data(converted_date, card_number, price):
         """
         cursor.execute(query, (card_number,))
         result = cursor.fetchone()
+        logging.info(f"Querying for card_number: {card_number} {result}")
 
         if result is None:
-            logging.error(f"No existing card found in DB for card_number: {card_number}. Cannot insert new price entry.")
+            logging.error(
+                f"No existing card found in DB for card_number: {card_number}. Cannot insert new price entry.")
             return  # or handle as needed
 
         # Insert new price entry
@@ -200,9 +210,11 @@ def add_card_data(converted_date, card_number, price):
             INSERT INTO public.prices (date, card, listing_quantity, lowest_price, market_price, rarity, card_number, set_name, link)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
-        cursor.execute(insert_query, (converted_date, result[0], 999, price, result[3], result[4], card_number, result[6], result[7]))
+        cursor.execute(insert_query, (converted_date,
+                       result[0], 999, lowest_price, market_price, result[4], card_number, result[6], result[7]))
         connection.commit()
-        logging.info(f"Successfully added new price entry for card_number: {card_number}")
+        logging.info(
+            f"Successfully added new price entry for card_number: {card_number}")
 
     except Exception as e:
         logging.error(f"Error in add_card_data: {e}")
