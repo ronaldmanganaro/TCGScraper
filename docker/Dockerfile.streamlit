@@ -20,6 +20,9 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 COPY /streamlit/requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install the required browser binaries
+RUN playwright install --with-deps
+
 USER root
 
 COPY /streamlit ./

@@ -4,3 +4,4 @@ PyPDF2
 psycopg2-binary
 selenium
 matplotlib
+playwright

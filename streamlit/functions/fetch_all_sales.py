@@ -93,7 +93,7 @@ async def scrape_graph(page: Page):
             writer.writerow(row)
 
 
-def add_to_db(sales_data, url):
+def add_to_db(sales_data, url, card_number):
     print(sales_data)
     daily_totals = {}
     average_prices = {}
@@ -101,6 +101,7 @@ def add_to_db(sales_data, url):
     for sale in sales_data:
         # need to get the average cost by adding up all the prices on each date and dividing by the number of prices
         if sale['date'] not in daily_totals:
+
             print(f"Adding new date: {sale['date']}")
             daily_totals[sale['date']] = {'total_price': 0, 'count': 0}
             daily_totals[sale['date']]['total_price'] += sale['price']
@@ -121,15 +122,10 @@ def add_to_db(sales_data, url):
 
     for day, avg_price in average_prices.items():
         lowest_price = lowest_prices.get(day, None)
-        # print(
-        #     f"Date: {day}, Average Price: {avg_price}, Lowest Price: {lowest_price}")
         converted_date = datetime.datetime.strptime(
             day, "%m/%d/%y").strftime("%Y-%m-%d")
-        # print(f"Converted Date: {converted_date}")
-        card_number_denominator = url.split("?")[0].split("-")[-1]
-        card_number_numerator = url.split("?")[0].split("-")[-2]
-        card_number = "#" + card_number_numerator + "/" + card_number_denominator
-        # print(f"Card Number: {card_number}")
+
+        print(f"Card Number: {card_number}")
 
         # Add to database
         db.add_card_data(converted_date, card_number, avg_price, lowest_price)
@@ -142,14 +138,25 @@ async def main():
         browser = await p.chromium.launch(headless=False)
         page: Page = await browser.new_page()
 
+        url = "https://www.tcgplayer.com/product/117854/pokemon-xy-fates-collide-lugia-break?Condition=Near+Mint&inStock=true&Language=English&ListingType=standard&page=1"
         # Navigate to the page
-        url = "https://www.tcgplayer.com/product/517052/pokemon-sv-scarlet-and-violet-151-switch-206-165?Condition=Near+Mint&page=1&Language=English9909"
+        # url = "https://www.tcgplayer.com/product/517052/pokemon-sv-scarlet-and-violet-151-switch-206-165?Condition=Near+Mint&page=1&Language=English9909"
         await page.goto(url)  # Replace with the correct URL
+
+        # Find the span next to the strong tag with specific text
+        card_info: str = await page.locator(
+            "//strong[text()='Card Number / Rarity:']/following-sibling::span"
+        ).inner_text()
+
+        # Extract just the card number
+        card_number = '#' + card_info.split(" / ")[0]
+        print("Card Number:", card_number)
 
         # Wait for the page to load
         await scrape_graph(page)
         sales_data = await scrape_sales_table(page)
-        add_to_db(sales_data, url)
+        add_to_db(sales_data, url, card_number)
+
         # Close the browser
         time.sleep(5)
         # await browser.close()

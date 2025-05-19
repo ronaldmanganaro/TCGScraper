@@ -19,7 +19,7 @@ logging.basicConfig(
 
 def connectDB() -> connection:
 
-    dbname = 'tcgplayerdbtest'
+    dbname = 'tcgplayerdb'
     user = 'rmangana'
     password = 'password'
     host = '52.73.212.127'
