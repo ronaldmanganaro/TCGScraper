@@ -138,7 +138,7 @@ async def main():
         browser = await p.chromium.launch(headless=False)
         page: Page = await browser.new_page()
 
-        url = "https://www.tcgplayer.com/product/117854/pokemon-xy-fates-collide-lugia-break?Condition=Near+Mint&inStock=true&Language=English&ListingType=standard&page=1"
+        url = "https://www.tcgplayer.com/product/113682/pokemon-generations-vaporeon-ex?Condition=Near+Mint&inStock=true&Language=English&ListingType=standard&page=1"
         # Navigate to the page
         # url = "https://www.tcgplayer.com/product/517052/pokemon-sv-scarlet-and-violet-151-switch-206-165?Condition=Near+Mint&page=1&Language=English9909"
         await page.goto(url)  # Replace with the correct URL
