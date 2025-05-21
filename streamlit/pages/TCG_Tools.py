@@ -153,7 +153,6 @@ with st.expander("Pokemon Price Chart", expanded=True):
         index=0 if st.session_state.card_list else None,
         key="pkm_selectbox"
     )
-    tab1, tab2 = st.tabs(["📈 Chart", "🗃 Data"])
 
     if st.session_state.pkm_selectbox:
         logging.debug(
@@ -169,7 +168,7 @@ with st.expander("Pokemon Price Chart", expanded=True):
 
             if price_data and len(price_data[0]):
                 price_df = pd.DataFrame(price_data, columns=[
-                    "date", "lowest_price", "market_price", "listing_quantity", "velocity_sold"
+                    "date", "lowest_price", "market_price"
                 ])
                 price_df["date"] = pd.to_datetime(price_df["date"])
                 price_df["lowest_price"] = price_df["lowest_price"].astype(
@@ -199,9 +198,14 @@ with st.expander("Pokemon Price Chart", expanded=True):
                 )
 
                 fig.update_layout(xaxis_tickangle=-45)
-                tab1 st.plotly_chart(fig, use_container_width=True)
 
             else:
                 st.warning("Price data shape does not match expected columns.")
         else:
             st.info("No data found for this card.")
+
+    tab1, tab2 = st.tabs(["Price Data", "Market vs Market Price"])
+    with tab1:
+        price_df
+    with tab2:
+        st.plotly_chart(fig, use_container_width=True)
