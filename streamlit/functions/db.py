@@ -17,9 +17,13 @@ logging.basicConfig(
 )
 
 
-def connectDB() -> connection:
+def connectDB(isTest=False) -> connection:
 
-    dbname = 'tcgplayerdb'
+    if isTest:
+        # Test database connection
+        dbname = 'tcgplayerdbtest'
+    else:
+        dbname = 'tcgplayerdb'
     user = 'rmangana'
     password = 'password'
     host = '52.73.212.127'
@@ -156,8 +160,6 @@ def estimate_velocity(connection: connection, card_name, card_number):
     query = """
         SELECT 
         date,
-        lowest_price,
-        market_price,
         listing_quantity,
         -- Calculate velocity sold as the drop in listing quantity from previous day
         COALESCE(
@@ -171,6 +173,7 @@ def estimate_velocity(connection: connection, card_name, card_number):
     try:
         cursor.execute(query, (card_name, card_number,))
         result = cursor.fetchall()
+        print(result)
         return result
     except Exception as e:
         logging.error(f"Error estimating velocity: {e}")

@@ -156,7 +156,7 @@ async def main():
         await scrape_graph(page)
         sales_data = await scrape_sales_table(page)
         add_to_db(sales_data, url, card_number)
-
+        # db.estimate_velocity(db.connectDB(), "Switch - 206/165", "206/165")
         # Close the browser
         time.sleep(5)
         # await browser.close()
