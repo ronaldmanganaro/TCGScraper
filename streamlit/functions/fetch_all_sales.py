@@ -2,13 +2,14 @@
 This script uses Playwright to scrape sales data from a specific TCGPlayer product page.
 """
 
+import sys
 import asyncio
 import time
 import csv
 import datetime
+import logging
 from playwright.async_api import async_playwright, Page
-import db
-
+from functions import db
 
 async def scrape_sales_table(page: Page):
     """
@@ -17,12 +18,12 @@ async def scrape_sales_table(page: Page):
     # Wait for table to load
     selector = ".modal__activator"
 
-    await page.wait_for_selector(selector, timeout=20000)
+    await page.wait_for_selector(selector, timeout=40000)
     await page.locator(selector).click()
     while True:
         try:
             # Check if the selector is available
-            await page.wait_for_selector("button:has-text('Load More Sales')", timeout=20000)
+            await page.wait_for_selector("button:has-text('Load More Sales')", timeout=40000)
             await page.click("button:has-text('Load More Sales')")
 
         except Exception as e:
@@ -57,7 +58,6 @@ async def scrape_sales_table(page: Page):
         writer.writerows(sales_data)
     return sales_data
 
-
 async def scrape_graph(page: Page):
     await page.wait_for_selector("button:has-text('1Y')")
     await page.locator("button:has-text('1Y')").click()
@@ -91,7 +91,6 @@ async def scrape_graph(page: Page):
         writer.writeheader()
         for row in data:
             writer.writerow(row)
-
 
 def add_to_db(sales_data, url, card_number):
     print(sales_data)
@@ -131,36 +130,28 @@ def add_to_db(sales_data, url, card_number):
         db.add_card_data(converted_date, card_number, avg_price, lowest_price)
 
 
-async def main():
+async def scrape_table_update_db(url):
     async with async_playwright() as p:
-        # Launch browser
-        # headless=False to see the browser
-        browser = await p.chromium.launch(headless=False)
+        browser = await p.chromium.launch(headless=True)
         page: Page = await browser.new_page()
-
-        url = "https://www.tcgplayer.com/product/113682/pokemon-generations-vaporeon-ex?Condition=Near+Mint&inStock=true&Language=English&ListingType=standard&page=1"
-        # Navigate to the page
-        # url = "https://www.tcgplayer.com/product/517052/pokemon-sv-scarlet-and-violet-151-switch-206-165?Condition=Near+Mint&page=1&Language=English9909"
-        await page.goto(url)  # Replace with the correct URL
+        await page.goto(url)
 
         # Find the span next to the strong tag with specific text
         card_info: str = await page.locator(
             "//strong[text()='Card Number / Rarity:']/following-sibling::span"
         ).inner_text()
-
-        # Extract just the card number
         card_number = '#' + card_info.split(" / ")[0]
         print("Card Number:", card_number)
 
-        # Wait for the page to load
-        await scrape_graph(page)
+        #await scrape_graph(page)
         sales_data = await scrape_sales_table(page)
         add_to_db(sales_data, url, card_number)
-        # db.estimate_velocity(db.connectDB(), "Switch - 206/165", "206/165")
-        # Close the browser
+        logging.info("Finished scraping and updating database.")
         time.sleep(5)
         # await browser.close()
 
 
+# For CLI usage
 if __name__ == "__main__":
-    asyncio.run(main())
+    url = "https://www.tcgplayer.com/product/113682/pokemon-generations-vaporeon-ex?Condition=Near+Mint&inStock=true&Language=English&ListingType=standard&page=1"
+    asyncio.run(scrape_table_update_db(url))

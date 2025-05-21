@@ -100,7 +100,7 @@ def get_cards_by_listing_quantity(connection: connection, min_quantity: int):
 def get_card_name(connection: connection, min_quantity: int):
     cursor = connection.cursor()
     query = """
-        SELECT DISTINCT card, card_number
+        SELECT DISTINCT card, card_number, link, listing_quantity
         FROM public.prices
         WHERE listing_quantity <= %s
         ORDER BY card ASC
@@ -139,7 +139,7 @@ def get_card_data(connection: connection, card_name, card_number):
 def get_price_date(connection: connection, card_name, card_number):
     cursor = connection.cursor()
     query = """
-        SELECT date, lowest_price, market_price, listing_quantity
+        SELECT date, lowest_price, market_price, listing_quantity, velocity 
         FROM public.prices
         WHERE card = %s AND card_number = %s
         ORDER BY date DESC
@@ -152,6 +152,7 @@ def get_price_date(connection: connection, card_name, card_number):
         logging.error(f"Error querying price date: {e}")
         return None
     finally:
+        logging.info(f"Finished querying price date for card: {card_name}")
         cursor.close()
 
 
@@ -173,7 +174,6 @@ def estimate_velocity(connection: connection, card_name, card_number):
     try:
         cursor.execute(query, (card_name, card_number,))
         result = cursor.fetchall()
-        print(result)
         return result
     except Exception as e:
         logging.error(f"Error estimating velocity: {e}")
@@ -214,7 +214,7 @@ def add_card_data(converted_date, card_number, market_price, lowest_price):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(insert_query, (converted_date,
-                       result[0], 999, lowest_price, market_price, result[4], card_number, result[6], result[7]))
+                   result[0], None, lowest_price, market_price, result[4], card_number, result[6], result[7]))
         connection.commit()
         logging.info(
             f"Successfully added new price entry for card_number: {card_number}")
