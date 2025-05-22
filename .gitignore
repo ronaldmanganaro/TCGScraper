@@ -87,3 +87,6 @@ coverage/
 
 # AWS
 .awx
+
+# OAuth
+secrets.toml
