@@ -18,12 +18,12 @@ async def scrape_sales_table(page: Page):
     # Wait for table to load
     selector = ".modal__activator"
 
-    await page.wait_for_selector(selector, timeout=40000)
+    await page.wait_for_selector(selector, timeout=20000)
     await page.locator(selector).click()
     while True:
         try:
             # Check if the selector is available
-            await page.wait_for_selector("button:has-text('Load More Sales')", timeout=40000)
+            await page.wait_for_selector("button:has-text('Load More Sales')", timeout=20000)
             await page.click("button:has-text('Load More Sales')")
 
         except Exception as e:
@@ -132,7 +132,7 @@ def add_to_db(sales_data, url, card_number):
 
 async def scrape_table_update_db(url):
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(headless=False)
         page: Page = await browser.new_page()
         await page.goto(url)
 

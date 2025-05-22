@@ -10,6 +10,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 import asyncio
 import sys
+import pyperclip
+
 
 if sys.platform.startswith('win') and sys.version_info >= (3, 8):
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
@@ -129,13 +131,6 @@ with st.expander("Precon EV Calculator"):
         st.rerun()
 
 
-def shortenLink(url: str) -> str:
-    response = requests.get(f"https://tinyurl.com/api-create.php?url={url}")
-    if response.status_code == 200:
-        return response.text
-    return url
-
-
 with st.expander("Pokemon Price Chart", expanded=True):
     price_df, fig  = None, None
     if 'card_list' not in st.session_state:
@@ -146,6 +141,54 @@ with st.expander("Pokemon Price Chart", expanded=True):
     # Create columns for the dropdown and number input
     col1, col2 = st.columns([3, 1])
 
+    # New row for Query and Pull Historical Data buttons, aligned under the inputs
+    btn_col1, btn_col2, btn_col3 = st.columns([1, 1, 1])
+
+
+    with btn_col1:
+        if st.button("Query", use_container_width=True):
+            
+            with st.spinner("Querying..."):
+                cards = db.get_card_name(connection, st.session_state.min_quantity_selectbox)
+                st.session_state.card_list = [
+                    f"{card[0]}, ({card[1]}) [Listings: {card[3]}]" for card in cards
+                ]
+                st.session_state.card_tuples = cards
+            st.toast("Query complete!")
+            st.balloons()  # 🎈 Balloons animation
+
+    with btn_col2:
+        if st.button("Pull Historical Data", use_container_width=True):
+            selected_url = None
+            if "card_tuples" in st.session_state :
+                for card in st.session_state.card_tuples:
+                    if card[0] in  st.session_state.pkm_selectbox:
+                        selected_url = card[2]
+                        break
+            if selected_url:
+                with st.spinner("Pulling historical data..."):
+                    logging.info(f"Scraping url {selected_url}...")
+                    asyncio.run(fetch_all_sales.scrape_table_update_db(selected_url))
+                    st.rerun()
+                st.balloons()  # 🎈 Balloons animation
+            else:
+                st.toast("No URL found for selected card.")
+                
+    with btn_col3:
+        if st.button("Copy Card Url", use_container_width=True):
+                # Get the URL for the selected card
+            selected_url = None
+            if "card_tuples" in st.session_state :
+                for card in st.session_state.card_tuples:
+                    if card[0] in  st.session_state.pkm_selectbox:
+                        selected_url = card[2]
+                        break
+            if selected_url:
+                pyperclip.copy(selected_url)
+                st.toast('Link Copied to Clipboard!', icon='😍')
+                st.snow() 
+            else:
+                st.toast("No URL found for selected card.")
     # Filters header
     st.markdown("### Filters")
 
@@ -208,54 +251,18 @@ with st.expander("Pokemon Price Chart", expanded=True):
             key="min_quantity_selectbox"
         )
 
-    # Get the URL for the selected card (do this BEFORE the buttons)
-    selected_url = None
-    if "card_tuples" in st.session_state and st.session_state.pkm_selectbox:
-        for card in st.session_state.card_tuples:
-            display_str = f"{card[0]}, ({card[1]}) [Listings: {card[3]}]"
-            if display_str == st.session_state.pkm_selectbox:
-                selected_url = card[2]
-                break
 
-    # New row for Query and Pull Historical Data buttons, aligned under the inputs
-    btn_col1, btn_col2 = st.columns([1, 1])
-    with btn_col1:
-        if st.button("Query", use_container_width=True):
-            with st.spinner("Querying..."):
-                cards = db.get_card_name(connection, min_quantity_selectbox)
-                st.session_state.card_list = [
-                    f"{card[0]}, ({card[1]}) [Listings: {card[3]}]" for card in cards
-                ]
-                st.session_state.card_tuples = cards
-            st.success("Query complete!")
-            st.balloons()  # 🎈 Balloons animation
-
-    with btn_col2:
-        if st.button("Pull Historical Data", use_container_width=True):
-            if selected_url:
-                with st.spinner("Pulling historical data..."):
-                    logging.info(f"Scraping url {selected_url}...")
-                    asyncio.run(fetch_all_sales.scrape_table_update_db(selected_url))
-                    st.rerun()
-                st.balloons()  # 🎈 Balloons animation
-            else:
-                st.warning("No URL found for selected card.")
-
-    # Get the URL for the selected card
-    selected_url = None
-    if "card_tuples" in st.session_state and st.session_state.pkm_selectbox:
-        for card in st.session_state.card_tuples:
-            display_str = f"{card[0]}, ({card[1]})  [Listings: {card[3]}]"
-            if display_str == st.session_state.pkm_selectbox:
-                selected_url = card[2]
-                break
 
     if st.session_state.pkm_selectbox:
+        
+        
         # Remove the [Listings: x] part before splitting
         selectbox_value = st.session_state.pkm_selectbox.split(" [Listings:")[0]
+        logging.info(f"Selectbox value: {selectbox_value}")
         card_name = selectbox_value.split(", (")[0]
         card_number = selectbox_value.split(", (")[1].strip(")")
         # Now use card_name and card_number for your DB queries
+        logging.info(f"Selected card: {card_name}, Card Number: {card_number}") 
         card_data = db.get_card_data(connection, card_name, card_number)
 
         if card_data:

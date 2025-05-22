@@ -100,13 +100,19 @@ def get_cards_by_listing_quantity(connection: connection, min_quantity: int):
 def get_card_name(connection: connection, min_quantity: int):
     cursor = connection.cursor()
     query = """
-        SELECT DISTINCT card, card_number, link, listing_quantity
-        FROM public.prices
-        WHERE listing_quantity <= %s
-        ORDER BY card ASC
+        SELECT DISTINCT p.card, p.card_number, p.link, p.listing_quantity
+        FROM public.prices p
+        INNER JOIN (
+            SELECT card, MAX(date) AS latest_date
+            FROM public.prices
+            WHERE listing_quantity <= %s
+            GROUP BY card
+        ) latest ON p.card = latest.card AND p.date = latest.latest_date
+        WHERE p.listing_quantity <= %s
+        ORDER BY p.card ASC;
     """
     try:
-        cursor.execute(query, (min_quantity,))
+        cursor.execute(query, (min_quantity,min_quantity))
         results = cursor.fetchall()
         return results
     except Exception as e:
