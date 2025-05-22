@@ -89,4 +89,4 @@ coverage/
 .awx
 
 # OAuth
-secrets.toml
+streamlit/.streamlit/secrets.toml
