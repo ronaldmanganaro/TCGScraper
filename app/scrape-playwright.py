@@ -14,10 +14,6 @@ def send_discord_alert(message, webhook_url):
     data = {"content": message}
     requests.post(webhook_url, json=data)
 
-# Logging and startup message
-start = datetime.now()
-msg = f"Started Scraping {start.strftime('%Y-%m-%d %I:%M:%S %p')}"
-send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", handlers=[logging.StreamHandler(sys.stdout)])
 
 class Data:
@@ -97,6 +93,11 @@ async def scrape_page(page_num, context, sem):
         return page_data
 
 async def main():
+    # Logging and startup message
+    start = datetime.now()
+    msg = f"Started Scraping {start.strftime('%Y-%m-%d %I:%M:%S %p')}"
+    send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+
     sem = Semaphore(CONCURRENT_LIMIT)
     all_data = []
     async with async_playwright() as p:
@@ -122,15 +123,22 @@ async def main():
             all_data.extend(result)
 
         await browser.close()
+    
+        end = datetime.now()
+        elapsed = end - start
+        minutes, seconds = divmod(elapsed.total_seconds(), 60)
+        msg = f"Finished Scraping {end.strftime('%Y-%m-%d %I:%M:%S %p')}\nTime elapsed: {int(minutes)} min {int(seconds)} sec"
+        send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
 
     if all_data:
+        start = datetime.now()
         db.writeDB(db.connectDB(), all_data)
-
-    end = datetime.now()
-    elapsed = end - start
-    minutes, seconds = divmod(elapsed.total_seconds(), 60)
-    msg = f"Finished Scraping {end.strftime('%Y-%m-%d %I:%M:%S %p')}\nTime elapsed: {int(minutes)} min {int(seconds)} sec"
-    send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+        end = datetime.now()
+        
+        elapsed = end - start
+        minutes, seconds = divmod(elapsed.total_seconds(), 60)
+        msg = f"Finished Writing to DB {end.strftime('%Y-%m-%d %I:%M:%S %p')}\nTime elapsed: {int(minutes)} min {int(seconds)} sec"
+        send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
 
 if __name__ == "__main__":
     asyncio.run(main())

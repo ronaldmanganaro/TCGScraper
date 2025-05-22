@@ -118,4 +118,50 @@ Scrape card history from TCGPlayer
 
 How do I use the date scraped from the graph?
 Recreate the graph on webpage
+ test this
+
+def process_scraped_data(sales_data, graph_data, url):
+    # Convert date format in sales data
+    for sale in sales_data:
+        sale['date'] = datetime.datetime.strptime(sale['date'], "%m/%d/%Y").strftime("%Y-%m-%d")
+
+    # Parse card number from URL
+    card_number = url.split("?")[0].split("/")[-1]
+
+    # Connect to the database
+    conn = sqlite3.connect("tcgplayer.db")
+    cursor = conn.cursor()
+
+    # Add database entry
+    card_name = "Switch"  # Replace with actual card name if available
+    rarity = "Rare"  # Replace with actual rarity if available
+    set_name = "Scarlet and Violet 151"  # Replace with actual set name if available
+    link = url
+
+    cursor.execute("""
+        INSERT INTO cards (card_number, card_name, rarity, set_name, link)
+        VALUES (?, ?, ?, ?, ?)
+    """, (card_number, card_name, rarity, set_name, link))
+
+    # Calculate lowest price and average price
+    prices = [sale['price'] for sale in sales_data]
+    lowest_price = min(prices)
+    average_price = sum(prices) / len(prices)
+
+    print(f"Lowest Price: {lowest_price}")
+    print(f"Average Price: {average_price}")
+
+    # Save graph data to database
+    for entry in graph_data:
+        cursor.execute("""
+            INSERT INTO graph_data (card_number, date_range, average_price, quantity)
+            VALUES (?, ?, ?, ?)
+        """, (card_number, entry['dateRange'], entry['averagePrice'], entry['quantity']))
+
+    # Commit and close the database connection
+    conn.commit()
+    conn.close()
+
+    # Recreate the graph on a webpage (placeholder for actual implementation)
+    print("Graph data saved. Recreate the graph on your webpage using the graph_data.")
 '''

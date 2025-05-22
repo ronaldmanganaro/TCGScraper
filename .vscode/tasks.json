@@ -11,7 +11,8 @@
         {
             "label": "Run streamlit",
             "type": "shell",
-            "command": "cd C:\\Users\\MrCool\\Documents\\Repos\\TCGScraper\\streamlit && streamlit run Home.py --server.enableCORS false --server.enableXsrfProtection false"
+            "command": "cd C:\\Users\\WinMax2\\Documents\\Software\\TCGPyScraper\\streamlit && streamlit run Home.py --server.enableCORS false --server.enableXsrfProtection false"
         }
     ]
 }
+
