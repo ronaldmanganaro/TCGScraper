@@ -131,7 +131,7 @@ with st.expander("Precon EV Calculator"):
         st.rerun()
 
 
-with st.expander("Pokemon Price Chart", expanded=True):
+with st.expander("Pokemon Price Chart"):
     price_df, fig  = None, None
     if 'card_list' not in st.session_state:
         st.session_state.card_list = []
@@ -251,11 +251,7 @@ with st.expander("Pokemon Price Chart", expanded=True):
             key="min_quantity_selectbox"
         )
 
-
-
     if st.session_state.pkm_selectbox:
-        
-        
         # Remove the [Listings: x] part before splitting
         selectbox_value = st.session_state.pkm_selectbox.split(" [Listings:")[0]
         logging.info(f"Selectbox value: {selectbox_value}")
@@ -360,85 +356,7 @@ with st.expander("Pokemon Price Chart", expanded=True):
             st.plotly_chart(velocity_fig, use_container_width=True)
         else:
             st.write("No Data")
-            
 
 
 
-# ------------------ Sidebar Theme Options ------------------
-#st.title("TCG Tools")
-# Initialize session state defaults
-if "theme_selector" not in st.session_state:
-    st.session_state.theme_selector = "Light"
-if "font_size" not in st.session_state:
-    st.session_state.font_size = 16
-if "layout_width" not in st.session_state:
-    st.session_state.layout_width = "centered"
-    
-with st.sidebar:
-    st.markdown("## 🎨 Appearance Settings")
-
-    st.session_state.theme_selector = st.selectbox(
-        "Theme",
-        options=["Light", "Dark", "Cyberpunk", "Forest"],
-        index=["Light", "Dark", "Cyberpunk", "Forest"].index(st.session_state.theme_selector)
-    )
-    st.session_state.font_size = st.slider(
-            "Font Size",
-            min_value=12,
-            max_value=28,
-            value=st.session_state.font_size
-        )
-
-    st.session_state.layout_width = st.radio(
-        "Page Layout",
-        options=["centered", "wide"],
-        index=0 if st.session_state.layout_width == "centered" else 1
-    )
-
-# ------------------ Apply Selected Theme ------------------
-
-def apply_theme(theme, font_size, layout_width):
-    layout_css = "max-width: 1000px;" if layout_width == "centered" else "max-width: 100%;"
-
-    theme_css = {
-        "Light": f"""
-        body, .stApp {{
-            background-color: #ffffff;
-            color: #000000;
-            font-size: {font_size}px;
-            {layout_css}
-        }}""",
-        "Dark": f"""
-        body, .stApp {{
-            background-color: #0e1117;
-            color: #fafafa;
-            font-size: {font_size}px;
-            {layout_css}
-        }}""",
-        "Cyberpunk": f"""
-        body, .stApp {{
-            background-color: #0f0f0f;
-            color: #00ffff;
-            font-size: {font_size}px;
-            {layout_css}
-        }}
-        .stMarkdown, .stSelectbox label {{
-            color: #ff00ff !important;
-        }}""",
-        "Forest": f"""
-        body, .stApp {{
-            background-color: #e8f5e9;
-            color: #1b5e20;
-            font-size: {font_size}px;
-            {layout_css}
-        }}"""
-    }
-
-    st.markdown(f"<style>{theme_css.get(theme, '')}</style>", unsafe_allow_html=True)
-
-apply_theme(
-    st.session_state.theme_selector,
-    st.session_state.font_size,
-    st.session_state.layout_width
-)
 

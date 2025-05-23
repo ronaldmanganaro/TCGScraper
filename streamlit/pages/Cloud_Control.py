@@ -83,6 +83,5 @@ with st.expander("Price Check"):
             st.markdown(f"- [{name}]({url})")
         
                 
-                
     if st.button("Run Price Check"):
         trigger_price_check()
