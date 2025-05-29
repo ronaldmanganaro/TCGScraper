@@ -1,6 +1,9 @@
 import os
 import streamlit as st
 import pandas as pd
+from functions import widgets
+
+widgets.show_pages_sidebar()
 
 st.title("💲 Repricer")
 
@@ -92,99 +95,25 @@ if "filtered_df" not in st.session_state:
 if "repricer_csv" in st.session_state and not st.session_state.repricer_csv.empty:
     df = st.session_state.repricer_csv.copy()
 
-    # Tabs for inventory, price differentials, and filtered cards
-    with st.expander("Inventory Management", expanded=True):
-        # Add hide columns functionality
-        st.markdown("### 🔧 Hide Columns")
-        columns_to_display = st.radio(
-            "Select columns to display:",
-            options=["All Columns", "Essential Columns", "Custom Columns"],
-            index=0
-        )
+    # Tabs for Inventory, Repricing, and Summary (Filter and Repricing Options back in sidebar)
+    main_tab1, main_tab2, main_tab3 = st.tabs([
+        "Inventory Management", "Repricing Suggestions", "Inventory Summary"
+    ])
 
-        # Define column sets
-        all_columns = df.columns.tolist()
-        essential_columns = [
-            "Product Line", "Set Name", "Product Name", "Total Quantity",
-            "TCG Marketplace Price", "TCG Market Price"
-        ]
-
-        # Handle column selection
-        if columns_to_display == "All Columns":
-            selected_columns = all_columns
-        elif columns_to_display == "Essential Columns":
-            selected_columns = essential_columns
-        else:
-            selected_columns = st.multiselect(
-                "Select columns to display:",
-                options=all_columns,
-                default=essential_columns
-            )
-
-        tab1, tab2, tab3 = st.tabs(
-            ["Full Inventory", "Price Differentials", "Filtered Cards"]
-        )
-
-        # Full Inventory Tab
-        with tab1:
-            st.dataframe(df[selected_columns], use_container_width=True)
-
-        # Price Differentials Tab
-        with tab2:
-            price_dif_df = df.copy()
-            price_dif_df["percentage_difference"] = (
-                (price_dif_df["TCG Marketplace Price"] - price_dif_df["TCG Market Price"]) /
-                price_dif_df["TCG Market Price"] * 100
-            ).round(2)
-
-            # Apply selected columns to the Price Differentials tab
-            st.dataframe(
-                price_dif_df[selected_columns +
-                             ["percentage_difference"]], use_container_width=True
-            )
-
-        # Filtered Cards Tab
-        with tab3:
-            if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
-                st.dataframe(
-                    st.session_state.filtered_df[selected_columns], use_container_width=True
-                )
-            else:
-                st.info(
-                    "No filters applied yet. Use the Filter Options below to filter cards."
-                )
-
-    # Sidebar for How to Use Section
-    with st.sidebar:
-        st.markdown("### 🛠 How to Use")
-        with st.expander("How to Use", expanded=True):
-            st.markdown("""
-            1. **Load Inventory CSV**: Upload your inventory CSV file or use the default test CSV.
-            2. **Apply Filters**: Use the filter options to narrow down the cards you want to analyze.
-            3. **Analyze Repricing Suggestions**: Click the "Analyze Repricing Suggestions" button to generate repricing suggestions for the filtered data.
-            4. **Accept All Suggestions**: Apply all suggested prices to your inventory.
-            5. **Download Updated CSV**: Download the updated inventory CSV file, which can be reimported into TCGPlayer.
-            """)
-
-    # Sidebar for Filtering Options
+    # --- SIDEBAR: Filter Options ---
     with st.sidebar:
         st.markdown("### 🔍 Inventory Management")
-
-        # Filtering Options Expander
         with st.expander("Filter Options", expanded=True):
             # Basic Filters
             search_text = st.text_input(
                 "Filter cards", "", placeholder="Type part of a card name or number..."
             )
-
             product_line = st.selectbox(
                 "Product Line", options=["All"] + df["Product Line"].unique().tolist(), index=0
             )
-
             set_name = st.selectbox(
                 "Set Name", options=["All"] + df[df["Product Line"] == product_line]["Set Name"].unique().tolist() if product_line != "All" else ["All"], index=0
             )
-
             rarity_filter = st.selectbox(
                 "Rarity", options=["All"] + df[(df["Product Line"] == product_line) & (df["Set Name"] == set_name)]["Rarity"].unique().tolist() if set_name != "All" else ["All"], index=0
             )
@@ -246,32 +175,82 @@ if "repricer_csv" in st.session_state and not st.session_state.repricer_csv.empt
                 st.success("Filters cleared!")
                 st.rerun()  # Force the interface to refresh
 
+    # --- MAIN TABS ---
+    with main_tab1:
+        st.markdown("### 🔧 Hide Columns")
+        columns_to_display = st.radio(
+            "Select columns to display:",
+            options=["All Columns", "Essential Columns", "Custom Columns"],
+            index=0
+        )
+        all_columns = df.columns.tolist()
+        essential_columns = [
+            "Product Line", "Set Name", "Product Name", "Total Quantity",
+            "TCG Marketplace Price", "TCG Market Price"
+        ]
+        if columns_to_display == "All Columns":
+            selected_columns = all_columns
+        elif columns_to_display == "Essential Columns":
+            selected_columns = essential_columns
+        else:
+            selected_columns = st.multiselect(
+                "Select columns to display:",
+                options=all_columns,
+                default=essential_columns
+            )
+        tab1, tab2, tab3 = st.tabs([
+            "Full Inventory", "Price Differentials", "Filtered Cards"
+        ])
+        with tab1:
+            st.dataframe(df[selected_columns], use_container_width=True)
+            # Add total marketplace value and total market value below the table
+            total_marketplace_value = (df["Total Quantity"] * df["TCG Marketplace Price"]).sum()
+            total_market_value = (df["Total Quantity"] * df["TCG Market Price"]).sum()
+            st.write(f"**Total Marketplace Value (Quantity x Marketplace Price):** ${total_marketplace_value:.2f}")
+            st.write(f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}")
+        with tab2:
+            price_dif_df = df.copy()
+            price_dif_df["percentage_difference"] = (
+                (price_dif_df["TCG Marketplace Price"] - price_dif_df["TCG Market Price"]) /
+                price_dif_df["TCG Market Price"] * 100
+            ).round(2)
+            st.dataframe(
+                price_dif_df[selected_columns + ["percentage_difference"]], use_container_width=True
+            )
+        with tab3:
+            if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
+                st.dataframe(
+                    st.session_state.filtered_df[selected_columns], use_container_width=True
+                )
+            else:
+                st.info(
+                    "No filters applied yet. Use the Filter Options tab to filter cards."
+                )
 
-# Sidebar for Repricing Options
-with st.sidebar:
-    st.markdown("### 💲 Repricing Options")
-    with st.expander("Repricing Options", expanded=True):
-        # Threshold Slider
+    with main_tab2:
+        st.markdown("### 💲 Repricing Suggestions")
+        # Move repricing filter options here (not in sidebar)
+        st.markdown("#### Repricing Filters")
+        if "price_floor" not in st.session_state:
+            st.session_state["price_floor"] = 1.0
         threshold = st.slider(
             "Set Threshold for Repricing Suggestions (%)",
             min_value=0,
             max_value=100,
             value=10,
             step=1,
-            key="repricing_threshold_slider"
+            key="repricing_threshold_slider_tab"
         )
-
-        # Price Floor Slider
         price_floor = st.slider(
             "Set Card Price Floor (USD)",
             min_value=0.0,
             max_value=1.0,
-            value=1.0,
+            value=st.session_state["price_floor"],
             step=0.01,
+            key="price_floor_slider_tab",
             help="Cards priced below or equal to this value will not be counted as underpriced."
         )
-
-        # Rarity Filter
+        st.session_state["price_floor"] = price_floor
         rarity_options = ["All"] + (
             st.session_state.filtered_df["Rarity"].unique().tolist()
             if st.session_state.filtered_df is not None
@@ -281,10 +260,9 @@ with st.sidebar:
             "Select Rarity to Reprice",
             options=rarity_options,
             index=0,
-            help="Choose the rarity of cards you want to include in the repricing analysis."
+            help="Choose the rarity of cards you want to include in the repricing analysis.",
+            key="repricing_rarity_selectbox_tab"
         )
-
-        # Condition Filter
         condition_options = ["All"] + (
             st.session_state.filtered_df["Condition"].unique().tolist()
             if st.session_state.filtered_df is not None
@@ -294,10 +272,9 @@ with st.sidebar:
             "Select Condition to Reprice",
             options=condition_options,
             index=0,
-            help="Choose the condition of cards you want to include in the repricing analysis."
+            help="Choose the condition of cards you want to include in the repricing analysis.",
+            key="repricing_condition_selectbox_tab"
         )
-
-        # Value Range Filter
         st.markdown("#### 💲 Value Range")
         min_value, max_value = st.slider(
             "Select Value Range for Cards (USD)",
@@ -305,212 +282,218 @@ with st.sidebar:
             max_value=1000.0,
             value=(0.0, 1000.0),
             step=0.01,
-            help="Set the minimum and maximum value range for cards to include in the repricing analysis."
+            help="Set the minimum and maximum value range for cards to include in the repricing analysis.",
+            key="repricing_value_slider_tab"
         )
 
-# Repricing Suggestions
-with st.expander("Repricing Suggestions", expanded=True):
-    st.markdown("### 💲 Repricing Suggestions")
-
-    # Analysis Button
-    if st.button("Analyze Repricing Suggestions", key="analyze_repricing_button"):
-        if st.session_state.filtered_df is not None:
-            # Filter cards based on rarity, condition, and value range
-            filtered_repricing_df = st.session_state.filtered_df[
-                (st.session_state.filtered_df["TCG Marketplace Price"] > price_floor) &
-                (st.session_state.filtered_df["TCG Marketplace Price"] >= min_value) &
-                (st.session_state.filtered_df["TCG Marketplace Price"] <= max_value)
-            ]
-
-            if selected_rarity != "All":
-                filtered_repricing_df = filtered_repricing_df[
-                    filtered_repricing_df["Rarity"] == selected_rarity
+        # Analysis Button
+        if st.button("Analyze Repricing Suggestions", key="analyze_repricing_button"):
+            if st.session_state.filtered_df is not None:
+                # Filter cards based on rarity, condition, and value range
+                filtered_repricing_df = st.session_state.filtered_df[
+                    (st.session_state.filtered_df["TCG Marketplace Price"] > st.session_state["price_floor"]) &
+                    (st.session_state.filtered_df["TCG Marketplace Price"] >= min_value) &
+                    (st.session_state.filtered_df["TCG Marketplace Price"] <= max_value)
                 ]
 
-            if selected_condition != "All":
-                filtered_repricing_df = filtered_repricing_df[
-                    filtered_repricing_df["Condition"] == selected_condition
-                ]
+                if selected_rarity != "All":
+                    filtered_repricing_df = filtered_repricing_df[
+                        filtered_repricing_df["Rarity"] == selected_rarity
+                    ]
 
-            # Analyze repricing suggestions
-            suggested_repricing_df = analyze_repricing(
-                filtered_repricing_df, threshold=threshold
+                if selected_condition != "All":
+                    filtered_repricing_df = filtered_repricing_df[
+                        filtered_repricing_df["Condition"] == selected_condition
+                    ]
+
+                # Analyze repricing suggestions
+                suggested_repricing_df = analyze_repricing(
+                    filtered_repricing_df, threshold=threshold
+                )
+
+                if not suggested_repricing_df.empty:
+                    st.success("Analysis complete! You can edit the table below.")
+
+                    # Calculate stats
+                    num_overpriced = suggested_repricing_df[
+                        suggested_repricing_df["percentage_difference"] > threshold
+                    ].shape[0]
+                    num_underpriced = suggested_repricing_df[
+                        suggested_repricing_df["percentage_difference"] < -threshold
+                    ].shape[0]
+                    num_correctly_priced = suggested_repricing_df[
+                        (suggested_repricing_df["percentage_difference"] <= threshold) &
+                        (suggested_repricing_df["percentage_difference"] >= -threshold)
+                    ].shape[0]
+
+                    # Calculate total value before and after repricing
+                    total_value_before = (
+                        suggested_repricing_df["Total Quantity"] *
+                        suggested_repricing_df["TCG Marketplace Price"]
+                    ).sum()
+                    total_value_after = (
+                        suggested_repricing_df["Total Quantity"] *
+                        suggested_repricing_df["suggested_price"]
+                    ).sum()
+
+                    # Display stats
+                    st.write(f"**Number of Overpriced Cards:** {num_overpriced}")
+                    st.write(f"**Number of Underpriced Cards:** {num_underpriced}")
+                    st.write(
+                        f"**Number of Correctly Priced Cards:** {num_correctly_priced}")
+                    st.write(
+                        f"**Total Value Before Repricing:** ${total_value_before:.2f}")
+                    st.write(
+                        f"**Total Value After Repricing:** ${total_value_after:.2f}")
+
+                    # Format columns
+                    formatted_df = suggested_repricing_df.copy()
+                    formatted_df["percentage_difference"] = formatted_df["percentage_difference"].apply(
+                        lambda x: f"{x:.2f}%")
+                    formatted_df["suggested_price"] = formatted_df["suggested_price"].apply(
+                        lambda x: f"${x:.2f}")
+
+                    # Add color coding
+                    def color_code_row(row):
+                        if float(row["percentage_difference"].strip('%')) > threshold:
+                            # Light red for overpriced
+                            return ["background-color: #ffcccc"] * len(row)
+                        elif float(row["percentage_difference"].strip('%')) < -threshold:
+                            # Light green for underpriced
+                            return ["background-color: #ccffcc"] * len(row)
+                        return [""] * len(row)  # No color for correctly priced
+
+                    styled_df = formatted_df.style.apply(color_code_row, axis=1)
+
+                    # Display styled DataFrame
+                    st.dataframe(styled_df, use_container_width=True)
+
+                    # Save edited DataFrame to session state
+                    st.session_state.suggested_repricing_df = suggested_repricing_df
+                else:
+                    st.info("No cards meet the criteria for repricing.")
+
+        # Accept All Suggestions Button
+        if st.button("Accept All Suggestions", key="accept_all_suggestions_button"):
+            if "suggested_repricing_df" in st.session_state and st.session_state.suggested_repricing_df is not None:
+                # Update the filtered DataFrame with all suggested prices
+                for index, row in st.session_state.suggested_repricing_df.iterrows():
+                    st.session_state.filtered_df.loc[
+                        st.session_state.filtered_df["Product Name"] == row["Product Name"], "TCG Marketplace Price"
+                    ] = row["suggested_price"]
+                st.success("All suggested prices accepted!")
+
+        # Download Button
+        if st.session_state.repricer_csv is not None:
+            # Apply changes from filtered_df back to the original DataFrame
+            if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
+                for index, row in st.session_state.filtered_df.iterrows():
+                    st.session_state.repricer_csv.loc[
+                        st.session_state.repricer_csv["Product Name"] == row["Product Name"], "TCG Marketplace Price"
+                    ] = row["TCG Marketplace Price"]
+
+            # Convert the updated original DataFrame to CSV for download
+            updated_csv = convert_for_download(st.session_state.repricer_csv)
+            st.download_button(
+                label="Download Updated Inventory",
+                data=updated_csv,
+                file_name="updated_inventory.csv",
+                mime="text/csv",
+                key="download_inventory_button"
             )
 
-            if not suggested_repricing_df.empty:
-                st.success("Analysis complete! You can edit the table below.")
+    with main_tab3:
+        st.markdown("### 📊 Inventory Summary")
+        summary_tab1, summary_tab2 = st.tabs(["Full Inventory", "Filtered Cards"])
+        with summary_tab1:
+            # Total unique cards
+            total_unique_cards = df["Product Name"].nunique()
+            st.write(f"**Total Unique Cards:** {total_unique_cards}")
 
-                # Calculate stats
-                num_overpriced = suggested_repricing_df[
-                    suggested_repricing_df["percentage_difference"] > threshold
-                ].shape[0]
-                num_underpriced = suggested_repricing_df[
-                    suggested_repricing_df["percentage_difference"] < -threshold
-                ].shape[0]
-                num_correctly_priced = suggested_repricing_df[
-                    (suggested_repricing_df["percentage_difference"] <= threshold) &
-                    (suggested_repricing_df["percentage_difference"]
-                     >= -threshold)
-                ].shape[0]
+            # Total market price times quantity
+            total_market_value = (df["Total Quantity"] *
+                                  df["TCG Market Price"]).sum()
+            st.write(
+                f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}"
+            )
 
-                # Calculate total value before and after repricing
-                total_value_before = (
-                    suggested_repricing_df["Total Quantity"] *
-                    suggested_repricing_df["TCG Marketplace Price"]
+            # Total quantity of cards
+            total_quantity = df["Total Quantity"].sum()
+            st.write(f"**Total Quantity of Cards:** {total_quantity}")
+
+            # Rarity Counts
+            rarity_counts = df["Rarity"].value_counts()
+            st.write("**Rarity Counts:**")
+            # Transpose the DataFrame to show rarity names on top
+            st.write(rarity_counts.to_frame().T)
+
+            # Average Market Price
+            avg_market_price = df["TCG Market Price"].mean()
+            st.write(f"**Average Market Price:** ${avg_market_price:.2f}")
+
+            # Average Marketplace Price
+            avg_marketplace_price = df["TCG Marketplace Price"].mean()
+            st.write(
+                f"**Average Marketplace Price:** ${avg_marketplace_price:.2f}"
+            )
+
+            # Total marketplace value and total market value
+            total_marketplace_value = (df["Total Quantity"] * df["TCG Marketplace Price"]).sum()
+            total_market_value = (df["Total Quantity"] * df["TCG Market Price"]).sum()
+            st.write(f"**Total Marketplace Value (Quantity x Marketplace Price):** ${total_marketplace_value:.2f}")
+            st.write(f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}")
+        with summary_tab2:
+            if st.session_state.filtered_df is not None:
+                # Total unique cards in filtered data
+                filtered_unique_cards = st.session_state.filtered_df["Product Name"].nunique(
+                )
+                st.write(
+                    f"**Total Unique Cards (Filtered):** {filtered_unique_cards}")
+
+                # Total market price times quantity in filtered data
+                filtered_market_value = (
+                    st.session_state.filtered_df["Total Quantity"] *
+                    st.session_state.filtered_df["TCG Market Price"]
                 ).sum()
-                total_value_after = (
-                    suggested_repricing_df["Total Quantity"] *
-                    suggested_repricing_df["suggested_price"]
+                st.write(
+                    f"**Total Market Value (Filtered):** ${filtered_market_value:.2f}"
+                )
+
+                # Total quantity of cards in filtered data
+                filtered_total_quantity = st.session_state.filtered_df["Total Quantity"].sum(
+                )
+                st.write(
+                    f"**Total Quantity of Cards (Filtered):** {filtered_total_quantity}")
+
+                # Rarity Counts in filtered data
+                filtered_rarity_counts = st.session_state.filtered_df["Rarity"].value_counts(
+                )
+                st.write("**Rarity Counts (Filtered):**")
+                # Transpose the DataFrame for filtered rarity counts
+                st.write(filtered_rarity_counts.to_frame().T)
+
+                # Average Market Price in filtered data
+                filtered_avg_market_price = st.session_state.filtered_df["TCG Market Price"].mean(
+                )
+                st.write(
+                    f"**Average Market Price (Filtered):** ${filtered_avg_market_price:.2f}")
+
+                # Average Marketplace Price in filtered data
+                filtered_avg_marketplace_price = st.session_state.filtered_df["TCG Marketplace Price"].mean(
+                )
+                st.write(
+                    f"**Average Marketplace Price (Filtered):** ${filtered_avg_marketplace_price:.2f}")
+
+                # Total marketplace value and total market value in filtered data
+                filtered_marketplace_value = (
+                    st.session_state.filtered_df["Total Quantity"] *
+                    st.session_state.filtered_df["TCG Marketplace Price"]
                 ).sum()
-
-                # Display stats
-                st.write(f"**Number of Overpriced Cards:** {num_overpriced}")
-                st.write(f"**Number of Underpriced Cards:** {num_underpriced}")
-                st.write(
-                    f"**Number of Correctly Priced Cards:** {num_correctly_priced}")
-                st.write(
-                    f"**Total Value Before Repricing:** ${total_value_before:.2f}")
-                st.write(
-                    f"**Total Value After Repricing:** ${total_value_after:.2f}")
-
-                # Format columns
-                formatted_df = suggested_repricing_df.copy()
-                formatted_df["percentage_difference"] = formatted_df["percentage_difference"].apply(
-                    lambda x: f"{x:.2f}%")
-                formatted_df["suggested_price"] = formatted_df["suggested_price"].apply(
-                    lambda x: f"${x:.2f}")
-
-                # Add color coding
-                def color_code_row(row):
-                    if float(row["percentage_difference"].strip('%')) > threshold:
-                        # Light red for overpriced
-                        return ["background-color: #ffcccc"] * len(row)
-                    elif float(row["percentage_difference"].strip('%')) < -threshold:
-                        # Light green for underpriced
-                        return ["background-color: #ccffcc"] * len(row)
-                    return [""] * len(row)  # No color for correctly priced
-
-                styled_df = formatted_df.style.apply(color_code_row, axis=1)
-
-                # Display styled DataFrame
-                st.dataframe(styled_df, use_container_width=True)
-
-                # Save edited DataFrame to session state
-                st.session_state.suggested_repricing_df = suggested_repricing_df
+                filtered_market_value = (
+                    st.session_state.filtered_df["Total Quantity"] *
+                    st.session_state.filtered_df["TCG Market Price"]
+                ).sum()
+                st.write(f"**Total Marketplace Value (Filtered):** ${filtered_marketplace_value:.2f}")
+                st.write(f"**Total Market Value (Filtered):** ${filtered_market_value:.2f}")
             else:
-                st.info("No cards meet the criteria for repricing.")
-
-    # Accept All Suggestions Button
-    if st.button("Accept All Suggestions", key="accept_all_suggestions_button"):
-        if "suggested_repricing_df" in st.session_state and st.session_state.suggested_repricing_df is not None:
-            # Update the filtered DataFrame with all suggested prices
-            for index, row in st.session_state.suggested_repricing_df.iterrows():
-                st.session_state.filtered_df.loc[
-                    st.session_state.filtered_df["Product Name"] == row["Product Name"], "TCG Marketplace Price"
-                ] = row["suggested_price"]
-            st.success("All suggested prices accepted!")
-
-    # Download Button
-    if st.session_state.repricer_csv is not None:
-        # Apply changes from filtered_df back to the original DataFrame
-        if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
-            for index, row in st.session_state.filtered_df.iterrows():
-                st.session_state.repricer_csv.loc[
-                    st.session_state.repricer_csv["Product Name"] == row["Product Name"], "TCG Marketplace Price"
-                ] = row["TCG Marketplace Price"]
-
-        # Convert the updated original DataFrame to CSV for download
-        updated_csv = convert_for_download(st.session_state.repricer_csv)
-        st.download_button(
-            label="Download Updated Inventory",
-            data=updated_csv,
-            file_name="updated_inventory.csv",
-            mime="text/csv",
-            key="download_inventory_button"
-        )
-
-
-# Summary Statistics
-with st.expander("Inventory Summary", expanded=True):
-    st.markdown("### 📊 Inventory Summary")
-
-    # Tabs for Full Inventory and Filtered Cards
-    summary_tab1, summary_tab2 = st.tabs(["Full Inventory", "Filtered Cards"])
-
-    # Full Inventory Summary
-    with summary_tab1:
-        # Total unique cards
-        total_unique_cards = df["Product Name"].nunique()
-        st.write(f"**Total Unique Cards:** {total_unique_cards}")
-
-        # Total market price times quantity
-        total_market_value = (df["Total Quantity"] *
-                              df["TCG Market Price"]).sum()
-        st.write(
-            f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}"
-        )
-
-        # Total quantity of cards
-        total_quantity = df["Total Quantity"].sum()
-        st.write(f"**Total Quantity of Cards:** {total_quantity}")
-
-        # Rarity Counts
-        rarity_counts = df["Rarity"].value_counts()
-        st.write("**Rarity Counts:**")
-        # Transpose the DataFrame to show rarity names on top
-        st.write(rarity_counts.to_frame().T)
-
-        # Average Market Price
-        avg_market_price = df["TCG Market Price"].mean()
-        st.write(f"**Average Market Price:** ${avg_market_price:.2f}")
-
-        # Average Marketplace Price
-        avg_marketplace_price = df["TCG Marketplace Price"].mean()
-        st.write(
-            f"**Average Marketplace Price:** ${avg_marketplace_price:.2f}"
-        )
-
-    # Filtered Cards Summary
-    with summary_tab2:
-        if st.session_state.filtered_df is not None:
-            # Total unique cards in filtered data
-            filtered_unique_cards = st.session_state.filtered_df["Product Name"].nunique(
-            )
-            st.write(
-                f"**Total Unique Cards (Filtered):** {filtered_unique_cards}")
-
-            # Total market price times quantity in filtered data
-            filtered_market_value = (
-                st.session_state.filtered_df["Total Quantity"] *
-                st.session_state.filtered_df["TCG Market Price"]
-            ).sum()
-            st.write(
-                f"**Total Market Value (Filtered):** ${filtered_market_value:.2f}"
-            )
-
-            # Total quantity of cards in filtered data
-            filtered_total_quantity = st.session_state.filtered_df["Total Quantity"].sum(
-            )
-            st.write(
-                f"**Total Quantity of Cards (Filtered):** {filtered_total_quantity}")
-
-            # Rarity Counts in filtered data
-            filtered_rarity_counts = st.session_state.filtered_df["Rarity"].value_counts(
-            )
-            st.write("**Rarity Counts (Filtered):**")
-            # Transpose the DataFrame for filtered rarity counts
-            st.write(filtered_rarity_counts.to_frame().T)
-
-            # Average Market Price in filtered data
-            filtered_avg_market_price = st.session_state.filtered_df["TCG Market Price"].mean(
-            )
-            st.write(
-                f"**Average Market Price (Filtered):** ${filtered_avg_market_price:.2f}")
-
-            # Average Marketplace Price in filtered data
-            filtered_avg_marketplace_price = st.session_state.filtered_df["TCG Marketplace Price"].mean(
-            )
-            st.write(
-                f"**Average Marketplace Price (Filtered):** ${filtered_avg_marketplace_price:.2f}")
-        else:
-            st.info("No filters applied. Use the Filter Options to filter cards.")
+                st.info("No filters applied. Use the Filter Options to filter cards.")

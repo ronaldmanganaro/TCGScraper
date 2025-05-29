@@ -6,3 +6,6 @@ selenium
 matplotlib
 playwright
 pyperclip
+pandas
+streamlit_extras
+plotly

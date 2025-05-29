@@ -1,6 +1,9 @@
-from functions import ecs
+from functions import ecs, widgets
 import streamlit as st
-        
+
+widgets.show_pages_sidebar()
+
+
 st.title("My Cloud Control App 🚀")
         
 def trigger_price_check():

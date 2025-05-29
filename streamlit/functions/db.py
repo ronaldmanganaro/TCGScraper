@@ -3,8 +3,7 @@ import logging
 import sys
 from datetime import datetime
 from psycopg2.extensions import connection
-import pandas as pd
-import streamlit as st
+
 
 # Configure logging
 logging.basicConfig(
@@ -112,7 +111,7 @@ def get_card_name(connection: connection, min_quantity: int):
         ORDER BY p.card ASC;
     """
     try:
-        cursor.execute(query, (min_quantity,min_quantity))
+        cursor.execute(query, (min_quantity, min_quantity))
         results = cursor.fetchall()
         return results
     except Exception as e:
@@ -220,7 +219,7 @@ def add_card_data(converted_date, card_number, market_price, lowest_price):
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(insert_query, (converted_date,
-                   result[0], None, lowest_price, market_price, result[4], card_number, result[6], result[7]))
+                                      result[0], None, lowest_price, market_price, result[4], card_number, result[6], result[7]))
         connection.commit()
         logging.info(
             f"Successfully added new price entry for card_number: {card_number}")

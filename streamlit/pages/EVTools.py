@@ -1,35 +1,31 @@
-from functions import fetch_all_sales, db
-from functions import mtg_box_sim, commander_ev, db
+from functions import mtg_box_sim, commander_ev, widgets
 import streamlit as st
 import os
 import pandas as pd
 import sys
 import logging
-import requests
-import matplotlib.pyplot as plt
-import plotly.express as px
-import plotly.graph_objects as go
 import asyncio
 import sys
-import pyperclip
-
+import asyncio
 
 if sys.platform.startswith('win') and sys.version_info >= (3, 8):
     asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-import asyncio
-import altair as alt
-
-sys.path.append(os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '..functions')))
 
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s [%(levelname)s] %(message)s", handlers=[
                     logging.StreamHandler(sys.stdout)])
 
+widgets.show_pages_sidebar()
+
 st.title("TCG Tools")
-with st.expander("Booster Box EV Calculator"):
-    st.divider()
-    # Initialize session state to store EV results
+
+tab1, tab2 = st.tabs(["Booster Box EV", "Precon EV"])
+
+with tab1:
+    st.subheader("Booster Box EV Calculator")
+    st.write("Simulate expected value from booster box pulls.")
+    st.write("Enter the set code and number of boxes to open, then click 'Simulate!'")  
+     # Initialize session state to store EV results
     if 'ev_history' not in st.session_state:
         st.session_state.ev_history = []
 
@@ -72,9 +68,9 @@ with st.expander("Booster Box EV Calculator"):
         # Display with Streamlit
         st.dataframe(styled_data, use_container_width=True)
 
-precon_ev = 0
+    precon_ev = 0
 
-with st.expander("Precon EV Calculator"):
+with tab2:  
     precons_by_set = {}
 
     sets = []

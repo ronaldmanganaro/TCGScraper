@@ -1,17 +1,14 @@
-from functions import fetch_all_sales, db
-from functions import mtg_box_sim, commander_ev, db
+from functions import fetch_all_sales, db, widgets
 import streamlit as st
-import os
 import pandas as pd
-import sys
 import logging
-import requests
-import matplotlib.pyplot as plt
 import plotly.express as px
 import plotly.graph_objects as go
 import asyncio
-import sys
 import pyperclip
+
+widgets.show_pages_sidebar()
+
 
 price_df, fig = None, None
 if 'card_list' not in st.session_state:
