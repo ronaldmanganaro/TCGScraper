@@ -7,7 +7,7 @@ services:
       dockerfile: docker/Dockerfile.app
 
   playwright:
-    container_name: TCGScaper-Playwright
+    container_name: TCGScraper-Playwright
     image: rmangana/tcgbot:playwright
     build: 
       context: ../
