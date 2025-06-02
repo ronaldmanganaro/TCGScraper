@@ -1,0 +1,47 @@
+Name,Set code,Set name,Collector number,Foil,Rarity,Quantity,ManaBox ID,Scryfall ID,Purchase price,Misprint,Altered,Condition,Language,Purchase price currency
+"Bria, Riptide Rogue",BLB,Bloomburrow,379,foil,mythic,1,91701,390c96b3-68da-4a42-89ab-d9ccc79ce0dd,10.81,false,false,near_mint,en,USD
+Mockingbird,BLB,Bloomburrow,61,normal,rare,1,95959,ade32396-8841-4ba4-8852-d11146607f21,4.72,false,false,near_mint,en,USD
+Mind Spring,BLB,Bloomburrow,389,normal,rare,1,96134,e7e7d174-eb7c-41ad-a241-cfbfdc71e3a7,0.18,false,false,near_mint,en,USD
+"Alania, Divergent Storm",BLB,Bloomburrow,204,normal,rare,1,95776,436d6a84-4cea-4ca7-94aa-9d08280652af,0.12,false,false,near_mint,en,USD
+Sword of Vengeance,BLB,Bloomburrow,395,normal,rare,1,96136,f21b5fc1-7611-44ac-ad8d-1f0c6d4fc9a3,0.3,false,false,near_mint,en,USD
+Bellowing Crier,BLB,Bloomburrow,42,normal,common,3,96119,ca2215dd-6300-49cf-b9b2-3a840b786c31,0.02,false,false,near_mint,en,USD
+Thieving Otter,BLB,Bloomburrow,390,normal,common,3,96034,52a258be-39e3-4689-b2d0-7c353ce7d574,0.09,false,false,near_mint,en,USD
+Waterspout Warden,BLB,Bloomburrow,80,normal,common,3,95909,35898b39-98e2-405b-8f18-0e054bd2c29e,0.01,false,false,near_mint,en,USD
+Pearl of Wisdom,BLB,Bloomburrow,64,normal,common,3,95625,13cb9575-1138-4f99-8e90-0eaf00bdf4a1,0.01,false,false,near_mint,en,USD
+Charmed Sleep,BLB,Bloomburrow,388,normal,common,2,96063,7d171802-2604-45a5-a0f2-ab5afa1db5d5,0.07,false,false,near_mint,en,USD
+Alania's Pathmaker,BLB,Bloomburrow,123,normal,common,3,96123,d3871fe6-e26e-4ab4-bd81-7e3c7b8135c1,0.02,false,false,near_mint,en,USD
+Flame Lash,BLB,Bloomburrow,391,normal,common,3,96115,c6440439-7178-4a97-9e18-7fdef4b02678,0.08,false,false,near_mint,en,USD
+Coruscation Mage,BLB,Bloomburrow,131,normal,uncommon,2,95972,dc2c1de0-6233-469a-be72-a050b97d2c8f,0.32,false,false,near_mint,en,USD
+Quaketusk Boar,BLB,Bloomburrow,146,normal,uncommon,2,95869,2f2b7fd3-a139-49ea-8a89-b64261e868ef,0.03,false,false,near_mint,en,USD
+Rabid Gnaw,BLB,Bloomburrow,147,normal,uncommon,2,96014,2f815bae-820a-49f6-8eed-46f658e7b6ff,0.04,false,false,near_mint,en,USD
+Stormcatch Mentor,BLB,Bloomburrow,234,normal,uncommon,2,95813,99754055-6d67-4fde-aff3-41f6af6ea764,0.2,false,false,near_mint,en,USD
+Swiftwater Cliffs,BLB,Bloomburrow,397,normal,common,4,96078,89e43510-c444-4b2e-b2a0-528dcc09c899,0.08,false,false,near_mint,en,USD
+Calamitous Tide,BLB,Bloomburrow,43,normal,uncommon,1,96003,178bc8b2-ffa0-4549-aead-aacb3db3cf19,0.03,false,false,near_mint,en,USD
+Otter,TBLB,Bloomburrow Tokens,25,normal,common,2,96131,e6b2c465-c446-4dee-9101-763105dcf813,1.72,false,false,near_mint,en,USD
+"Byrke, Long Ear of the Law",BLB,Bloomburrow,380,foil,mythic,1,91703,6441abd3-320b-424a-9753-61e3581fe1a9,3.48,false,false,near_mint,en,USD
+Serra Redeemer,BLB,Bloomburrow,387,normal,rare,1,96008,230b9aef-bd9c-4332-ace4-b5b065bac6d8,0.23,false,false,near_mint,en,USD
+Colossification,BLB,Bloomburrow,392,normal,rare,1,96111,c2cad902-ffd2-4bab-b114-b4b6df2ac6b3,0.75,false,false,near_mint,en,USD
+Fecund Greenshell,BLB,Bloomburrow,171,normal,rare,1,96071,80b3e815-0e2e-4325-b1d5-5531b7b92da6,0.21,false,false,near_mint,en,USD
+"Finneas, Ace Archer",BLB,Bloomburrow,212,normal,rare,1,95741,0dee197d-c313-4364-b52c-f83d5f579bc3,0.21,false,false,near_mint,en,USD
+Warren Elder,BLB,Bloomburrow,37,normal,common,3,96030,4bf20069-5a20-4f95-976b-6af2b69f3ad0,0.03,false,false,near_mint,en,USD
+Pileated Provisioner,BLB,Bloomburrow,25,normal,common,3,96102,ae442cd6-c4df-4aad-9b1d-ccd936c5ec96,0.02,false,false,near_mint,en,USD
+Carrot Cake,BLB,Bloomburrow,7,normal,common,2,95636,eb03bb4f-8b4b-417e-bfc6-294cd2186b2e,0.06,false,false,near_mint,en,USD
+Rabbit Response,BLB,Bloomburrow,26,normal,common,2,96114,c4ded450-346d-4917-917a-b62bc0267509,0.02,false,false,near_mint,en,USD
+Repel Calamity,BLB,Bloomburrow,27,normal,uncommon,2,95834,d068192a-6270-4981-819d-4945fa4a2b83,0.06,false,false,near_mint,en,USD
+Hop to It,BLB,Bloomburrow,16,normal,uncommon,2,95851,ee7207f8-5daa-42af-aeea-7a489047110b,0.06,false,false,near_mint,en,USD
+Druid of the Spade,BLB,Bloomburrow,170,normal,common,3,96054,6b485cf7-bad0-4824-9ba7-cb112ce4769f,0.02,false,false,near_mint,en,USD
+Treeguard Duo,BLB,Bloomburrow,200,normal,common,3,96077,89c8456e-c971-42b7-abf3-ff5ae1320abe,0.01,false,false,near_mint,en,USD
+Rabid Bite,BLB,Bloomburrow,394,normal,common,2,96036,53a73200-b798-4bfd-a431-8b94e17b70be,0.13,false,false,near_mint,en,USD
+Giant Growth,BLB,Bloomburrow,393,normal,common,2,96133,e70722d6-b4d5-45c2-9488-9a5eb0bdb9bd,0.11,false,false,near_mint,en,USD
+Clifftop Lookout,BLB,Bloomburrow,168,normal,uncommon,2,95931,662d3bcc-65f3-4c69-8ea1-446870a1193d,0.09,false,false,near_mint,en,USD
+Burrowguard Mentor,BLB,Bloomburrow,206,normal,uncommon,2,95945,87138ace-3594-499e-bad5-ec76148613ea,0.06,false,false,near_mint,en,USD
+Blossoming Sands,BLB,Bloomburrow,396,normal,common,4,96135,ecfa2cc9-e427-4104-bad7-b0294e392b1f,0.08,false,false,near_mint,en,USD
+Forest,BLB,Bloomburrow,377,normal,common,6,96021,43b3be4a-973d-4aeb-a94e-37e2710ac178,0.07,false,false,near_mint,en,USD
+Forest,BLB,Bloomburrow,378,normal,common,5,96108,bddc66f7-4e94-4857-ba7d-6b0083d0bfa0,0.07,false,false,near_mint,en,USD
+Rabbit,TBLB,Bloomburrow Tokens,3,normal,common,2,95801,81de52ef-7515-4958-abea-fb8ebdcef93c,0.27,false,false,near_mint,en,USD
+Island,BLB,Bloomburrow,372,normal,common,5,95998,10125dab-fe82-4796-b5db-3bd6ad389e1d,0.09,false,false,near_mint,en,USD
+Mountain,BLB,Bloomburrow,376,normal,common,6,96048,62aaa129-69ff-4e22-861e-b2efd1cd5a10,0.06,false,false,near_mint,en,USD
+Plains,BLB,Bloomburrow,369,normal,common,6,96024,449d4122-ee9d-477c-976a-809ba8cb1443,0.06,false,false,near_mint,en,USD
+Mountain,BLB,Bloomburrow,375,normal,common,5,96028,4b827c54-8bfe-4ef5-830e-e17b8690bbe7,0.05,false,false,near_mint,en,USD
+Island,BLB,Bloomburrow,371,normal,common,6,96025,46848fc2-ba58-4738-b4ce-0399d9053f48,0.08,false,false,near_mint,en,USD
+Plains,BLB,Bloomburrow,370,normal,common,6,95991,031b61a1-db66-416d-8187-edc32123131f,0.07,false,false,near_mint,en,USD

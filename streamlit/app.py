@@ -14,6 +14,7 @@ pg = st.navigation(
         st.Page('pages/EVTools.py'),
         st.Page('pages/PokemonPriceTracker.py'),
         st.Page('pages/Cloud_Control.py'),
+        st.Page('pages/Manabox.py'),
     ], position="hidden"
 )
 

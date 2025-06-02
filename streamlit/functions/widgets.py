@@ -136,3 +136,5 @@ def show_pages_sidebar():
             st.switch_page("pages/PokemonPriceTracker.py")
         if st.button("☁️ Cloud Control", use_container_width=True):
             st.switch_page("pages/Cloud_Control.py")
+        if st.button("📦 Manabox", use_container_width=True):
+            st.switch_page("pages/Manabox.py")
