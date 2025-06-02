@@ -81,6 +81,30 @@ def sidebar(df):
     st.markdown("### 🔍 Inventory Management")
     with st.expander("Filter Options", expanded=True):
         # Basic Filters
+        st.markdown("### 🔧 Hide Columns")
+        all_columns = df.columns.tolist()
+        essential_columns = [
+            "Product Line", "Set Name", "Product Name", "Total Quantity",
+            "TCG Marketplace Price", "TCG Market Price"
+        ]
+        columns_to_display = st.radio(
+            "Select columns to display:",
+            options=["All Columns", "Essential Columns", "Custom Columns"],
+            index=0,
+            key="sidebar_columns_radio"
+        )
+        if columns_to_display == "All Columns":
+            selected_columns = all_columns
+        elif columns_to_display == "Essential Columns":
+            selected_columns = essential_columns
+        else:
+            selected_columns = st.multiselect(
+                "Select columns to display:",
+                options=all_columns,
+                default=essential_columns,
+                key="sidebar_columns_multiselect"
+            )
+        
         search_text = st.text_input(
             "Filter cards", "", placeholder="Type part of a card name or number..."
         )
@@ -183,30 +207,7 @@ def sidebar(df):
             st.success("Filters cleared!")
             st.rerun()  # Force the interface to refresh
 
-    st.markdown("### 🔧 Hide Columns")
-    all_columns = df.columns.tolist()
-    essential_columns = [
-        "Product Line", "Set Name", "Product Name", "Total Quantity",
-        "TCG Marketplace Price", "TCG Market Price"
-    ]
-    columns_to_display = st.radio(
-        "Select columns to display:",
-        options=["All Columns", "Essential Columns", "Custom Columns"],
-        index=0,
-        key="sidebar_columns_radio"
-    )
-    if columns_to_display == "All Columns":
-        selected_columns = all_columns
-    elif columns_to_display == "Essential Columns":
-        selected_columns = essential_columns
-    else:
-        selected_columns = st.multiselect(
-            "Select columns to display:",
-            options=all_columns,
-            default=essential_columns,
-            key="sidebar_columns_multiselect"
-        )
-    return selected_columns
+        return selected_columns
 
 def convert_df_for_tabs(df, selected_columns):
     # Convert the DataFrame for display in tabs, based on selected columns
@@ -218,8 +219,8 @@ def convert_df_for_tabs(df, selected_columns):
 
 
 def inventory_tabs(df, selected_columns):
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "Full Inventory", "Price Differentials", "Filtered Cards", "Repricing Rules"
+    tab1, tab2, tab3 = st.tabs([
+        "Full Inventory", "Price Differentials", "Filtered Cards"
     ])
     with tab1:
         # Always use the main DataFrame from session_state for Full Inventory
@@ -250,231 +251,236 @@ def inventory_tabs(df, selected_columns):
             st.info(
                 "No filters applied yet. Use the Filter Options tab to filter cards."
             )
-    with tab4:
-        repricing_rules_tab(df, selected_columns)
 
 
-def repricing_suggestions_tab(df):
+def repricing_tab(df, selected_columns):
     st.markdown("### 💲 Repricing Tools")
-    # Move repricing filter options here (not in sidebar)
-    st.markdown("#### Repricing Filters")
-    with st.expander("Repricing Options", expanded=True):
-        if "price_floor" not in st.session_state:
-            st.session_state["price_floor"] = 1.0
-        threshold = st.number_input(
-            "Set Threshold for Repricing Suggestions (%)",
-            min_value=0,
-            max_value=100,
-            value=10,
-            step=1,
-            key="repricing_threshold_input"
-        )
-        price_floor = st.number_input(
-            "Set Card Price Floor (USD)",
-            min_value=0.0,
-            max_value=1.0,
-            value=st.session_state["price_floor"],
-            step=0.01,
-            key="price_floor_input",
-            help="Cards priced below or equal to this value will not be counted as underpriced."
-        )
-        st.session_state["price_floor"] = price_floor
-        rarity_options = ["All"] + sorted([str(x) for x in df["Rarity"].dropna().unique()])
-        selected_rarity = st.selectbox(
-            "Select Rarity to Reprice",
-            options=rarity_options,
-            index=0,
-            help="Choose the rarity of cards you want to include in the repricing analysis.",
-            key="repricing_rarity_selectbox_tab"
-        )
-        condition_options = ["All"] + (
-            st.session_state.filtered_df["Condition"].unique().tolist()
-            if st.session_state.filtered_df is not None
-            else []
-        )
-        selected_condition = st.selectbox(
-            "Select Condition to Reprice",
-            options=condition_options,
-            index=0,
-            help="Choose the condition of cards you want to include in the repricing analysis.",
-            key="repricing_condition_selectbox_tab"
-        )
-        st.markdown("#### 💲 Value Range")
-        min_value = st.number_input(
-            "Min Value (USD)",
-            min_value=0.0,
-            max_value=1000.0,
-            value=0.0,
-            step=0.01,
-            key="repricing_min_value_input"
-        )
-        max_value = st.number_input(
-            "Max Value (USD)",
-            min_value=0.0,
-            max_value=1000.0,
-            value=1000.0,
-            step=0.01,
-            key="repricing_max_value_input"
-        )
-
-    # Move the Analyze Repricing Suggestions button OUTSIDE the expander
-    if st.button("Analyze Repricing Suggestions", key="analyze_repricing_button"):
-        if st.session_state.filtered_df is not None:
-            # Filter cards based on rarity, condition, and value range
-            filtered_repricing_df = st.session_state.filtered_df[
-                (st.session_state.filtered_df["TCG Marketplace Price"] > st.session_state["price_floor"]) &
-                (st.session_state.filtered_df["TCG Marketplace Price"] >= min_value) &
-                (st.session_state.filtered_df["TCG Marketplace Price"] <= max_value)
-            ]
-
-            if selected_rarity != "All":
-                filtered_repricing_df = filtered_repricing_df[
-                    filtered_repricing_df["Rarity"] == selected_rarity
-                ]
-
-            if selected_condition != "All":
-                filtered_repricing_df = filtered_repricing_df[
-                    filtered_repricing_df["Condition"] == selected_condition
-                ]
-
-            # Analyze repricing suggestions
-            suggested_repricing_df = analyze_repricing(
-                filtered_repricing_df, threshold=threshold
+    repricing_suggestions_tab, repricing_rules_tab, repricing_templates_tab = st.tabs(["Repricing Analysis", "Repricing Rules", "Repricing Templates"])
+    with repricing_suggestions_tab:        
+        # Move repricing filter options here (not in sidebar)
+        st.markdown("#### Repricing Filters")
+        with st.popover("Repricing Options"):
+            if "price_floor" not in st.session_state:
+                st.session_state["price_floor"] = 1.0
+            threshold = st.number_input(
+                "Set Threshold for Repricing Suggestions (%)",
+                min_value=0,
+                max_value=100,
+                value=10,
+                step=1,
+                key="repricing_threshold_input"
+            )
+            price_floor = st.number_input(
+                "Set Card Price Floor (USD)",
+                min_value=0.0,
+                max_value=1.0,
+                value=st.session_state["price_floor"],
+                step=0.01,
+                key="price_floor_input",
+                help="Cards priced below or equal to this value will not be counted as underpriced."
+            )
+            st.session_state["price_floor"] = price_floor
+            rarity_options = ["All"] + sorted([str(x) for x in df["Rarity"].dropna().unique()])
+            selected_rarity = st.selectbox(
+                "Select Rarity to Reprice",
+                options=rarity_options,
+                index=0,
+                help="Choose the rarity of cards you want to include in the repricing analysis.",
+                key="repricing_rarity_selectbox_tab"
+            )
+            condition_options = ["All"] + (
+                st.session_state.filtered_df["Condition"].unique().tolist()
+                if st.session_state.filtered_df is not None
+                else []
+            )
+            selected_condition = st.selectbox(
+                "Select Condition to Reprice",
+                options=condition_options,
+                index=0,
+                help="Choose the condition of cards you want to include in the repricing analysis.",
+                key="repricing_condition_selectbox_tab"
+            )
+            st.markdown("#### 💲 Value Range")
+            min_value = st.number_input(
+                "Min Value (USD)",
+                min_value=0.0,
+                max_value=1000.0,
+                value=0.0,
+                step=0.01,
+                key="repricing_min_value_input"
+            )
+            max_value = st.number_input(
+                "Max Value (USD)",
+                min_value=0.0,
+                max_value=1000.0,
+                value=1000.0,
+                step=0.01,
+                key="repricing_max_value_input"
             )
 
-            # Always update the session state with the new suggestions
-            st.session_state.suggested_repricing_df = suggested_repricing_df
-            st.session_state.repricer_page = 0  # Reset to first page
-            st.rerun()
+        # Move the Analyze Repricing Suggestions button OUTSIDE the expander
+        if st.button("Analyze Repricing Suggestions", key="analyze_repricing_button"):
+            if st.session_state.filtered_df is not None:
+                # Filter cards based on rarity, condition, and value range
+                filtered_repricing_df = st.session_state.filtered_df[
+                    (st.session_state.filtered_df["TCG Marketplace Price"] > st.session_state["price_floor"]) &
+                    (st.session_state.filtered_df["TCG Marketplace Price"] >= min_value) &
+                    (st.session_state.filtered_df["TCG Marketplace Price"] <= max_value)
+                ]
 
-    # --- INTERACTIVE REPRICER WITH BUTTON PAGINATION AND EDITABLE SUGGESTED PRICE ---
-    if (
-        "suggested_repricing_df" in st.session_state
-        and st.session_state.suggested_repricing_df is not None
-        and not st.session_state.suggested_repricing_df.empty
-    ):
-        suggested_repricing_df = st.session_state.suggested_repricing_df.reset_index(drop=True)
-        total_cards = len(suggested_repricing_df)
-        # Always show 50 cards per page
-        cards_per_page = 50
-        num_pages = (total_cards - 1) // cards_per_page + 1
+                if selected_rarity != "All":
+                    filtered_repricing_df = filtered_repricing_df[
+                        filtered_repricing_df["Rarity"] == selected_rarity
+                    ]
 
-        if "accepted_prices" not in st.session_state:
-            st.session_state.accepted_prices = {}
-        if "repricer_page" not in st.session_state:
-            st.session_state.repricer_page = 0
+                if selected_condition != "All":
+                    filtered_repricing_df = filtered_repricing_df[
+                        filtered_repricing_df["Condition"] == selected_condition
+                    ]
 
-        def go_prev():
-            st.session_state.repricer_page = max(0, st.session_state.repricer_page - 1)
-
-        def go_next():
-            st.session_state.repricer_page = min(num_pages - 1, st.session_state.repricer_page + 1)
-
-        # Pagination controls: Previous and Next buttons next to each other, with page count in between and dropdown after Next
-        prev_disabled = st.session_state.repricer_page == 0
-        # Always show 50 cards per page unless changed by dropdown
-        if "cards_per_page" not in st.session_state:
-            st.session_state.cards_per_page = 50
-        cards_per_page = st.session_state.cards_per_page
-        total_cards = len(suggested_repricing_df)
-        num_pages = (total_cards - 1) // cards_per_page + 1
-
-        
-        prev_col, page_col, next_col, dropdown_col = st.columns([.2, 0.2, 0.2, 1],vertical_alignment="top")
-        with prev_col:
-            st.button("Previous", disabled=prev_disabled, on_click=go_prev)
-        with page_col:
-            st.markdown(f"<div style='text-align:center; line-height:2.5;'>Page {st.session_state.repricer_page + 1} of {num_pages}</div>", unsafe_allow_html=True)
-        with next_col:
-            st.button("Next", disabled=st.session_state.repricer_page == num_pages - 1, on_click=go_next)
-        with dropdown_col:
-            new_cards_per_page = st.selectbox(
-                "Cards per page", [10, 50, 100, 200, 500],
-                index=[10, 50, 100, 200, 500].index(cards_per_page),
-                key="cards_per_page_selectbox_inline"
-            )
-            if new_cards_per_page != cards_per_page:
-                st.session_state.cards_per_page = new_cards_per_page
-                st.session_state.repricer_page = 0
-                cards_per_page = new_cards_per_page
-
-        start_idx = st.session_state.repricer_page * cards_per_page
-        end_idx = min(start_idx + cards_per_page, total_cards)
-        for idx in range(start_idx, end_idx):
-            row = suggested_repricing_df.iloc[idx]
-            row_key = f"row_{idx}_page{st.session_state.repricer_page}"
-            with st.expander(f"{row['Product Name']} (Qty: {row['Total Quantity']})", expanded=True):
-                cols = st.columns([2, 1, 1, 1, 1, 1])
-                cols[0].write("Current Price")
-                current_price = row['TCG Marketplace Price']
-                suggested_key = f"suggested_{idx}_page{st.session_state.repricer_page}"
-                accept_key = f"accept_{idx}_page{st.session_state.repricer_page}"
-                if (
-                    'accepted_prices' in st.session_state and
-                    row['Product Name'] in st.session_state.accepted_prices
-                ):
-                    current_price = st.session_state.accepted_prices[row['Product Name']]
-                cols[0].write(f"${current_price:.2f}")
-                cols[1].write("Market Price")
-                cols[1].write(f"${row['TCG Market Price']:.2f}")
-                edited_suggested = cols[2].number_input(
-                    "Suggested", min_value=0.0, max_value=10000.0, value=float(row['suggested_price']), step=0.01, key=suggested_key
+                # Analyze repricing suggestions
+                suggested_repricing_df = analyze_repricing(
+                    filtered_repricing_df, threshold=threshold
                 )
-                if cols[3].button("Accept", key=accept_key):
-                    st.session_state.accepted_prices[row["Product Name"]] = edited_suggested
-                    if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
-                        st.session_state.filtered_df.loc[
-                            st.session_state.filtered_df["Product Name"] == row["Product Name"], "TCG Marketplace Price"
-                        ] = edited_suggested
-                    if "repricer_csv" in st.session_state and st.session_state.repricer_csv is not None:
-                        st.session_state.repricer_csv.loc[
-                            st.session_state.repricer_csv["Product Name"] == row["Product Name"], "TCG Marketplace Price"
-                        ] = edited_suggested
-                    # Force refresh of the Full Inventory tab
-                    st.session_state.repricer_csv = st.session_state.repricer_csv.copy()
-                    st.rerun()
-                # Add a refresh button for this row
-                if cols[4].button("Refresh", key=f"refresh_{row_key}"):
-                    st.rerun()
-                cols[5].write(f"Qty: {row['Total Quantity']}")
 
-        # Show accepted reprices
-        if st.session_state.accepted_prices:
-            st.subheader("Accepted Price Updates")
-            for name, price in st.session_state.accepted_prices.items():
-                st.write(f"{name}: ${price:.2f}")
-    else:
-        st.info("No cards meet the criteria for repricing.")
+                # Always update the session state with the new suggestions
+                st.session_state.suggested_repricing_df = suggested_repricing_df
+                st.session_state.repricer_page = 0  # Reset to first page
+                st.rerun()
 
-    # Accept All Suggestions Button
-    if st.button("Accept All Suggestions", key="accept_all_suggestions_button"):
-        if "suggested_repricing_df" in st.session_state and st.session_state.suggested_repricing_df is not None:
-            # Update the filtered DataFrame with all suggested prices
-            for index, row in st.session_state.suggested_repricing_df.iterrows():
-                st.session_state.filtered_df.loc[
-                    st.session_state.filtered_df["Product Name"] == row["Product Name"], "TCG Marketplace Price"
-                ] = row["suggested_price"]
-            st.success("All suggested prices accepted!")
+        # --- INTERACTIVE REPRICER WITH BUTTON PAGINATION AND EDITABLE SUGGESTED PRICE ---
+        if (
+            "suggested_repricing_df" in st.session_state
+            and st.session_state.suggested_repricing_df is not None
+            and not st.session_state.suggested_repricing_df.empty
+        ):
+            suggested_repricing_df = st.session_state.suggested_repricing_df.reset_index(drop=True)
+            total_cards = len(suggested_repricing_df)
+            # Always show 50 cards per page
+            cards_per_page = 50
+            num_pages = (total_cards - 1) // cards_per_page + 1
 
-    # Download Button
-    if st.session_state.repricer_csv is not None:
-        # Apply changes from filtered_df back to the original DataFrame
-        if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
-            for index, row in st.session_state.filtered_df.iterrows():
-                st.session_state.repricer_csv.loc[
-                    st.session_state.repricer_csv["Product Name"] == row["Product Name"], "TCG Marketplace Price"
-                ] = row["TCG Marketplace Price"]
+            if "accepted_prices" not in st.session_state:
+                st.session_state.accepted_prices = {}
+            if "repricer_page" not in st.session_state:
+                st.session_state.repricer_page = 0
 
-        # Convert the updated original DataFrame to CSV for download
-        updated_csv = convert_for_download(st.session_state.repricer_csv)
-        st.download_button(
-            label="Download Updated Inventory",
-            data=updated_csv,
-            file_name="updated_inventory.csv",
-            mime="text/csv",
-            key="download_inventory_button"
-        )
+            def go_prev():
+                st.session_state.repricer_page = max(0, st.session_state.repricer_page - 1)
 
+            def go_next():
+                st.session_state.repricer_page = min(num_pages - 1, st.session_state.repricer_page + 1)
+
+            # Pagination controls: Previous and Next buttons next to each other, with page count in between and dropdown after Next
+            prev_disabled = st.session_state.repricer_page == 0
+            # Always show 50 cards per page unless changed by dropdown
+            if "cards_per_page" not in st.session_state:
+                st.session_state.cards_per_page = 50
+            cards_per_page = st.session_state.cards_per_page
+            total_cards = len(suggested_repricing_df)
+            num_pages = (total_cards - 1) // cards_per_page + 1
+
+            
+            prev_col, page_col, next_col, dropdown_col = st.columns([.2, 0.2, 0.2, 1],vertical_alignment="top")
+            with prev_col:
+                st.button("Previous", disabled=prev_disabled, on_click=go_prev)
+            with page_col:
+                st.markdown(f"<div style='text-align:center; line-height:2.5;'>Page {st.session_state.repricer_page + 1} of {num_pages}</div>", unsafe_allow_html=True)
+            with next_col:
+                st.button("Next", disabled=st.session_state.repricer_page == num_pages - 1, on_click=go_next)
+            with dropdown_col:
+                new_cards_per_page = st.selectbox(
+                    "Cards per page", [10, 50, 100, 200, 500],
+                    index=[10, 50, 100, 200, 500].index(cards_per_page),
+                    key="cards_per_page_selectbox_inline"
+                )
+                if new_cards_per_page != cards_per_page:
+                    st.session_state.cards_per_page = new_cards_per_page
+                    st.session_state.repricer_page = 0
+                    cards_per_page = new_cards_per_page
+
+            start_idx = st.session_state.repricer_page * cards_per_page
+            end_idx = min(start_idx + cards_per_page, total_cards)
+            for idx in range(start_idx, end_idx):
+                row = suggested_repricing_df.iloc[idx]
+                row_key = f"row_{idx}_page{st.session_state.repricer_page}"
+                with st.expander(f"{row['Product Name']} (Qty: {row['Total Quantity']})", expanded=True):
+                    cols = st.columns([2, 1, 1, 1, 1, 1])
+                    cols[0].write("Current Price")
+                    current_price = row['TCG Marketplace Price']
+                    suggested_key = f"suggested_{idx}_page{st.session_state.repricer_page}"
+                    accept_key = f"accept_{idx}_page{st.session_state.repricer_page}"
+                    if (
+                        'accepted_prices' in st.session_state and
+                        row['Product Name'] in st.session_state.accepted_prices
+                    ):
+                        current_price = st.session_state.accepted_prices[row['Product Name']]
+                    cols[0].write(f"${current_price:.2f}")
+                    cols[1].write("Market Price")
+                    cols[1].write(f"${row['TCG Market Price']:.2f}")
+                    edited_suggested = cols[2].number_input(
+                        "Suggested", min_value=0.0, max_value=10000.0, value=float(row['suggested_price']), step=0.01, key=suggested_key
+                    )
+                    if cols[3].button("Accept", key=accept_key):
+                        st.session_state.accepted_prices[row["Product Name"]] = edited_suggested
+                        if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
+                            st.session_state.filtered_df.loc[
+                                st.session_state.filtered_df["Product Name"] == row["Product Name"], "TCG Marketplace Price"
+                            ] = edited_suggested
+                        if "repricer_csv" in st.session_state and st.session_state.repricer_csv is not None:
+                            st.session_state.repricer_csv.loc[
+                                st.session_state.repricer_csv["Product Name"] == row["Product Name"], "TCG Marketplace Price"
+                            ] = edited_suggested
+                        # Force refresh of the Full Inventory tab
+                        st.session_state.repricer_csv = st.session_state.repricer_csv.copy()
+                        st.rerun()
+                    # Add a refresh button for this row
+                    if cols[4].button("Refresh", key=f"refresh_{row_key}"):
+                        st.rerun()
+                    cols[5].write(f"Qty: {row['Total Quantity']}")
+
+            # Show accepted reprices
+            if st.session_state.accepted_prices:
+                st.subheader("Accepted Price Updates")
+                for name, price in st.session_state.accepted_prices.items():
+                    st.write(f"{name}: ${price:.2f}")
+        else:
+            st.info("No cards meet the criteria for repricing.")
+
+        # Accept All Suggestions Button
+        if st.button("Accept All Suggestions", key="accept_all_suggestions_button"):
+            if "suggested_repricing_df" in st.session_state and st.session_state.suggested_repricing_df is not None:
+                # Update the filtered DataFrame with all suggested prices
+                for index, row in st.session_state.suggested_repricing_df.iterrows():
+                    st.session_state.filtered_df.loc[
+                        st.session_state.filtered_df["Product Name"] == row["Product Name"], "TCG Marketplace Price"
+                    ] = row["suggested_price"]
+                st.success("All suggested prices accepted!")
+
+        # Download Button
+        if st.session_state.repricer_csv is not None:
+            # Apply changes from filtered_df back to the original DataFrame
+            if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
+                for index, row in st.session_state.filtered_df.iterrows():
+                    st.session_state.repricer_csv.loc[
+                        st.session_state.repricer_csv["Product Name"] == row["Product Name"], "TCG Marketplace Price"
+                    ] = row["TCG Marketplace Price"]
+
+            # Convert the updated original DataFrame to CSV for download
+            updated_csv = convert_for_download(st.session_state.repricer_csv)
+            st.download_button(
+                label="Download Updated Inventory",
+                data=updated_csv,
+                file_name="updated_inventory.csv",
+                mime="text/csv",
+                key="download_inventory_button"
+            )
+
+    with repricing_rules_tab:
+        repricing_rules(df, selected_columns)
+
+    with repricing_templates_tab:
+        repricing_templates(df, selected_columns)
 
 def inventory_summary_tab(df):
     st.markdown("### 📊 Inventory Summary")
@@ -572,7 +578,8 @@ def inventory_summary_tab(df):
         else:
             st.info("No filters applied. Use the Filter Options to filter cards.")
 
-def repricing_rules_tab(df, selected_columns):
+
+def repricing_rules(df, selected_columns):
     st.markdown("### 📜 Repricing Rules")
     # --- Load inventory (replace with your actual loading logic) ---
     if "repricer_csv" not in st.session_state:
@@ -863,6 +870,164 @@ def repricing_rules_tab(df, selected_columns):
         else:
             st.info("No saved rules available. Save a rule from the Current Rules tab.")
 
+def repricing_templates(df, selected_columns):
+    st.markdown("### 🗂️ Repricing Templates (Saved Rules)")
+    if "saved_rules" not in st.session_state or not st.session_state.saved_rules:
+        st.info("No saved rules available. Save a rule from the Current Rules tab.")
+        return
+    # --- Template management ---
+    if "rule_templates" not in st.session_state:
+        st.session_state.rule_templates = []  # Each: {"name": str, "rules": [rule, ...]}
+    st.markdown("#### 📦 Save/Load Rule Templates")
+    # Save current selection as template
+    rule_names = [r.get("name", f"Saved Rule {i+1}") for i, r in enumerate(st.session_state.saved_rules)]
+    selected_rule_names = st.multiselect(
+        "Select one or more saved rules to preview/apply:",
+        options=rule_names,
+        key="template_multiselect"
+    )
+    if selected_rule_names:
+        template_name = st.text_input("Template Name (to save this set):", key="template_name_input")
+        if st.button("Save as Template", key="save_template_btn") and template_name.strip():
+            # Save selected rules as a template
+            selected_rules = [r for r, name in zip(st.session_state.saved_rules, rule_names) if name in selected_rule_names]
+            # Prevent duplicate template names
+            if any(t["name"] == template_name.strip() for t in st.session_state.rule_templates):
+                st.warning("Template name must be unique.")
+            else:
+                st.session_state.rule_templates.append({"name": template_name.strip(), "rules": selected_rules})
+                st.success(f"Template '{template_name.strip()}' saved!")
+                st.rerun()
+    # --- Load and apply a template ---
+    if st.session_state.rule_templates:
+        st.markdown("#### 📂 Load a Saved Template")
+        template_options = [t["name"] for t in st.session_state.rule_templates]
+        selected_template = st.selectbox("Select a template to preview/apply:", ["None"] + template_options, key="template_selectbox")
+        if selected_template != "None":
+            template = next(t for t in st.session_state.rule_templates if t["name"] == selected_template)
+            selected_rules = template["rules"]
+            st.info(f"Previewing template: {selected_template}")
+            # Preview logic (apply rules in order)
+            preview_df = st.session_state.repricer_csv.copy()
+            preview_df["Affected Rule"] = "None"
+            preview_df["New Price"] = preview_df["TCG Marketplace Price"]
+            for rule in selected_rules:
+                affected_rows = preview_df[
+                    (preview_df["Product Line"] == rule["card_type"] if rule["card_type"] != "All" else True) &
+                    (preview_df["Set Name"] == rule["set_name"] if rule["set_name"] != "All" else True) &
+                    (preview_df["Rarity"] == rule["rarity"] if rule["rarity"] != "All" else True) &
+                    (preview_df["TCG Marketplace Price"] >= rule["min_price"]) &
+                    (preview_df["TCG Marketplace Price"] <= rule["max_price"]) &
+                    (preview_df["Total Quantity"] >= rule["min_qty"]) &
+                    (preview_df["Total Quantity"] <= rule["max_qty"]) &
+                    (preview_df["Condition"] == rule["condition"] if rule["condition"] != "All" else True)
+                ]
+                preview_df.loc[affected_rows.index, "Affected Rule"] = f"{rule['name']} ({rule['action_type']} {rule['action_value']})"
+                if rule["action_type"] == "Set to Market + X%":
+                    preview_df.loc[affected_rows.index, "New Price"] = (preview_df.loc[affected_rows.index, "TCG Market Price"] * (1 + rule["action_value"] / 100)).round(2)
+                elif rule["action_type"] == "Set to Market + $X":
+                    preview_df.loc[affected_rows.index, "New Price"] = (preview_df.loc[affected_rows.index, "TCG Market Price"] + rule["action_value"]).round(2)
+                elif rule["action_type"] == "Set to Fixed Value":
+                    preview_df.loc[affected_rows.index, "New Price"] = rule["action_value"]
+                elif rule["action_type"] == "Set to Market Price":
+                    preview_df.loc[affected_rows.index, "New Price"] = preview_df.loc[affected_rows.index, "TCG Market Price"].round(2)
+            preview_df["New Price"] = preview_df["New Price"].astype(float)
+            display_df = preview_df[preview_df["Affected Rule"] != "None"]
+            required_cols = ["Product Line", "Set Name", "Product Name", "TCG Marketplace Price", "TCG Market Price", "New Price", "Affected Rule"]
+            for col in required_cols:
+                if col not in display_df.columns:
+                    display_df[col] = None
+            if not display_df.empty:
+                st.dataframe(display_df[required_cols], use_container_width=True)
+            else:
+                st.info("No cards to display for the selected template.")
+            if st.button("Apply Template (Save New Prices)", key="apply_template_btn"):
+                key_cols = ["Product Name", "Set Name", "Condition"]
+                updated = preview_df[[*key_cols, "New Price"]].copy()
+                updated = updated.rename(columns={"New Price": "TCG Marketplace Price"})
+                st.session_state.repricer_csv.set_index(key_cols, inplace=True)
+                updated.set_index(key_cols, inplace=True)
+                st.session_state.repricer_csv.update(updated)
+                st.session_state.repricer_csv.reset_index(inplace=True)
+                if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
+                    st.session_state.filtered_df.set_index(key_cols, inplace=True)
+                    st.session_state.filtered_df.update(updated)
+                    st.session_state.filtered_df.reset_index(inplace=True)
+                st.toast(f"Template '{selected_template}' applied and prices saved!")
+                updated_csv = convert_for_download(st.session_state.repricer_csv)
+                st.download_button(
+                    label="Download Updated Inventory",
+                    data=updated_csv,
+                    file_name="updated_inventory.csv",
+                    mime="text/csv",
+                    key="download_inventory_button_templates_apply"
+                )
+            # Option to delete template
+            if st.button("Delete Template", key="delete_template_btn"):
+                st.session_state.rule_templates = [t for t in st.session_state.rule_templates if t["name"] != selected_template]
+                st.success(f"Template '{selected_template}' deleted.")
+                st.rerun()
+    # --- Legacy: preview/apply ad-hoc selection (still supported) ---
+    if not selected_rule_names:
+        st.info("Select at least one saved rule to preview changes.")
+        return
+    selected_rules = [r for r, name in zip(st.session_state.saved_rules, rule_names) if name in selected_rule_names]
+    preview_df = st.session_state.repricer_csv.copy()
+    preview_df["Affected Rule"] = "None"
+    preview_df["New Price"] = preview_df["TCG Marketplace Price"]
+    for rule in selected_rules:
+        affected_rows = preview_df[
+            (preview_df["Product Line"] == rule["card_type"] if rule["card_type"] != "All" else True) &
+            (preview_df["Set Name"] == rule["set_name"] if rule["set_name"] != "All" else True) &
+            (preview_df["Rarity"] == rule["rarity"] if rule["rarity"] != "All" else True) &
+            (preview_df["TCG Marketplace Price"] >= rule["min_price"]) &
+            (preview_df["TCG Marketplace Price"] <= rule["max_price"]) &
+            (preview_df["Total Quantity"] >= rule["min_qty"]) &
+            (preview_df["Total Quantity"] <= rule["max_qty"]) &
+            (preview_df["Condition"] == rule["condition"] if rule["condition"] != "All" else True)
+        ]
+        preview_df.loc[affected_rows.index, "Affected Rule"] = f"{rule['name']} ({rule['action_type']} {rule['action_value']})"
+        if rule["action_type"] == "Set to Market + X%":
+            preview_df.loc[affected_rows.index, "New Price"] = (preview_df.loc[affected_rows.index, "TCG Market Price"] * (1 + rule["action_value"] / 100)).round(2)
+        elif rule["action_type"] == "Set to Market + $X":
+            preview_df.loc[affected_rows.index, "New Price"] = (preview_df.loc[affected_rows.index, "TCG Market Price"] + rule["action_value"]).round(2)
+        elif rule["action_type"] == "Set to Fixed Value":
+            preview_df.loc[affected_rows.index, "New Price"] = rule["action_value"]
+        elif rule["action_type"] == "Set to Market Price":
+            preview_df.loc[affected_rows.index, "New Price"] = preview_df.loc[affected_rows.index, "TCG Market Price"].round(2)
+    preview_df["New Price"] = preview_df["New Price"].astype(float)
+    display_df = preview_df[preview_df["Affected Rule"] != "None"]
+    required_cols = ["Product Line", "Set Name", "Product Name", "TCG Marketplace Price", "TCG Market Price", "New Price", "Affected Rule"]
+    for col in required_cols:
+        if col not in display_df.columns:
+            display_df[col] = None
+    if not display_df.empty:
+        st.dataframe(display_df[required_cols], use_container_width=True)
+    else:
+        st.info("No cards to display for the selected rules.")
+    if st.button("Save New Prices from Templates", key="save_templates_btn"):
+        key_cols = ["Product Name", "Set Name", "Condition"]
+        updated = preview_df[[*key_cols, "New Price"]].copy()
+        updated = updated.rename(columns={"New Price": "TCG Marketplace Price"})
+        st.session_state.repricer_csv.set_index(key_cols, inplace=True)
+        updated.set_index(key_cols, inplace=True)
+        st.session_state.repricer_csv.update(updated)
+        st.session_state.repricer_csv.reset_index(inplace=True)
+        if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
+            st.session_state.filtered_df.set_index(key_cols, inplace=True)
+            st.session_state.filtered_df.update(updated)
+            st.session_state.filtered_df.reset_index(inplace=True)
+        st.toast("New prices from templates saved to the full inventory!")
+        updated_csv = convert_for_download(st.session_state.repricer_csv)
+        st.download_button(
+            label="Download Updated Inventory",
+            data=updated_csv,
+            file_name="updated_inventory.csv",
+            mime="text/csv",
+            key="download_inventory_button_templates"
+        )
+
+
 def main():
     # Load data
     if "repricer_csv" not in st.session_state:
@@ -883,18 +1048,19 @@ def main():
         with st.sidebar:
             selected_columns = sidebar(df)
         main_tab1, main_tab2, main_tab3 = st.tabs([
-            "Inventory Management", "Repricing Suggestions", "Inventory Summary"
+            "Inventory Management", "Repricing", "Inventory Summary"
         ])
         with main_tab1:
             inventory_tabs(df, selected_columns)
         with main_tab2:
-            repricing_suggestions_tab(df)
+            repricing_tab(df, selected_columns)
         with main_tab3:
             inventory_summary_tab(df)
 
+            
     else:
         st.warning("No inventory loaded. Please upload a CSV file.")
 
+
 if __name__ == "__main__":
     main()
-
