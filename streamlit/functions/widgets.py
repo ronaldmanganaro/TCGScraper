@@ -138,3 +138,5 @@ def show_pages_sidebar():
             st.switch_page("pages/Cloud_Control.py")
         if st.button("📦 Manabox", use_container_width=True):
             st.switch_page("pages/Manabox.py")
+        if st.button("📦 Manage Inventory", use_container_width=True):
+            st.switch_page("pages/Manage_Inventory.py")

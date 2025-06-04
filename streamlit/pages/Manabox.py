@@ -10,28 +10,33 @@ st.title("🧩 ManaBox Converter")
 st.markdown("""
 Welcome to the ManaBox Converter! This tool allows you to convert your card data into the ManaBox format.
 """)
-
+tcgplayer_df = None  # Initialize the DataFrame to avoid reference errors
 manabox_csv = st.file_uploader("Upload your card data file", type=["csv", "json"], key="mana_box_uploader")
+
+# Use session state to cache processed DataFrame for the current upload
+if 'manabox_last_filename' not in st.session_state:
+    st.session_state['manabox_last_filename'] = None
+if 'manabox_tcgplayer_df' not in st.session_state:
+    st.session_state['manabox_tcgplayer_df'] = None
+if 'manabox_output_csv' not in st.session_state:
+    st.session_state['manabox_output_csv'] = None
+
 if manabox_csv is not None:
-    if "manabox_csv" not in st.session_state or st.session_state.get("manabox_file_name") != manabox_csv.name:
-        st.session_state.manabox_csv = pd.read_csv(manabox_csv, index_col=0)
-        st.session_state.manabox_file_name = manabox_csv.name
+    # Only process if new file uploaded
+    if manabox_csv.name != st.session_state['manabox_last_filename']:
+        uploaded_df = pd.read_csv(manabox_csv, index_col=0)
         tcgplayer_data = []
-        total_cards = len(st.session_state.manabox_csv)
+        total_cards = len(uploaded_df)
         progress_bar = st.progress(0, text="Processing card data...")
-        # Define required headers
         required_headers = [
             "TCGplayer Id", "Product Line", "Set Name", "Product Name", "Title", "Number", "Rarity", "Condition",
             "TCG Market Price", "TCG Direct Low", "TCG Low Price With Shipping", "TCG Low Price", "Total Quantity",
             "Add to Quantity", "TCG Marketplace Price", "Photo URL"
         ]
-
-        # Build the output data for each card
-        for idx, card in enumerate(st.session_state.manabox_csv.itertuples()):
+        for idx, card in enumerate(uploaded_df.itertuples()):
             tcg_id = commander_ev.get_tcgplayerid(card[1], card[3])
-            # Need to use condition to alter near_mint to Near Mint Foil or Near Mint
             tcgplayer_data.append({
-                "TCGplayer Id": tcg_id,
+                "TCGplayer Id": int(tcg_id) if tcg_id is not None else '',
                 "Product Line": 'Magic',
                 "Set Name": card[2] if len(card) > 2 else '',
                 "Product Name": card[0],
@@ -51,30 +56,48 @@ if manabox_csv is not None:
             time.sleep(0.5)
             progress_bar.progress((idx + 1) / total_cards, text=f"Processed {idx + 1} of {total_cards} cards. Currrent card: {card[0]}")
         progress_bar.empty()
-        st.session_state.tcgplayer_df = pd.DataFrame(tcgplayer_data, columns=required_headers)
-    tcgplayer_df = st.session_state.tcgplayer_df
-    output_csv = "manabox_tcgplayer_ids.csv"
-    tcgplayer_df.to_csv(output_csv, index=False)
+        tcgplayer_df = pd.DataFrame(tcgplayer_data, columns=required_headers)
+        output_csv = "manabox_tcgplayer_ids.csv"
+        st.session_state['manabox_tcgplayer_df'] = tcgplayer_df
+        st.session_state['manabox_output_csv'] = output_csv
+        st.session_state['manabox_last_filename'] = manabox_csv.name
+    else:
+        tcgplayer_df = st.session_state['manabox_tcgplayer_df']
+        output_csv = st.session_state['manabox_output_csv']
 
-    # Highlight missing TCGplayer Ids
+    # UI: Three columns for controls
+    all_columns = list(tcgplayer_df.columns)
+    blank_columns = [col for col in all_columns if tcgplayer_df[col].replace('', pd.NA).isna().all()]
+    col1, col2, col3 = st.columns([2, 2, 1])
+    with col1:
+        hidden_columns = st.multiselect("Hide columns", options=all_columns, default=[])
+    with col2:
+        show_missing_only = st.checkbox("Show only cards missing TCGplayer Id", value=False)
+    with col3:
+        if st.button("Hide all blank columns"):
+            hidden_columns = blank_columns
+    # Filter DataFrame if needed
+    df_to_show = tcgplayer_df.copy()
+    if show_missing_only:
+        df_to_show = df_to_show[df_to_show['TCGplayer Id'] == '']
+    if hidden_columns:
+        df_to_show = df_to_show.drop(columns=hidden_columns)
     def highlight_missing_id(row):
-        color = 'background-color: #ffcccc' if not row['TCGplayer Id'] else ''
+        color = 'background-color: #ffcccc' if not row.get('TCGplayer Id', None) else ''
         return [color] * len(row)
-    styled_df = tcgplayer_df.style.apply(highlight_missing_id, axis=1)
-
-    # Count missing TCGplayer Ids
+    styled_df = df_to_show.style.apply(highlight_missing_id, axis=1) if 'TCGplayer Id' in df_to_show.columns else df_to_show
     missing_count = (tcgplayer_df['TCGplayer Id'] == '').sum()
-
-    st.success(f"TCGPlayer IDs saved to {output_csv}")
-    st.dataframe(styled_df, use_container_width=True)
-
-    # Show warning if there are missing TCGplayer Ids
+    st.toast(f"TCGPlayer IDs saved to {output_csv}")
+    # Autosize columns using set_sticky and set_properties for best fit
+    styled_df = styled_df.set_sticky(axis="columns").set_properties(**{"min-width": "80px", "max-width": "400px", "white-space": "pre-wrap"})
+    st.dataframe(styled_df, use_container_width=True, hide_index=True)
     if missing_count > 0:
         st.warning(f"Warning: {missing_count} cards do not have a TCGplayer Id. They will be included in the download.")
 
+if st.session_state.get('manabox_tcgplayer_df') is not None and not st.session_state['manabox_tcgplayer_df'].empty:
     st.download_button(
         label="Download Converted CSV",
-        data=tcgplayer_df.to_csv(index=False).encode('utf-8'),
-        file_name=output_csv,
+        data=st.session_state['manabox_tcgplayer_df'].to_csv(index=False).encode('utf-8'),
+        file_name=st.session_state['manabox_output_csv'],
         mime='text/csv'
     )
