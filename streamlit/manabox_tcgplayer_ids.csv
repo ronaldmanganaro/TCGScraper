@@ -1,47 +1,47 @@
-Card Name,Set,Collector Number,TCGPlayer ID
-BLB,Bloomburrow,379,541384.0
-BLB,Bloomburrow,61,559141.0
-BLB,Bloomburrow,389,559545.0
-BLB,Bloomburrow,204,558439.0
-BLB,Bloomburrow,395,559562.0
-BLB,Bloomburrow,42,559561.0
-BLB,Bloomburrow,390,559541.0
-BLB,Bloomburrow,80,559053.0
-BLB,Bloomburrow,64,558588.0
-BLB,Bloomburrow,388,559549.0
-BLB,Bloomburrow,123,559554.0
-BLB,Bloomburrow,391,559563.0
-BLB,Bloomburrow,131,559072.0
-BLB,Bloomburrow,146,558708.0
-BLB,Bloomburrow,147,559659.0
-BLB,Bloomburrow,234,558400.0
-BLB,Bloomburrow,397,559543.0
-BLB,Bloomburrow,43,559502.0
-TBLB,Bloomburrow Tokens,25,
-BLB,Bloomburrow,380,541388.0
-BLB,Bloomburrow,387,559551.0
-BLB,Bloomburrow,392,559540.0
-BLB,Bloomburrow,171,559635.0
-BLB,Bloomburrow,212,558324.0
-BLB,Bloomburrow,37,559132.0
-BLB,Bloomburrow,25,559131.0
-BLB,Bloomburrow,7,558593.0
-BLB,Bloomburrow,26,559500.0
-BLB,Bloomburrow,27,558366.0
-BLB,Bloomburrow,16,558432.0
-BLB,Bloomburrow,170,559552.0
-BLB,Bloomburrow,200,559560.0
-BLB,Bloomburrow,394,559547.0
-BLB,Bloomburrow,393,559550.0
-BLB,Bloomburrow,168,559074.0
-BLB,Bloomburrow,206,559057.0
-BLB,Bloomburrow,396,559544.0
-BLB,Bloomburrow,377,559542.0
-BLB,Bloomburrow,378,559553.0
-TBLB,Bloomburrow Tokens,3,
-BLB,Bloomburrow,372,559546.0
-BLB,Bloomburrow,376,559557.0
-BLB,Bloomburrow,369,559539.0
-BLB,Bloomburrow,375,559558.0
-BLB,Bloomburrow,371,559548.0
-BLB,Bloomburrow,370,559559.0
+TCGplayer Id,Product Line,Set Name,Product Name,Title,Number,Rarity,Condition,TCG Market Price,TCG Direct Low,TCG Low Price With Shipping,TCG Low Price,Total Quantity,Add to Quantity,TCG Marketplace Price,Photo URL
+541384.0,Magic,Bloomburrow,"Bria, Riptide Rogue",,379,mythic,Near Mint Foil,,,,,,1,,
+559141.0,Magic,Bloomburrow,Mockingbird,,61,rare,Near Mint,,,,,,1,,
+559545.0,Magic,Bloomburrow,Mind Spring,,389,rare,Near Mint,,,,,,1,,
+558439.0,Magic,Bloomburrow,"Alania, Divergent Storm",,204,rare,Near Mint,,,,,,1,,
+559562.0,Magic,Bloomburrow,Sword of Vengeance,,395,rare,Near Mint,,,,,,1,,
+559561.0,Magic,Bloomburrow,Bellowing Crier,,42,common,Near Mint,,,,,,3,,
+559541.0,Magic,Bloomburrow,Thieving Otter,,390,common,Near Mint,,,,,,3,,
+559053.0,Magic,Bloomburrow,Waterspout Warden,,80,common,Near Mint,,,,,,3,,
+558588.0,Magic,Bloomburrow,Pearl of Wisdom,,64,common,Near Mint,,,,,,3,,
+559549.0,Magic,Bloomburrow,Charmed Sleep,,388,common,Near Mint,,,,,,2,,
+559554.0,Magic,Bloomburrow,Alania's Pathmaker,,123,common,Near Mint,,,,,,3,,
+559563.0,Magic,Bloomburrow,Flame Lash,,391,common,Near Mint,,,,,,3,,
+559072.0,Magic,Bloomburrow,Coruscation Mage,,131,uncommon,Near Mint,,,,,,2,,
+558708.0,Magic,Bloomburrow,Quaketusk Boar,,146,uncommon,Near Mint,,,,,,2,,
+559659.0,Magic,Bloomburrow,Rabid Gnaw,,147,uncommon,Near Mint,,,,,,2,,
+558400.0,Magic,Bloomburrow,Stormcatch Mentor,,234,uncommon,Near Mint,,,,,,2,,
+559543.0,Magic,Bloomburrow,Swiftwater Cliffs,,397,common,Near Mint,,,,,,4,,
+559502.0,Magic,Bloomburrow,Calamitous Tide,,43,uncommon,Near Mint,,,,,,1,,
+,Magic,Bloomburrow Tokens,Otter,,25,common,Near Mint,,,,,,2,,
+541388.0,Magic,Bloomburrow,"Byrke, Long Ear of the Law",,380,mythic,Near Mint Foil,,,,,,1,,
+559551.0,Magic,Bloomburrow,Serra Redeemer,,387,rare,Near Mint,,,,,,1,,
+559540.0,Magic,Bloomburrow,Colossification,,392,rare,Near Mint,,,,,,1,,
+559635.0,Magic,Bloomburrow,Fecund Greenshell,,171,rare,Near Mint,,,,,,1,,
+558324.0,Magic,Bloomburrow,"Finneas, Ace Archer",,212,rare,Near Mint,,,,,,1,,
+559132.0,Magic,Bloomburrow,Warren Elder,,37,common,Near Mint,,,,,,3,,
+559131.0,Magic,Bloomburrow,Pileated Provisioner,,25,common,Near Mint,,,,,,3,,
+558593.0,Magic,Bloomburrow,Carrot Cake,,7,common,Near Mint,,,,,,2,,
+559500.0,Magic,Bloomburrow,Rabbit Response,,26,common,Near Mint,,,,,,2,,
+558366.0,Magic,Bloomburrow,Repel Calamity,,27,uncommon,Near Mint,,,,,,2,,
+558432.0,Magic,Bloomburrow,Hop to It,,16,uncommon,Near Mint,,,,,,2,,
+559552.0,Magic,Bloomburrow,Druid of the Spade,,170,common,Near Mint,,,,,,3,,
+559560.0,Magic,Bloomburrow,Treeguard Duo,,200,common,Near Mint,,,,,,3,,
+559547.0,Magic,Bloomburrow,Rabid Bite,,394,common,Near Mint,,,,,,2,,
+559550.0,Magic,Bloomburrow,Giant Growth,,393,common,Near Mint,,,,,,2,,
+559074.0,Magic,Bloomburrow,Clifftop Lookout,,168,uncommon,Near Mint,,,,,,2,,
+559057.0,Magic,Bloomburrow,Burrowguard Mentor,,206,uncommon,Near Mint,,,,,,2,,
+559544.0,Magic,Bloomburrow,Blossoming Sands,,396,common,Near Mint,,,,,,4,,
+559542.0,Magic,Bloomburrow,Forest,,377,common,Near Mint,,,,,,6,,
+559553.0,Magic,Bloomburrow,Forest,,378,common,Near Mint,,,,,,5,,
+,Magic,Bloomburrow Tokens,Rabbit,,3,common,Near Mint,,,,,,2,,
+559546.0,Magic,Bloomburrow,Island,,372,common,Near Mint,,,,,,5,,
+559557.0,Magic,Bloomburrow,Mountain,,376,common,Near Mint,,,,,,6,,
+559539.0,Magic,Bloomburrow,Plains,,369,common,Near Mint,,,,,,6,,
+559558.0,Magic,Bloomburrow,Mountain,,375,common,Near Mint,,,,,,5,,
+559548.0,Magic,Bloomburrow,Island,,371,common,Near Mint,,,,,,6,,
+559559.0,Magic,Bloomburrow,Plains,,370,common,Near Mint,,,,,,6,,
