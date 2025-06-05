@@ -1,7 +1,75 @@
 import streamlit as st
-from functions import widgets, commander_ev
+from functions import widgets
 import pandas as pd
 import time
+import psycopg2
+import requests
+
+
+# --- DB Connection Helper ---
+def get_db_connection():
+    return psycopg2.connect(
+        dbname='scryfall',
+        user='rmangana',
+        password='password',
+        host='52.73.212.127',
+        port=5432
+    )
+
+# --- Get TCGplayer ID from DB ---
+def get_tcgplayer_id_from_db(card_name, set_name):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT tcgplayer_id FROM scryfall
+            WHERE LOWER(name) = LOWER(%s) AND LOWER(set_name) = LOWER(%s)
+            LIMIT 1
+        """, (card_name, set_name))
+        result = cur.fetchone()
+        return result[0] if result and result[0] is not None else None
+    finally:
+        cur.close()
+        conn.close()
+
+# --- Get TCGplayer ID from Scryfall API ---
+def get_tcgplayer_id_from_scryfall(card_name, set_name):
+    url = f"https://api.scryfall.com/cards/named?exact={card_name}&set={set_name}"
+    resp = requests.get(url)
+    if resp.status_code == 200:
+        data = resp.json()
+        return data.get("tcgplayer_id")
+    return None
+
+# --- Main lookup function ---
+def get_tcgplayer_id(card_name, set_name):
+    tcg_id = get_tcgplayer_id_from_db(card_name, set_name)
+    if tcg_id:
+        return tcg_id
+    return get_tcgplayer_id_from_scryfall(card_name, set_name)
+
+def batch_get_tcgplayer_ids_from_db(card_set_pairs):
+    """
+    card_set_pairs: List of (card_name, set_name) tuples
+    Returns: dict mapping (card_name.lower(), set_name.lower()) -> tcgplayer_id
+    """
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        # Prepare the WHERE clause for batch query
+        # Use tuple unpacking for psycopg2's mogrify to avoid SQL injection
+        format_strings = ','.join(['%s'] * len(card_set_pairs))
+        cur.execute(f"""
+            SELECT LOWER(name), LOWER(set_name), tcgplayer_id FROM scryfall
+            WHERE (LOWER(name), LOWER(set_name)) IN ({format_strings})
+        """, card_set_pairs)
+        results = cur.fetchall()
+        # Build lookup dict
+        lookup = { (name, set_name): tcg_id for name, set_name, tcg_id in results if tcg_id is not None }
+        return lookup
+    finally:
+        cur.close()
+        conn.close()
 
 
 widgets.show_pages_sidebar()
@@ -33,8 +101,13 @@ if manabox_csv is not None:
             "TCG Market Price", "TCG Direct Low", "TCG Low Price With Shipping", "TCG Low Price", "Total Quantity",
             "Add to Quantity", "TCG Marketplace Price", "Photo URL"
         ]
+        card_set_pairs = list({(str(card[1]).lower(), str(card[2]).lower()) for card in uploaded_df.itertuples()})
+        db_lookup = batch_get_tcgplayer_ids_from_db(card_set_pairs)
         for idx, card in enumerate(uploaded_df.itertuples()):
-            tcg_id = commander_ev.get_tcgplayerid(card[1], card[3])
+            key = (str(card[1]).lower(), str(card[2]).lower())
+            tcg_id = db_lookup.get(key)
+            if not tcg_id:
+                tcg_id = get_tcgplayer_id_from_scryfall(card[1], card[2])
             tcgplayer_data.append({
                 "TCGplayer Id": int(tcg_id) if tcg_id is not None else '',
                 "Product Line": 'Magic',
