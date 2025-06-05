@@ -4,6 +4,7 @@ import pandas as pd
 import time
 import psycopg2
 import requests
+import logging
 
 
 # --- DB Connection Helper ---
@@ -35,7 +36,8 @@ def get_tcgplayer_id_from_db(card_name, set_name):
 # --- Get TCGplayer ID from Scryfall API ---
 def get_tcgplayer_id_from_scryfall(card_name, set_name):
     url = f"https://api.scryfall.com/cards/named?exact={card_name}&set={set_name}"
-    resp = requests.get(url)
+    # Add timeout to requests.get in Scryfall API calls
+    resp = requests.get(url, timeout=10)
     if resp.status_code == 200:
         data = resp.json()
         return data.get("tcgplayer_id")
@@ -48,7 +50,7 @@ def get_tcgplayer_id(card_name, set_name):
         return tcg_id
     return get_tcgplayer_id_from_scryfall(card_name, set_name)
 
-def batch_get_tcgplayer_ids_from_db(card_set_pairs):
+def batch_get_tcgplayer_ids_from_db(card_set_pairs_list):
     """
     card_set_pairs: List of (card_name, set_name) tuples
     Returns: dict mapping (card_name.lower(), set_name.lower()) -> tcgplayer_id
@@ -58,14 +60,15 @@ def batch_get_tcgplayer_ids_from_db(card_set_pairs):
     try:
         # Prepare the WHERE clause for batch query
         # Use tuple unpacking for psycopg2's mogrify to avoid SQL injection
-        format_strings = ','.join(['%s'] * len(card_set_pairs))
+        format_strings = ','.join(['%s'] * len(card_set_pairs_list))
         cur.execute(f"""
             SELECT LOWER(name), LOWER(set_name), tcgplayer_id FROM scryfall
             WHERE (LOWER(name), LOWER(set_name)) IN ({format_strings})
-        """, card_set_pairs)
+        """, card_set_pairs_list)
         results = cur.fetchall()
         # Build lookup dict
         lookup = { (name, set_name): tcg_id for name, set_name, tcg_id in results if tcg_id is not None }
+        print(card_set_pairs_list)
         return lookup
     finally:
         cur.close()
@@ -101,15 +104,35 @@ if manabox_csv is not None:
             "TCG Market Price", "TCG Direct Low", "TCG Low Price With Shipping", "TCG Low Price", "Total Quantity",
             "Add to Quantity", "TCG Marketplace Price", "Photo URL"
         ]
-        card_set_pairs = list({(str(card[1]).lower(), str(card[2]).lower()) for card in uploaded_df.itertuples()})
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+        # Fix: Use (card[1], card[2]) for name, set in all lookups
+        card_set_pairs = list({(str(card[0]).lower(), str(card[2]).lower()) for card in uploaded_df.itertuples()})
+        logging.info(f"Batch lookup pairs: {card_set_pairs}")
         db_lookup = batch_get_tcgplayer_ids_from_db(card_set_pairs)
+        logging.info(f"DB lookup result: {db_lookup}")
         for idx, card in enumerate(uploaded_df.itertuples()):
-            key = (str(card[1]).lower(), str(card[2]).lower())
-            tcg_id = db_lookup.get(key)
-            if not tcg_id:
-                tcg_id = get_tcgplayer_id_from_scryfall(card[1], card[2])
+            key = (str(card[0]).lower(), str(card[2]).lower())
+            logging.info(f"Processing card: idx={idx}, name={card[1]}, set={card[2]}, key={key}")
+            tcg_id_db = db_lookup.get(key)
+            if tcg_id_db:
+                tcg_id = tcg_id_db
+                source = "DB"
+                logging.info(f"Found in DB: {card[0]} ({card[2]}) -> {tcg_id}")
+            else:
+                logging.info(f"Not found in DB: {card[0]} ({card[2]}), querying Scryfall API...")
+                progress_bar.progress((idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[0]}: Not found in DB, querying Scryfall API...")
+                tcg_id_api = get_tcgplayer_id_from_scryfall(card[0], card[2])
+                tcg_id = tcg_id_api
+                time.sleep(0.5)
+
+                if tcg_id:
+                    source = "API"
+                    logging.info(f"Found in Scryfall API: {card[0]} ({card[2]}) -> {tcg_id}")
+                else:
+                    source = "Not found"
+                    logging.warning(f"Not found in DB or API: {card[0]} ({card[2]})")
             tcgplayer_data.append({
-                "TCGplayer Id": int(tcg_id) if tcg_id is not None else '',
+                "TCGplayer Id": int(tcg_id) if tcg_id is not None else pd.NA,
                 "Product Line": 'Magic',
                 "Set Name": card[2] if len(card) > 2 else '',
                 "Product Name": card[0],
@@ -126,10 +149,11 @@ if manabox_csv is not None:
                 "TCG Marketplace Price": '',
                 "Photo URL": ''
             })
-            time.sleep(0.5)
-            progress_bar.progress((idx + 1) / total_cards, text=f"Processed {idx + 1} of {total_cards} cards. Currrent card: {card[0]}")
+            progress_bar.progress((idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[0]}: TCGplayer ID source: {source}")
         progress_bar.empty()
         tcgplayer_df = pd.DataFrame(tcgplayer_data, columns=required_headers)
+        # Ensure TCGplayer Id is nullable integer for Arrow compatibility
+        tcgplayer_df["TCGplayer Id"] = tcgplayer_df["TCGplayer Id"].astype('Int64')
         output_csv = "manabox_tcgplayer_ids.csv"
         st.session_state['manabox_tcgplayer_df'] = tcgplayer_df
         st.session_state['manabox_output_csv'] = output_csv
@@ -152,20 +176,20 @@ if manabox_csv is not None:
     # Filter DataFrame if needed
     df_to_show = tcgplayer_df.copy()
     if show_missing_only:
-        df_to_show = df_to_show[df_to_show['TCGplayer Id'] == '']
+        df_to_show = df_to_show[df_to_show['TCGplayer Id'].isna()]
     if hidden_columns:
         df_to_show = df_to_show.drop(columns=hidden_columns)
     def highlight_missing_id(row):
-        color = 'background-color: #ffcccc' if not row.get('TCGplayer Id', None) else ''
+        # Use pd.isna to check for missing TCGplayer Id
+        color = 'background-color: #ffcccc' if pd.isna(row.get('TCGplayer Id', None)) else ''
         return [color] * len(row)
     styled_df = df_to_show.style.apply(highlight_missing_id, axis=1) if 'TCGplayer Id' in df_to_show.columns else df_to_show
-    missing_count = (tcgplayer_df['TCGplayer Id'] == '').sum()
+    # Also update missing_count calculation to use .isna()
+    missing_count = df_to_show['TCGplayer Id'].isna().sum() if 'TCGplayer Id' in df_to_show.columns else 0
     st.toast(f"TCGPlayer IDs saved to {output_csv}")
     # Autosize columns using set_sticky and set_properties for best fit
     styled_df = styled_df.set_sticky(axis="columns").set_properties(**{"min-width": "80px", "max-width": "400px", "white-space": "pre-wrap"})
-    st.dataframe(styled_df, use_container_width=True, hide_index=True)
-    if missing_count > 0:
-        st.warning(f"Warning: {missing_count} cards do not have a TCGplayer Id. They will be included in the download.")
+    st.dataframe(styled_df, use_container_width=True)
 
 if st.session_state.get('manabox_tcgplayer_df') is not None and not st.session_state['manabox_tcgplayer_df'].empty:
     st.download_button(
