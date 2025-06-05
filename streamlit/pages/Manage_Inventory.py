@@ -203,8 +203,8 @@ def inventory_summary_tab(df):
         # Rarity Counts
         rarity_counts = df["Rarity"].value_counts()
         st.write("**Rarity Counts:**")
-        # Transpose the DataFrame to show rarity names on top
-        st.write(rarity_counts.to_frame().T)
+        # Transpose the DataFrame to show rarity names on top and autosize
+        st.dataframe(rarity_counts.to_frame().T, use_container_width=True)
 
         # Average Market Price
         avg_market_price = df["TCG Market Price"].mean()
@@ -248,8 +248,8 @@ def inventory_summary_tab(df):
             filtered_rarity_counts = st.session_state.filtered_df["Rarity"].value_counts(
             )
             st.write("**Rarity Counts (Filtered):**")
-            # Transpose the DataFrame for filtered rarity counts
-            st.write(filtered_rarity_counts.to_frame().T)
+            # Transpose the DataFrame for filtered rarity counts and autosize
+            st.dataframe(filtered_rarity_counts.to_frame().T, use_container_width=True)
 
             # Average Market Price in filtered data
             filtered_avg_market_price = st.session_state.filtered_df["TCG Market Price"].mean(
@@ -261,7 +261,8 @@ def inventory_summary_tab(df):
             filtered_avg_marketplace_price = st.session_state.filtered_df["TCG Marketplace Price"].mean(
             )
             st.write(
-                f"**Average Marketplace Price (Filtered):** ${filtered_avg_marketplace_price:.2f}")
+                f"**Average Marketplace Price (Filtered):** ${filtered_avg_marketplace_price:.2f}"
+            )
 
             # Total marketplace value and total market value in filtered data
             filtered_marketplace_value = (

@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 from functions import widgets
 import logging
+from st_aggrid import AgGrid, GridOptionsBuilder
 widgets.show_pages_sidebar()
 
 st.title("💲 Repricer")
@@ -504,8 +505,11 @@ def inventory_summary_tab(df):
         # Rarity Counts
         rarity_counts = df["Rarity"].value_counts()
         st.write("**Rarity Counts:**")
-        # Transpose the DataFrame to show rarity names on top
-        st.write(rarity_counts.to_frame().T)
+        rarity_df = rarity_counts.to_frame().T
+        gb = GridOptionsBuilder.from_dataframe(rarity_df)
+        gb.configure_default_column(resizable=True, autoWidth=True)
+        grid_options = gb.build()
+        AgGrid(rarity_df, gridOptions=grid_options, fit_columns_on_grid_load=True)
 
         # Average Market Price
         avg_market_price = df["TCG Market Price"].mean()
@@ -549,8 +553,11 @@ def inventory_summary_tab(df):
             filtered_rarity_counts = st.session_state.filtered_df["Rarity"].value_counts(
             )
             st.write("**Rarity Counts (Filtered):**")
-            # Transpose the DataFrame for filtered rarity counts
-            st.write(filtered_rarity_counts.to_frame().T)
+            filtered_rarity_df = filtered_rarity_counts.to_frame().T
+            gb2 = GridOptionsBuilder.from_dataframe(filtered_rarity_df)
+            gb2.configure_default_column(resizable=True, autoWidth=True)
+            grid_options2 = gb2.build()
+            AgGrid(filtered_rarity_df, gridOptions=grid_options2, fit_columns_on_grid_load=True)
 
             # Average Market Price in filtered data
             filtered_avg_market_price = st.session_state.filtered_df["TCG Market Price"].mean(
@@ -576,7 +583,7 @@ def inventory_summary_tab(df):
             st.write(f"**Total Marketplace Value (Filtered):** ${filtered_marketplace_value:.2f}")
             st.write(f"**Total Market Value (Filtered):** ${filtered_market_value:.2f}")
         else:
-            st.info("No filters applied. Use the Filter Options to filter cards.")
+            st.info("No filters applied yet. Use the Filter Options tab to filter cards.")
 
 
 def repricing_rules(df, selected_columns):
