@@ -156,40 +156,33 @@ def inventory_tabs(df, selected_columns):
         "Full Inventory", "Price Differentials", "Filtered Cards"
     ])
     with tab1:
-        ...
-        # Always use the main DataFrame from session_state for Full Inventory
-        # st.dataframe(st.session_state.repricer_csv[selected_columns], use_container_width=True)
-        # total_marketplace_value = (st.session_state.repricer_csv["Total Quantity"] * st.session_state.repricer_csv["TCG Marketplace Price"]).sum()
-        # total_market_value = (st.session_state.repricer_csv["Total Quantity"] * st.session_state.repricer_csv["TCG Market Price"]).sum()
-        # st.write(f"**Total Marketplace Value (Quantity x Marketplace Price):** ${total_marketplace_value:.2f}")
-        # st.write(f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}")
-        # if st.button("Refresh Full Inventory", key="refresh_full_inventory"):
-        #     st.rerun()
+        st.dataframe(st.session_state.repricer_csv[selected_columns], use_container_width=True)
+        total_marketplace_value = (st.session_state.repricer_csv["Total Quantity"] * st.session_state.repricer_csv["TCG Marketplace Price"]).sum()
+        total_market_value = (st.session_state.repricer_csv["Total Quantity"] * st.session_state.repricer_csv["TCG Market Price"]).sum()
+        st.write(f"**Total Marketplace Value (Quantity x Marketplace Price):** ${total_marketplace_value:.2f}")
+        st.write(f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}")
     with tab2:
-        ...
-        # price_dif_df = df.copy()
-        # price_dif_df["percentage_difference"] = (
-        #     (price_dif_df["TCG Marketplace Price"] - price_dif_df["TCG Market Price"]) /
-        #     price_dif_df["TCG Market Price"] * 100
-        # ).round(2)
-        # st.dataframe(
-        #     price_dif_df[selected_columns + ["percentage_difference"]], use_container_width=True
-        # )
+        price_dif_df = df.copy()
+        price_dif_df["percentage_difference"] = (
+            (price_dif_df["TCG Marketplace Price"] - price_dif_df["TCG Market Price"]) /
+            price_dif_df["TCG Market Price"] * 100
+        ).round(2)
+        st.dataframe(
+            price_dif_df[selected_columns + ["percentage_difference"]], use_container_width=True
+        )
     with tab3:
-        ...
-        # if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
-        #     st.dataframe(
-        #         st.session_state.filtered_df[selected_columns], use_container_width=True
-        #     )
-        #     if st.button("Refresh Filtered Cards", key="refresh_filtered_cards"):
-        #         st.rerun()
-        # else:
-        #     st.info(
-        #         "No filters applied yet. Use the Filter Options tab to filter cards."
-        #     )
+        if "filtered_df" in st.session_state and st.session_state.filtered_df is not None:
+            st.dataframe(
+                st.session_state.filtered_df[selected_columns], use_container_width=True
+            )
+            if st.button("Refresh Filtered Cards", key="refresh_filtered_cards"):
+                st.rerun()
+        else:
+            st.info(
+                "No filters applied yet. Use the Filter Options tab to filter cards."
+            )
 
 def inventory_summary_tab(df):
-    st.markdown("### 📊 Inventory Summary")
     summary_tab1, summary_tab2 = st.tabs(["Full Inventory", "Filtered Cards"])
     with summary_tab1:
         # Total unique cards
@@ -340,18 +333,14 @@ def main():
     with st.sidebar:
         selected_columns = sidebar(df)
     inventory_management, inventory_analytics = st.tabs([
-        "Inventory Management", "Inventory Summary"
+        "📦 Inventory Management", "📊 Inventory Summary"
     ])
+    
     with inventory_management:
-        st.title("📦 Inventory Management")
-        st.dataframe(st.session_state.repricer_csv[selected_columns], use_container_width=True)
-        total_marketplace_value = (st.session_state.repricer_csv["Total Quantity"] * st.session_state.repricer_csv["TCG Marketplace Price"]).sum()
-        total_market_value = (st.session_state.repricer_csv["Total Quantity"] * st.session_state.repricer_csv["TCG Market Price"]).sum()
-        st.write(f"**Total Marketplace Value (Quantity x Marketplace Price):** ${total_marketplace_value:.2f}")
-        st.write(f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}")
+        inventory_tabs(df, selected_columns)
+        
 
     with inventory_analytics:
-        st.title("📊 Inventory Analytics")
         inventory_summary_tab(df)
 
 
