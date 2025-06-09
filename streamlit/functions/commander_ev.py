@@ -60,6 +60,17 @@ def search_card(card_name, set_code, collector_number=None, treatment=None, is_f
     
     return card['prices']['usd']
 
+def get_tcgplayerid(set_code, collector_number):
+    url = f'https://api.scryfall.com/cards/{set_code}/{collector_number}'
+    response = requests.get(url)
+    if response.status_code != 200:
+        print(url)
+        print("Failed to fetch from Scryfall:", response.status_code)
+        return
+
+    card = response.json()
+    return card.get("tcgplayer_id")
+
 def calculate_ev(set, precon):
     cwd = os.getcwd()
     path = os.path.join(cwd, "data", "precons", f"{set}", f"{precon}.txt")

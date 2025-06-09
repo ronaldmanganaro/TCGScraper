@@ -1,0 +1,38 @@
+{
+  "rules": [
+    {
+      "name": "Magic Floor Price",
+      "card_type": "Magic",
+      "set_name": "All",
+      "rarity": "All",
+      "min_price": 0.0,
+      "max_price": 0.35,
+      "min_qty": 0,
+      "max_qty": 1000,
+      "condition": "All",
+      "action_type": "Set to Fixed Value",
+      "action_value": 0.25
+    }
+  ],
+  "templates": [
+    {
+      "name": "test",
+      "rules": [
+        {
+          "name": "Magic Floor Price",
+          "card_type": "Magic",
+          "set_name": "All",
+          "rarity": "All",
+          "min_price": 0.0,
+          "max_price": 0.35,
+          "min_qty": 0,
+          "max_qty": 1000,
+          "condition": "All",
+          "action_type": "Set to Fixed Value",
+          "action_value": 0.25
+        }
+      ]
+    }
+  ],
+  "password": "test"
+}

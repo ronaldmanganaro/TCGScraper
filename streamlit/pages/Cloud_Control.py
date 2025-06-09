@@ -1,6 +1,9 @@
-from functions import ecs
+from functions import ecs, widgets
 import streamlit as st
-        
+
+widgets.show_pages_sidebar()
+
+
 st.title("My Cloud Control App 🚀")
         
 def trigger_price_check():
@@ -82,7 +85,6 @@ with st.expander("Price Check"):
         if checkbox_states.get(name):
             st.markdown(f"- [{name}]({url})")
         
-                
                 
     if st.button("Run Price Check"):
         trigger_price_check()
