@@ -48,6 +48,32 @@ def connectDB(isTest=False) -> connection:
 
     return newConnection
 
+def connectDB(dbname, isTest=False) -> connection:
+
+    user = 'rmangana'
+    password = 'password'
+    host = '52.73.212.127'
+    port = 5432
+
+    try:
+        newConnection = psycopg2.connect(
+            dbname=dbname,
+            user=user,
+            password=password,
+            host=host,
+            port=port
+        )
+
+        cursor = newConnection.cursor()
+    except Exception as e:
+        if cursor:
+            logging.error(f"unexpected error cursor {e}")
+            cursor.close()
+        if newConnection:
+            logging.error(f"unexpected error connection {e}")
+            connection.close()
+
+    return newConnection
 
 def writeDB(connection: connection, databaseEntries):
     today = datetime.now()  # Keeps full timestamp

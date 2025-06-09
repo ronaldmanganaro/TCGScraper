@@ -88,7 +88,6 @@ def batch_get_tcgplayer_ids_from_db(scryfall_id_list):
         cur.close()
         conn.close()
 
-
 widgets.show_pages_sidebar()
 
 st.title("🧩 ManaBox Converter")
