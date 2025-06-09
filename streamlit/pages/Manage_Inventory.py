@@ -343,6 +343,7 @@ def main():
 
     with inventory_analytics:
         inventory_summary_tab(df)
+    widgets.footer()
 
 
 if __name__ == "__main__":

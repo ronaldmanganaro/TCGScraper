@@ -241,3 +241,5 @@ with tab3:
         st.plotly_chart(velocity_fig, use_container_width=True)
     else:
         st.write("No Data")
+
+widgets.footer()

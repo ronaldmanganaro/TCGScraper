@@ -140,3 +140,15 @@ def show_pages_sidebar():
             st.switch_page("pages/Manabox.py")
         if st.button("📦 Manage Inventory", use_container_width=True):
             st.switch_page("pages/Manage_Inventory.py")
+
+def footer():
+    """Display a divider and Buy Me a Coffee button as a footer on the page."""
+    st.markdown('---')
+    st.markdown(
+        '''<div style="width: 100%; text-align: center; padding: 10px 0;">
+            <a href="https://www.buymeacoffee.com/ronaldmangu" target="_blank">
+                <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40" style="margin-bottom: 0;" />
+            </a>
+        </div>''',
+        unsafe_allow_html=True
+    )
