@@ -254,7 +254,7 @@ def inventory_tabs(df, selected_columns):
             )
 
 
-def repricing_tab(df, selected_columns):
+def repricing_tabs(df, selected_columns):
     st.markdown("### 💲 Repricing Tools")
     repricing_suggestions_tab, repricing_rules_tab, repricing_templates_tab = st.tabs(["Repricing Analysis", "Repricing Rules", "Repricing Templates"])
     with repricing_suggestions_tab:        
@@ -482,108 +482,6 @@ def repricing_tab(df, selected_columns):
 
     with repricing_templates_tab:
         repricing_templates(df, selected_columns)
-
-def inventory_summary_tab(df):
-    st.markdown("### 📊 Inventory Summary")
-    summary_tab1, summary_tab2 = st.tabs(["Full Inventory", "Filtered Cards"])
-    with summary_tab1:
-        # Total unique cards
-        total_unique_cards = df["Product Name"].nunique()
-        st.write(f"**Total Unique Cards:** {total_unique_cards}")
-
-        # Total market price times quantity
-        total_market_value = (df["Total Quantity"] *
-                              df["TCG Market Price"]).sum()
-        st.write(
-            f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}"
-        )
-
-        # Total quantity of cards
-        total_quantity = df["Total Quantity"].sum()
-        st.write(f"**Total Quantity of Cards:** {total_quantity}")
-
-        # Rarity Counts
-        rarity_counts = df["Rarity"].value_counts()
-        st.write("**Rarity Counts:**")
-        rarity_df = rarity_counts.to_frame().T
-        gb = GridOptionsBuilder.from_dataframe(rarity_df)
-        gb.configure_default_column(resizable=True, autoWidth=True)
-        grid_options = gb.build()
-        AgGrid(rarity_df, gridOptions=grid_options, fit_columns_on_grid_load=True)
-
-        # Average Market Price
-        avg_market_price = df["TCG Market Price"].mean()
-        st.write(f"**Average Market Price:** ${avg_market_price:.2f}")
-
-        # Average Marketplace Price
-        avg_marketplace_price = df["TCG Marketplace Price"].mean()
-        st.write(
-            f"**Average Marketplace Price:** ${avg_marketplace_price:.2f}"
-        )
-
-        # Total marketplace value and total market value
-        total_marketplace_value = (df["Total Quantity"] * df["TCG Marketplace Price"]).sum()
-        total_market_value = (df["Total Quantity"] * df["TCG Market Price"]).sum()
-        st.write(f"**Total Marketplace Value (Quantity x Marketplace Price):** ${total_marketplace_value:.2f}")
-        st.write(f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}")
-    with summary_tab2:
-        if st.session_state.filtered_df is not None:
-            # Total unique cards in filtered data
-            filtered_unique_cards = st.session_state.filtered_df["Product Name"].nunique(
-            )
-            st.write(
-                f"**Total Unique Cards (Filtered):** {filtered_unique_cards}")
-
-            # Total market price times quantity in filtered data
-            filtered_market_value = (
-                st.session_state.filtered_df["Total Quantity"] *
-                st.session_state.filtered_df["TCG Market Price"]
-            ).sum()
-            st.write(
-                f"**Total Market Value (Filtered):** ${filtered_market_value:.2f}"
-            )
-
-            # Total quantity of cards in filtered data
-            filtered_total_quantity = st.session_state.filtered_df["Total Quantity"].sum(
-            )
-            st.write(
-                f"**Total Quantity of Cards (Filtered):** {filtered_total_quantity}")
-
-            # Rarity Counts in filtered data
-            filtered_rarity_counts = st.session_state.filtered_df["Rarity"].value_counts(
-            )
-            st.write("**Rarity Counts (Filtered):**")
-            filtered_rarity_df = filtered_rarity_counts.to_frame().T
-            gb2 = GridOptionsBuilder.from_dataframe(filtered_rarity_df)
-            gb2.configure_default_column(resizable=True, autoWidth=True)
-            grid_options2 = gb2.build()
-            AgGrid(filtered_rarity_df, gridOptions=grid_options2, fit_columns_on_grid_load=True)
-
-            # Average Market Price in filtered data
-            filtered_avg_market_price = st.session_state.filtered_df["TCG Market Price"].mean(
-            )
-            st.write(
-                f"**Average Market Price (Filtered):** ${filtered_avg_market_price:.2f}")
-
-            # Average Marketplace Price in filtered data
-            filtered_avg_marketplace_price = st.session_state.filtered_df["TCG Marketplace Price"].mean(
-            )
-            st.write(
-                f"**Average Marketplace Price (Filtered):** ${filtered_avg_marketplace_price:.2f}")
-
-            # Total marketplace value and total market value in filtered data
-            filtered_marketplace_value = (
-                st.session_state.filtered_df["Total Quantity"] *
-                st.session_state.filtered_df["TCG Marketplace Price"]
-            ).sum()
-            filtered_market_value = (
-                st.session_state.filtered_df["Total Quantity"] *
-                st.session_state.filtered_df["TCG Market Price"]
-            ).sum()
-            st.write(f"**Total Marketplace Value (Filtered):** ${filtered_marketplace_value:.2f}")
-            st.write(f"**Total Market Value (Filtered):** ${filtered_market_value:.2f}")
-        else:
-            st.info("No filters applied yet. Use the Filter Options tab to filter cards.")
 
 
 def repricing_rules(df, selected_columns):
@@ -1054,15 +952,9 @@ def main():
         df = st.session_state.repricer_csv
         with st.sidebar:
             selected_columns = sidebar(df)
-        main_tab1, main_tab2, main_tab3 = st.tabs([
-            "Inventory Management", "Repricing", "Inventory Summary"
-        ])
-        with main_tab1:
-            inventory_tabs(df, selected_columns)
-        with main_tab2:
-            repricing_tab(df, selected_columns)
-        with main_tab3:
-            inventory_summary_tab(df)
+
+        repricing_tabs(df, selected_columns)
+
 
             
     else:
