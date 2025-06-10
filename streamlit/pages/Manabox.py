@@ -1,23 +1,23 @@
 import streamlit as st
-from functions import widgets
+from functions import widgets, manabox_db_updater
 import pandas as pd
 import time
 import psycopg2
 import requests
 import logging
+import subprocess
+import os
 
-
-# --- DB Connection Helper ---
 def get_db_connection():
+    
     return psycopg2.connect(
         dbname='scryfall',
         user='rmangana',
         password='password',
         host='52.73.212.127',
         port=5432
-    )
+)
 
-# --- Get TCGplayer ID from DB ---
 def get_tcgplayer_id_from_db(scryfall_id):
     conn = get_db_connection()
     cur = conn.cursor()
@@ -33,8 +33,6 @@ def get_tcgplayer_id_from_db(scryfall_id):
         cur.close()
         conn.close()
 
-
-# --- Get TCGplayer ID from Scryfall ID via Scryfall API ---
 def get_tcgplayer_id_from_scryfall_id(scryfall_id, foil=False):
     """
     Given a Scryfall card ID, fetch the card from the Scryfall API and return its TCGplayer ID.
@@ -57,15 +55,15 @@ def get_tcgplayer_id_from_scryfall_id(scryfall_id, foil=False):
             # Fallback
             return data.get("tcgplayer_id")
     except Exception as e:
-        logging.warning(f"Error fetching Scryfall card by id {scryfall_id}: {e}")
+        logging.warning(
+            f"Error fetching Scryfall card by id {scryfall_id}: {e}")
     return None
 
-# --- Main lookup function ---
 def get_tcgplayer_id(card_name, set_name):
     tcg_id = get_tcgplayer_id_from_db()
     if tcg_id:
         return tcg_id
-    return get_tcgplayer_id_from_scryfall(card_name, set_name)
+    return get_tcgplayer_id_from_scryfall_id(card_name, set_name)
 
 def batch_get_tcgplayer_ids_from_db(scryfall_id_list):
     """
@@ -77,16 +75,37 @@ def batch_get_tcgplayer_ids_from_db(scryfall_id_list):
     try:
         format_strings = ','.join(['%s'] * len(scryfall_id_list))
         cur.execute(f"""
-            SELECT tcgplayer_id, id FROM scryfall
+            SELECT tcgplayer_card_id, id FROM scryfall
             WHERE id IN ({format_strings})
         """, scryfall_id_list)
         results = cur.fetchall()
         # Build lookup dict: scryfall_id -> tcgplayer_id
-        lookup = { id: tcgplayer_id for tcgplayer_id, id in results if tcgplayer_id is not None }
+        lookup = {}
+        for tcgplayer_card_id, id in results:
+            if tcgplayer_card_id is not None:
+                lookup[id] = tcgplayer_card_id
         return lookup
     finally:
         cur.close()
         conn.close()
+
+def run_playwright_script(url):
+    """
+    Run the Playwright script as a separate process and retrieve the AddToCart ID.
+
+    Args:
+        url (str): The URL of the TCGPlayer product page.
+
+    Returns:
+        str: The AddToCart ID if found, else None.
+    """
+    result = subprocess.run(
+        ["python", "streamlit/functions/scrape_playwright.py", url],
+        capture_output=True,
+        text=True,
+        env=os.environ.copy()  # Pass the current environment variables
+    )
+    return result.stdout.strip() if result.returncode == 0 else None
 
 widgets.show_pages_sidebar()
 
@@ -95,7 +114,8 @@ st.markdown("""
 Welcome to the ManaBox Converter! This tool allows you to convert your card data into the ManaBox format.
 """)
 tcgplayer_df = None  # Initialize the DataFrame to avoid reference errors
-manabox_csv = st.file_uploader("Upload your card data file", type=["csv", "json"], key="mana_box_uploader")
+manabox_csv = st.file_uploader("Upload your card data file", type=[
+                               "csv", "json"], key="mana_box_uploader")
 
 # Use session state to cache processed DataFrame for the current upload
 if 'manabox_last_filename' not in st.session_state:
@@ -117,40 +137,66 @@ if manabox_csv is not None:
             "TCG Market Price", "TCG Direct Low", "TCG Low Price With Shipping", "TCG Low Price", "Total Quantity",
             "Add to Quantity", "TCG Marketplace Price", "Photo URL"
         ]
-        logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+        
+        logging.basicConfig(level=logging.INFO,
+                            format='%(asctime)s %(levelname)s %(message)s')
+        
         # Use scryfall_id for all lookups
-        scryfall_id_list = list({str(card[8]) for card in uploaded_df.itertuples() if pd.notna(card[8])})
+        scryfall_id_list = list(
+            {str(card[8]) for card in uploaded_df.itertuples() if pd.notna(card[8])})
         logging.info(f"Batch lookup Scryfall IDs: {scryfall_id_list}")
+        
+        # Will return the product ID needed for the TCGplayer inventory need it to also return a list of scryfall ids it did not find       
         db_lookup = batch_get_tcgplayer_ids_from_db(scryfall_id_list)
+        
+        
         logging.info(f"DB lookup result: {db_lookup}")
+
+        
+        # for each card not found in the db_lookup use scryfall api to update the database
         for idx, card in enumerate(uploaded_df.itertuples()):
-            scryfall_id = str(card[8]) if pd.notna(card[8]) else None
-            logging.info(f"Processing card: idx={idx}, name={card[1]}, set={card[2]}, scryfall_id={scryfall_id}")
-            tcg_id_db = db_lookup.get(scryfall_id) if scryfall_id else None
-            if tcg_id_db:
-                tcg_id = tcg_id_db
-                source = "DB"
-                logging.info(f"Found in DB: {card[1]} ({card[2]}) -> {tcg_id}")
-            else:
+            card_name = card[0]  # Name of the card
+            set_symbol = card[1] if len(card) > 1 else ''
+            set_name = card[2] if len(card) > 2 else ''
+            scryfall_id = card[8]
+
+
+            if scryfall_id in db_lookup:
+                continue  # Skip if already in the lookup
+                        
+            # if not in the db use api to add entry
+            if not scryfall_id:
+                # Scrape Scryfall and add to DB
+                logging.info(
+                    f"No Scryfall ID for card: {card_name} ({set_symbol}), scraping Scryfall...")
+                scryfall_id = run_playwright_script(card_name, set_symbol, set_name)
                 if scryfall_id:
-                    logging.info(f"Not found in DB: {card[1]} ({card[2]}), querying Scryfall API...")
-                    progress_bar.progress((idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[1]}: Not found in DB, querying Scryfall API...")
-                    is_foil = (card[4] == 'foil') if len(card) > 4 else False
-                    tcg_id_api = get_tcgplayer_id_from_scryfall_id(scryfall_id, foil=is_foil)
-                    if tcg_id_api is not None:
-                        tcg_id = tcg_id_api
-                        source = "API"
-                        logging.info(f"Found in Scryfall API: {card[1]} ({card[2]}) -> {tcg_id}")
-                    else:
-                        tcg_id = None
-                        source = "Not found"
-                        logging.warning(f"Not found in DB or API: {card[1]} ({card[2]})")
+                    manabox_db_updater.add_scryfall_id_to_db(
+                        card[0], card[1], card[3], scryfall_id)
                 else:
-                    tcg_id = None
-                    source = "No Scryfall ID"
-                    logging.warning(f"No Scryfall ID for card: {card[1]} ({card[2]})")
+                    logging.warning(
+                        f"Failed to scrape Scryfall ID for card: {card[0]} ({card[1]})")
+
+            #if in the db but does not have the tcgplayer_card_id scrape tcgplayer
+            if scryfall_id:
+                # Check for TCGplayer Card ID in DB
+                tcgplayer_card_id = db_lookup.get(scryfall_id)
+                if not tcgplayer_card_id:
+                    # Scrape TCGplayer and add to DB
+                    logging.info(
+                        f"No TCGplayer Card ID for Scryfall ID: {scryfall_id}, scraping TCGplayer...")
+                    url = f"https://www.tcgplayer.com/product/{card[8]}"
+                    print(f"scraping this page {url} for id")
+                    tcgplayer_card_id = run_playwright_script(url)
+                    if tcgplayer_card_id:
+                        manabox_db_updater.add_tcgplayer_card_id_to_db(
+                            scryfall_id, tcgplayer_card_id)
+                    else:
+                        logging.warning(
+                            f"Failed to scrape TCGplayer Card ID for Scryfall ID: {scryfall_id}")
+
             tcgplayer_data.append({
-                "TCGplayer Id": int(tcg_id) if tcg_id is not None else pd.NA,
+                "TCGplayer Id": int(tcgplayer_card_id) if tcgplayer_card_id else pd.NA,
                 "Product Line": 'Magic',
                 "Set Name": card[2] if len(card) > 2 else '',
                 "Product Name": card[0],
@@ -167,11 +213,13 @@ if manabox_csv is not None:
                 "TCG Marketplace Price": '',
                 "Photo URL": ''
             })
-            progress_bar.progress((idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[1]}: TCGplayer ID source: {source}")
+            progress_bar.progress(
+                (idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[0]}: Processed")
         progress_bar.empty()
         tcgplayer_df = pd.DataFrame(tcgplayer_data, columns=required_headers)
         # Ensure TCGplayer Id is nullable integer for Arrow compatibility
-        tcgplayer_df["TCGplayer Id"] = tcgplayer_df["TCGplayer Id"].astype('Int64')
+        tcgplayer_df["TCGplayer Id"] = tcgplayer_df["TCGplayer Id"].astype(
+            'Int64')
         output_csv = "manabox_tcgplayer_ids.csv"
         st.session_state['manabox_tcgplayer_df'] = tcgplayer_df
         st.session_state['manabox_output_csv'] = output_csv
@@ -182,13 +230,16 @@ if manabox_csv is not None:
 
     # UI: Three columns for controls
     all_columns = list(tcgplayer_df.columns)
-    blank_columns = [col for col in all_columns if tcgplayer_df[col].replace('', pd.NA).isna().all()]
+    blank_columns = [col for col in all_columns if tcgplayer_df[col].replace(
+        '', pd.NA).isna().all()]
     col1, col2, col3 = st.columns([2, 2, 1])
     with col1:
-        hidden_columns = st.multiselect("Hide columns", options=all_columns, default=[])
+        hidden_columns = st.multiselect(
+            "Hide columns", options=all_columns, default=[])
     with col2:
         # Group the two checkboxes vertically
-        show_missing_only = st.checkbox("Show only cards missing TCGplayer Id", value=False)
+        show_missing_only = st.checkbox(
+            "Show only cards missing TCGplayer Id", value=False)
         hide_blank = st.checkbox("Hide all blank columns")
         if hide_blank:
             hidden_columns = blank_columns
@@ -200,21 +251,27 @@ if manabox_csv is not None:
         df_to_show = df_to_show[df_to_show['TCGplayer Id'].isna()]
     if hidden_columns:
         df_to_show = df_to_show.drop(columns=hidden_columns)
+
     def highlight_missing_id(row):
         # Use pd.isna to check for missing TCGplayer Id
-        color = 'background-color: #ffcccc' if pd.isna(row.get('TCGplayer Id', None)) else ''
+        color = 'background-color: #ffcccc' if pd.isna(
+            row.get('TCGplayer Id', None)) else ''
         return [color] * len(row)
-    styled_df = df_to_show.style.apply(highlight_missing_id, axis=1) if 'TCGplayer Id' in df_to_show.columns else df_to_show
+    styled_df = df_to_show.style.apply(
+        highlight_missing_id, axis=1) if 'TCGplayer Id' in df_to_show.columns else df_to_show
     # Also update missing_count calculation to use .isna()
-    missing_count = df_to_show['TCGplayer Id'].isna().sum() if 'TCGplayer Id' in df_to_show.columns else 0
+    missing_count = df_to_show['TCGplayer Id'].isna(
+    ).sum() if 'TCGplayer Id' in df_to_show.columns else 0
     st.toast(f"TCGPlayer IDs saved to {output_csv}")
     # Autosize columns using set_sticky and set_properties for best fit
-    styled_df = styled_df.set_sticky(axis="columns").set_properties(**{"min-width": "80px", "max-width": "400px", "white-space": "pre-wrap"})
+    styled_df = styled_df.set_sticky(axis="columns").set_properties(
+        **{"min-width": "80px", "max-width": "400px", "white-space": "pre-wrap"})
     st.dataframe(styled_df, use_container_width=True)
 
 if st.session_state.get('manabox_tcgplayer_df') is not None and not st.session_state['manabox_tcgplayer_df'].empty:
     # Add checkbox for exporting only cards with TCGplayer Ids
-    export_only_with_ids = st.checkbox("Download only cards with TCGplayer Id", value=False)
+    export_only_with_ids = st.checkbox(
+        "Download only cards with TCGplayer Id", value=False)
     export_df = st.session_state['manabox_tcgplayer_df']
     if export_only_with_ids:
         export_df = export_df[export_df['TCGplayer Id'].notna()]

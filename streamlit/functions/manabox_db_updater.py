@@ -1,11 +1,10 @@
 from playwright.sync_api import sync_playwright
+from functions import db
 import logging
 import sys
 import os
 
-from db import connectDB
-
-def scrape_add_to_cart_id(url):
+def scrape_tcgplayer_id(url):
     """
     Scrape the AddToCart ID from the given TCGPlayer product page.
 
@@ -16,7 +15,7 @@ def scrape_add_to_cart_id(url):
         str: The AddToCart ID (e.g., '5522523') if found, else None.
     """
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         page.goto(url)
 
@@ -42,7 +41,7 @@ def add_tcgplayer_card_id_to_db(scryfall_id, tcgplayer_card_id):
         scryfall_id (str): The Scryfall ID of the card.
         tcgplayer_card_id (str): The TCGplayer card ID to insert.
     """
-    conn = connectDB('scryfall')
+    conn = db.connectDB('scryfall')
     cur = conn.cursor()
     try:
         cur.execute("""
@@ -86,19 +85,25 @@ def get_scryfall_id_by_card_details(name, set_name, collector_number):
         cur.close()
         conn.close()
 
-if __name__ == "__main__":
-    url = "https://www.tcgplayer.com/product/269069/magic-streets-of-new-capenna-sewer-crocodile?page=1&Language=English"
-    add_to_cart_id = scrape_add_to_cart_id(url)
-    print(f"AddToCart ID: {add_to_cart_id}")
+# if __name__ == "__main__":
+#     # To build url need this
+#     scryfall_tcgplayer_id = 269069
+#     product_line = "magic"  # Replace with actual product line
+#     set_name = "streets-of-new-capenna-sewer"
+#     card_name = "sewer-crocodile"  # Replace with actual card name
 
-    if add_to_cart_id:
-        name = "Sewer Crocodile"  # Replace with actual card name
-        set_name = "Streets of New Capenna"  # Replace with actual set name
-        collector_number = "60"  # Replace with actual collector number
+#     # Dont need all that other info
+#     #url = f"https://www.tcgplayer.com/product/{scryfall_tcgplayer_id}/{product_line}-{set_name}-{card_name}?page=1&Language=English"
+#     url = f"https://www.tcgplayer.com/product/{scryfall_tcgplayer_id}"
+#     tcgplayer_card_id = scrape_add_to_cart_id(url)
+#     print(f"AddToCart ID: {tcgplayer_card_id}")
 
-        scryfall_id = get_scryfall_id_by_card_details(name, set_name, collector_number)
-        if scryfall_id:
-            add_tcgplayer_card_id_to_db(scryfall_id, add_to_cart_id)
-            print(f"Successfully added AddToCart ID {add_to_cart_id} to the database for Scryfall ID {scryfall_id}.")
-        else:
-            print("Failed to retrieve Scryfall ID for the card.")
+#     if tcgplayer_card_id:
+#         # Need these to update the database
+#         name = "Sewer Crocodile"  # Replace with actual card name
+#         set_name = "Streets of New Capenna"  # Replace with actual set name
+#         collector_number = "60"  # Replace with actual collector number
+        
+#         add_tcgplayer_card_id_to_db(name, set_name, collector_number, tcgplayer_card_id)
+#         print(f"Successfully added {name}:{tcgplayer_card_id} to the database.")
+
