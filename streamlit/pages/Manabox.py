@@ -204,7 +204,7 @@ if manabox_csv is not None:
                 "TCG Low Price": '',
                 "Total Quantity": '',
                 "Add to Quantity": card[6] if len(card) > 6 else '',
-                "TCG Marketplace Price": '',
+                "TCG Marketplace Price": card[9] if len(card) > 9 else '',
                 "Photo URL": ''
             })
             progress_bar.progress((idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[0]}: Processed")
