@@ -155,7 +155,6 @@ if manabox_csv is not None:
         # Use scryfall_id for all lookups
         scryfall_id_list = list(
             {str(card[8]) for card in uploaded_df.itertuples() if pd.notna(card[8])})
-        logging.info(f"Batch lookup Scryfall IDs: {scryfall_id_list}")
         
         # Will return the product ID needed for the TCGplayer inventory need it to also return a list of scryfall ids it did not find       
         db_lookup = batch_get_tcgplayer_ids_from_db(scryfall_id_list)
@@ -169,17 +168,20 @@ if manabox_csv is not None:
             set_symbol = card[1] if len(card) > 1 else ''
             set_name = card[2] if len(card) > 2 else ''
             collector_number = card[3] if len(card) > 3 else ''
+            printing = card[4] if len(card) > 4 else ''
+            printing = printing.capitalize()  # Capitalize only the first letter
+
             scryfall_id = card[8]
 
             if scryfall_id not in db_lookup:
                 # if not in the db use api to add entry
                 logging.info(f"No Scryfall ID for card: {card_name} ({set_symbol}), scraping Scryfall...")
-                
+                    
                 tcgplayer_id = manabox_db_updater.add_single_scryfall_card_to_db(set_symbol, collector_number)
                 print(f"DEBUG: tcgplayer_id returned: {(tcgplayer_id)}")
+
                 if tcgplayer_id is not None:
-                    
-                    url = f"https://www.tcgplayer.com/product/{tcgplayer_id}"
+                    url = f"https://www.tcgplayer.com/product/{tcgplayer_id}?Language=English&page=1&Printing={printing}"
                     logging.info(f"TCGPlayer URL for {card_name} ({set_symbol}): {url}")
                     tcgplayer_card_id = run_playwright_script(url)
                     logging.info(f"DEBUG: tcgplayer_card_id returned: {repr(tcgplayer_card_id)}")
@@ -232,7 +234,7 @@ if manabox_csv is not None:
     with col2:
         # Group the two checkboxes vertically
         show_missing_only = st.checkbox(
-            "Show only cards missing TCGplayer Id", value=False)
+            "Show only cards missing TCGplayer Id", value=True)
         hide_blank = st.checkbox("Hide all blank columns")
         if hide_blank:
             hidden_columns = blank_columns
