@@ -3,6 +3,8 @@ from functions import db
 import logging
 import sys
 import os
+import requests
+from psycopg2 import sql
 
 def scrape_tcgplayer_id(url):
     """
@@ -85,25 +87,99 @@ def get_scryfall_id_by_card_details(name, set_name, collector_number):
         cur.close()
         conn.close()
 
-# if __name__ == "__main__":
-#     # To build url need this
-#     scryfall_tcgplayer_id = 269069
-#     product_line = "magic"  # Replace with actual product line
-#     set_name = "streets-of-new-capenna-sewer"
-#     card_name = "sewer-crocodile"  # Replace with actual card name
+def get_scryfall_card_info(name, set_symbol, collector_number):
+    """
+    Get card json from Scryfall using API, add the card to the database if not present, and return the scryfall_id.
 
-#     # Dont need all that other info
-#     #url = f"https://www.tcgplayer.com/product/{scryfall_tcgplayer_id}/{product_line}-{set_name}-{card_name}?page=1&Language=English"
-#     url = f"https://www.tcgplayer.com/product/{scryfall_tcgplayer_id}"
-#     tcgplayer_card_id = scrape_add_to_cart_id(url)
-#     print(f"AddToCart ID: {tcgplayer_card_id}")
+    Args:
+        name (str): The name of the card.
+        set_name (str): The set code (not full set name, e.g., 'snc' for Streets of New Capenna).
+        collector_number (str): The collector number of the card.
 
-#     if tcgplayer_card_id:
-#         # Need these to update the database
-#         name = "Sewer Crocodile"  # Replace with actual card name
-#         set_name = "Streets of New Capenna"  # Replace with actual set name
-#         collector_number = "60"  # Replace with actual collector number
-        
-#         add_tcgplayer_card_id_to_db(name, set_name, collector_number, tcgplayer_card_id)
-#         print(f"Successfully added {name}:{tcgplayer_card_id} to the database.")
+    Returns:
+        str: The Scryfall ID if found and inserted, else None.
+    """
+    
+    # Scryfall API expects set code, not full set name
+    api_url = f"https://api.scryfall.com/cards/{set_symbol.lower()}/{collector_number}"
+    response = requests.get(api_url)
+    if response.status_code != 200:
+        logging.warning(f"Scryfall API request failed: {response.status_code} {response.text}")
+        return None
+    card_json = response.json()
+    scryfall_id = card_json.get('id')
+    if not scryfall_id:
+        logging.warning("No Scryfall ID found in API response.")
+        return None
+
+    # Insert card into DB if not present
+    conn = db.connectDB('scryfall')
+    cur = conn.cursor()
+    try:
+        # Check if card already exists
+        cur.execute("SELECT id FROM scryfall WHERE id = %s", (scryfall_id,))
+        if not cur.fetchone():
+            # Insert minimal card info (expand as needed)
+            cur.execute(
+                sql.SQL("""
+                    INSERT INTO scryfall (id, name, set_name, collector_number, json_data)
+                    VALUES (%s, %s, %s, %s, %s)
+                """),
+                (scryfall_id, card_json.get('name'), card_json.get('set'), card_json.get('collector_number'), card_json)
+            )
+            conn.commit()
+    except Exception as e:
+        logging.warning(f"Failed to insert card into scryfall DB: {e}")
+        scryfall_id = None
+    finally:
+        cur.close()
+        conn.close()
+    return scryfall_id
+
+def add_single_scryfall_card_to_db(set_code, collector_number, lang='en'):
+    """
+    Fetch a single card from Scryfall API by set code and collector number, and add it to the scryfall table in the database.
+    Args:
+        set_code (str): The Scryfall set code (e.g., 'snc').
+        collector_number (str): The card's collector number (e.g., '60').
+        lang (str): Language code (default 'en').
+    """
+    import requests
+    import json
+    columns = [
+        'object', 'id', 'oracle_id', 'multiverse_ids', 'mtgo_id', 'mtgo_foil_id', 'tcgplayer_id', 'cardmarket_id', 'name', 'lang', 'released_at', 'uri', 'scryfall_uri', 'layout', 'highres_image', 'image_status', 'image_uris', 'mana_cost', 'cmc', 'type_line', 'oracle_text', 'power', 'toughness', 'colors', 'color_identity', 'keywords', 'legalities', 'games', 'reserved', 'game_changer', 'foil', 'nonfoil', 'finishes', 'oversized', 'promo', 'reprint', 'variation', 'set_id', 'set', 'set_name', 'set_type', 'set_uri', 'set_search_uri', 'scryfall_set_uri', 'rulings_uri', 'prints_search_uri', 'collector_number', 'digital', 'rarity', 'flavor_text', 'card_back_id', 'artist', 'artist_ids', 'illustration_id', 'border_color', 'frame', 'full_art', 'textless', 'booster', 'story_spotlight', 'edhrec_rank', 'penny_rank', 'prices', 'related_uris', 'purchase_uris', 'tcgplayer_card_id'
+    ]
+    url = f"https://api.scryfall.com/cards/{set_code}/{collector_number}?lang={lang}"
+    resp = requests.get(url)
+    if resp.status_code != 200:
+        logging.warning(f"Scryfall API request failed: {resp.status_code} {resp.text}")
+        return False
+    card = resp.json()
+    values = []
+    for col in columns:
+        val = card.get(col)
+        if isinstance(val, (dict, list)):
+            val = json.dumps(val)
+        values.append(val)
+    placeholders = ','.join(['%s'] * len(columns))
+    insert_query = f"""
+        INSERT INTO scryfall ({','.join(columns)})
+        VALUES ({placeholders})
+        ON CONFLICT (id) DO UPDATE SET
+        {', '.join([f'{col}=EXCLUDED.{col}' for col in columns if col != 'id'])}
+    """
+    conn = db.connectDB('scryfall')
+    cur = conn.cursor()
+    try:
+        cur.execute(insert_query, values)
+        conn.commit()
+        logging.info(f"Inserted/updated card {card.get('name')} ({set_code} {collector_number}) in DB.")
+        return card.get("tcgplayer_id")
+    except Exception as e:
+        logging.warning(f"Failed to insert/update card {card.get('id')}: {e}")
+        conn.rollback()
+        return False
+    finally:
+        cur.close()
+        conn.close()
 

@@ -99,13 +99,24 @@ def run_playwright_script(url):
     Returns:
         str: The AddToCart ID if found, else None.
     """
+    script_path = os.path.join(os.path.dirname(__file__), '../functions/scrape_playwright.py')
     result = subprocess.run(
-        ["python", "streamlit/functions/scrape_playwright.py", url],
+        ["python", script_path, url],
         capture_output=True,
         text=True,
-        env=os.environ.copy()  # Pass the current environment variables
+        env=os.environ.copy(),  # Pass the current environment variables
+        cwd=os.path.dirname(script_path)  # Set the working directory to the script's location
     )
-    return result.stdout.strip() if result.returncode == 0 else None
+    logging.info(f"Subprocess stdout: {result.stdout.strip()}")
+    logging.info(f"Subprocess stderr: {result.stderr.strip()}")
+    if result.returncode != 0:
+        logging.warning(f"Subprocess failed with return code {result.returncode}")
+        return None
+    output = result.stdout.strip()
+    # Only return output if it looks like an ID (digits), else return None
+    if output and output.isdigit():
+        return output
+    return None
 
 widgets.show_pages_sidebar()
 
@@ -148,53 +159,36 @@ if manabox_csv is not None:
         
         # Will return the product ID needed for the TCGplayer inventory need it to also return a list of scryfall ids it did not find       
         db_lookup = batch_get_tcgplayer_ids_from_db(scryfall_id_list)
-        
-        
+          
         logging.info(f"DB lookup result: {db_lookup}")
-
         
         # for each card not found in the db_lookup use scryfall api to update the database
         for idx, card in enumerate(uploaded_df.itertuples()):
+            tcgplayer_card_id = None  # Initialize to None for each card
             card_name = card[0]  # Name of the card
             set_symbol = card[1] if len(card) > 1 else ''
             set_name = card[2] if len(card) > 2 else ''
+            collector_number = card[3] if len(card) > 3 else ''
             scryfall_id = card[8]
 
-
-            if scryfall_id in db_lookup:
-                continue  # Skip if already in the lookup
-                        
-            # if not in the db use api to add entry
-            if not scryfall_id:
-                # Scrape Scryfall and add to DB
-                logging.info(
-                    f"No Scryfall ID for card: {card_name} ({set_symbol}), scraping Scryfall...")
-                scryfall_id = run_playwright_script(card_name, set_symbol, set_name)
-                if scryfall_id:
-                    manabox_db_updater.add_scryfall_id_to_db(
-                        card[0], card[1], card[3], scryfall_id)
-                else:
-                    logging.warning(
-                        f"Failed to scrape Scryfall ID for card: {card[0]} ({card[1]})")
-
-            #if in the db but does not have the tcgplayer_card_id scrape tcgplayer
-            if scryfall_id:
-                # Check for TCGplayer Card ID in DB
-                tcgplayer_card_id = db_lookup.get(scryfall_id)
-                if not tcgplayer_card_id:
-                    # Scrape TCGplayer and add to DB
-                    logging.info(
-                        f"No TCGplayer Card ID for Scryfall ID: {scryfall_id}, scraping TCGplayer...")
-                    url = f"https://www.tcgplayer.com/product/{card[8]}"
-                    print(f"scraping this page {url} for id")
+            if scryfall_id not in db_lookup:
+                # if not in the db use api to add entry
+                logging.info(f"No Scryfall ID for card: {card_name} ({set_symbol}), scraping Scryfall...")
+                
+                tcgplayer_id = manabox_db_updater.add_single_scryfall_card_to_db(set_symbol, collector_number)
+                print(f"DEBUG: tcgplayer_id returned: {(tcgplayer_id)}")
+                if tcgplayer_id is not None:
+                    
+                    url = f"https://www.tcgplayer.com/product/{tcgplayer_id}"
+                    logging.info(f"TCGPlayer URL for {card_name} ({set_symbol}): {url}")
                     tcgplayer_card_id = run_playwright_script(url)
-                    if tcgplayer_card_id:
-                        manabox_db_updater.add_tcgplayer_card_id_to_db(
-                            scryfall_id, tcgplayer_card_id)
-                    else:
-                        logging.warning(
-                            f"Failed to scrape TCGplayer Card ID for Scryfall ID: {scryfall_id}")
+                    logging.info(f"DEBUG: tcgplayer_card_id returned: {repr(tcgplayer_card_id)}")
 
+                    manabox_db_updater.add_tcgplayer_card_id_to_db(scryfall_id, tcgplayer_card_id)
+            else: 
+                tcgplayer_card_id = db_lookup[scryfall_id]
+                logging.info(f"Found TCGPlayer ID for {card_name} ({set_symbol}): {tcgplayer_card_id}")
+            
             tcgplayer_data.append({
                 "TCGplayer Id": int(tcgplayer_card_id) if tcgplayer_card_id else pd.NA,
                 "Product Line": 'Magic',
@@ -213,8 +207,7 @@ if manabox_csv is not None:
                 "TCG Marketplace Price": '',
                 "Photo URL": ''
             })
-            progress_bar.progress(
-                (idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[0]}: Processed")
+            progress_bar.progress((idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[0]}: Processed")
         progress_bar.empty()
         tcgplayer_df = pd.DataFrame(tcgplayer_data, columns=required_headers)
         # Ensure TCGplayer Id is nullable integer for Arrow compatibility
@@ -281,5 +274,6 @@ if st.session_state.get('manabox_tcgplayer_df') is not None and not st.session_s
         file_name=st.session_state['manabox_output_csv'],
         mime='text/csv'
     )
+    st.warning(f"PLEASE KEEP IN MIND TOKENS ARE WILL NOT BE ASSIGNED A TCGPLAYER ID.")
 
 widgets.footer()
