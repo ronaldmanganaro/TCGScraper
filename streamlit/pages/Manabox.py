@@ -161,16 +161,38 @@ if manabox_csv is not None:
           
         logging.info(f"DB lookup result: {db_lookup}")
         
+        lands = ['Island', 'Mountain', 'Forest', 'Swamp', 'Plains']
+        rarity_map = { 
+            'common': 'C',
+            'uncommon': 'U',
+            'rare': 'R',
+            'mythic': 'M',
+        }
+        
         # for each card not found in the db_lookup use scryfall api to update the database
         for idx, card in enumerate(uploaded_df.itertuples()):
             tcgplayer_card_id = None  # Initialize to None for each card
             card_name = card[0]  # Name of the card
+            # Remove any text in parentheses from the card name
             set_symbol = card[1] if len(card) > 1 else ''
             set_name = card[2] if len(card) > 2 else ''
             collector_number = card[3] if len(card) > 3 else ''
             printing = card[4] if len(card) > 4 else ''
+            
+            rarity = card[5] if len(card) > 5 else ''
+            rarity = rarity_map.get(rarity.lower(), rarity)  # Map rarity to single letter
+            
+            quantity = card[6] if len(card) > 6 else ''
+            tcg_martket_price = card[9] if len(card) > 9 else ''
             printing = printing.capitalize()  # Capitalize only the first letter
-
+            
+            #condition affects the tcgplayer_card_id needs to be in db 
+            condition = card[12].split('_') if len(card) > 12 else ''
+            
+            # Land check
+            if card_name in lands:
+                card_name = f"{card_name} (0{collector_number})"
+                rarity = 'L'  # Set rarity to 'L' for lands
             scryfall_id = card[8]
 
             if scryfall_id not in db_lookup:
@@ -181,8 +203,18 @@ if manabox_csv is not None:
                 print(f"DEBUG: tcgplayer_id returned: {(tcgplayer_id)}")
 
                 if tcgplayer_id is not None:
-                    url = f"https://www.tcgplayer.com/product/{tcgplayer_id}?Language=English&page=1&Printing={printing}"
+                    url = f"https://www.tcgplayer.com/product/{tcgplayer_id}?Language=English&page=1&Printing={printing}&Condition={condition[0].capitalize()}+{condition[1].capitalize()}"
                     logging.info(f"TCGPlayer URL for {card_name} ({set_symbol}): {url}")
+                    # IMPORTANT ALL CONDITIONS HAVE DIFFERENT IDS
+                    # For example:
+                    #     NEAR MINT IS 7966424
+                    #     LIGHTLY PLAYED IS 7966425
+                    #     MODERATELY PLAYED IS 7966426
+                    #     HEAVILY PLAYED IS 7966427
+                    #     7933809 foil 
+                    #     7933804 normal
+                    # NEED TO ADD THE OTHER TCGPLAYER IDS TO THE DATABASE JUST INCREMENTING
+                    
                     tcgplayer_card_id = run_playwright_script(url)
                     logging.info(f"DEBUG: tcgplayer_card_id returned: {repr(tcgplayer_card_id)}")
 
@@ -194,19 +226,19 @@ if manabox_csv is not None:
             tcgplayer_data.append({
                 "TCGplayer Id": int(tcgplayer_card_id) if tcgplayer_card_id else pd.NA,
                 "Product Line": 'Magic',
-                "Set Name": card[2] if len(card) > 2 else '',
-                "Product Name": card[0],
+                "Set Name": set_name if len(card) > 2 else '',
+                "Product Name": card_name if len(card) > 0 else '',
                 "Title": '',
-                "Number": card[3] if len(card) > 3 else '',
-                "Rarity": card[5] if len(card) > 5 else '',
+                "Number": collector_number if len(card) > 3 else '',
+                "Rarity": rarity if len(card) > 5 else '',
                 "Condition": 'Near Mint Foil' if card[4] == 'foil' else 'Near Mint',
                 "TCG Market Price": '',
                 "TCG Direct Low": '',
                 "TCG Low Price With Shipping": '',
                 "TCG Low Price": '',
                 "Total Quantity": '',
-                "Add to Quantity": card[6] if len(card) > 6 else '',
-                "TCG Marketplace Price": card[9] if len(card) > 9 else '',
+                "Add to Quantity": quantity if len(card) > 6 else '',
+                "TCG Marketplace Price": tcg_martket_price if len(card) > 9 else '',
                 "Photo URL": ''
             })
             progress_bar.progress((idx + 1) / total_cards, text=f"[{idx + 1}/{total_cards}] {card[0]}: Processed")
@@ -234,8 +266,8 @@ if manabox_csv is not None:
     with col2:
         # Group the two checkboxes vertically
         show_missing_only = st.checkbox(
-            "Show only cards missing TCGplayer Id", value=True)
-        hide_blank = st.checkbox("Hide all blank columns")
+            "Show only cards missing TCGplayer Id", value=False)
+        hide_blank = st.checkbox("Hide all blank columns", value=True)
         if hide_blank:
             hidden_columns = blank_columns
     with col3:

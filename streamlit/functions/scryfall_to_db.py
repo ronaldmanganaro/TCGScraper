@@ -140,7 +140,10 @@ for json_file in json_files:
 sql = f"""
 INSERT INTO scryfall ({column_str})
 VALUES ({placeholder_str})
-ON CONFLICT (id) DO NOTHING
+ON CONFLICT (id) DO UPDATE SET
+    foil = EXCLUDED.foil,
+    nonfoil = EXCLUDED.nonfoil,
+    finishes = EXCLUDED.finishes
 """
 
 batch_size = 500
