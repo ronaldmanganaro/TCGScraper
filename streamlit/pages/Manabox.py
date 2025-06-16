@@ -65,25 +65,31 @@ def get_tcgplayer_id(card_name, set_name):
         return tcg_id
     return get_tcgplayer_id_from_scryfall_id(card_name, set_name)
 
-def batch_get_tcgplayer_ids_from_db(scryfall_id_list):
+def batch_get_tcgplayer_ids_by_name_collector_set(card_info_list):
     """
-    scryfall_id_list: List of Scryfall IDs (strings)
-    Returns: dict mapping scryfall_id -> tcgplayer_id
+    card_info_list: List of (name, collector_number, set_name)
+    Returns: dict mapping (name, collector_number, set_name) -> tcgplayer_card_id
     """
+    if not card_info_list:
+        return {}
     conn = get_db_connection()
     cur = conn.cursor()
     try:
-        format_strings = ','.join(['%s'] * len(scryfall_id_list))
-        cur.execute(f"""
-            SELECT tcgplayer_card_id, id FROM scryfall
-            WHERE id IN ({format_strings})
-        """, scryfall_id_list)
+        # Build WHERE clause for batch query
+        format_strings = ','.join(['(%s,%s,%s,%s)'] * len(card_info_list))
+        params = []
+        for name, collector_number, set_name, foil in card_info_list:
+            params.extend([name, collector_number, set_name, foil])
+        query = f"""
+            SELECT name, collector_number, set_name, tcgplayer_card_id, foil FROM scryfall
+            WHERE (name, collector_number, set_name, foil) IN ({format_strings})
+        """
+        cur.execute(query, params)
         results = cur.fetchall()
-        # Build lookup dict: scryfall_id -> tcgplayer_id
         lookup = {}
-        for tcgplayer_card_id, id in results:
+        for name, collector_number, set_name, tcgplayer_card_id, foil in results:
             if tcgplayer_card_id is not None:
-                lookup[id] = tcgplayer_card_id
+                lookup[(name, collector_number, set_name, foil)] = tcgplayer_card_id
         return lookup
     finally:
         cur.close()
@@ -153,12 +159,13 @@ if manabox_csv is not None:
                             format='%(asctime)s %(levelname)s %(message)s')
         
         # Use scryfall_id for all lookups
-        scryfall_id_list = list(
-            {str(card[8]) for card in uploaded_df.itertuples() if pd.notna(card[8])})
-        
-        # Will return the product ID needed for the TCGplayer inventory need it to also return a list of scryfall ids it did not find       
-        db_lookup = batch_get_tcgplayer_ids_from_db(scryfall_id_list)
-          
+        card_info_list = [
+            # name, collector_number, set_name, foil (True/False)
+            (str(card[0]), str(card[3]), str(card[2]), True if str(card[4]).lower() == 'foil' else False)
+            for card in uploaded_df.itertuples()
+            if pd.notna(card[0]) and pd.notna(card[3]) and pd.notna(card[2]) and pd.notna(card[4])
+        ]
+        db_lookup = batch_get_tcgplayer_ids_by_name_collector_set(card_info_list)
         logging.info(f"DB lookup result: {db_lookup}")
         
         lands = ['Island', 'Mountain', 'Forest', 'Swamp', 'Plains']
@@ -173,55 +180,64 @@ if manabox_csv is not None:
         for idx, card in enumerate(uploaded_df.itertuples()):
             tcgplayer_card_id = None  # Initialize to None for each card
             card_name = card[0]  # Name of the card
-            # Remove any text in parentheses from the card name
             set_symbol = card[1] if len(card) > 1 else ''
             set_name = card[2] if len(card) > 2 else ''
             collector_number = card[3] if len(card) > 3 else ''
             printing = card[4] if len(card) > 4 else ''
-            
             rarity = card[5] if len(card) > 5 else ''
             rarity = rarity_map.get(rarity.lower(), rarity)  # Map rarity to single letter
-            
             quantity = card[6] if len(card) > 6 else ''
             tcg_martket_price = card[9] if len(card) > 9 else ''
             printing = printing.capitalize()  # Capitalize only the first letter
-            
-            #condition affects the tcgplayer_card_id needs to be in db 
-            condition = card[12].split('_') if len(card) > 12 else ''
-            
-            # Land check
+            condition = card[12] if len(card) > 12 else ''
+            # Normalize and format condition string
+            if condition == "damaged":
+                condition = condition.capitalize()
+            else:
+                # Split at '_' and capitalize each part, then join with spaces
+                condition = ' '.join([part.capitalize() for part in condition.split('_')])
+                
             if card_name in lands:
                 card_name = f"{card_name} (0{collector_number})"
                 rarity = 'L'  # Set rarity to 'L' for lands
-            scryfall_id = card[8]
 
-            if scryfall_id not in db_lookup:
-                # if not in the db use api to add entry
-                logging.info(f"No Scryfall ID for card: {card_name} ({set_symbol}), scraping Scryfall...")
-                    
+            lookup_key = (str(card[0]), str(card[3]), str(card[2]))
+            if lookup_key not in db_lookup:
+                logging.info(f"No TCGplayer ID for card: {card_name} ({set_symbol}), scraping Scryfall...")
                 tcgplayer_id = manabox_db_updater.add_single_scryfall_card_to_db(set_symbol, collector_number)
                 print(f"DEBUG: tcgplayer_id returned: {(tcgplayer_id)}")
-
                 if tcgplayer_id is not None:
-                    url = f"https://www.tcgplayer.com/product/{tcgplayer_id}?Language=English&page=1&Printing={printing}&Condition={condition[0].capitalize()}+{condition[1].capitalize()}"
+                    url = f"https://www.tcgplayer.com/product/{tcgplayer_id}?Language=English&page=1&Printing={printing}&Condition=Near+Mint"
                     logging.info(f"TCGPlayer URL for {card_name} ({set_symbol}): {url}")
-                    # IMPORTANT ALL CONDITIONS HAVE DIFFERENT IDS
-                    # For example:
-                    #     NEAR MINT IS 7966424
-                    #     LIGHTLY PLAYED IS 7966425
-                    #     MODERATELY PLAYED IS 7966426
-                    #     HEAVILY PLAYED IS 7966427
-                    #     7933809 foil 
-                    #     7933804 normal
-                    # NEED TO ADD THE OTHER TCGPLAYER IDS TO THE DATABASE JUST INCREMENTING
-                    
                     tcgplayer_card_id = run_playwright_script(url)
                     logging.info(f"DEBUG: tcgplayer_card_id returned: {repr(tcgplayer_card_id)}")
+                    manabox_db_updater.add_tcgplayer_card_id_to_db(card[8], tcgplayer_card_id)
+            else:
+                # some cards will only come in foil and will not need the offset
+                
 
-                    manabox_db_updater.add_tcgplayer_card_id_to_db(scryfall_id, tcgplayer_card_id)
-            else: 
-                tcgplayer_card_id = db_lookup[scryfall_id]
-                logging.info(f"Found TCGPlayer ID for {card_name} ({set_symbol}): {tcgplayer_card_id}")
+                tcgplayer_card_id = int(db_lookup[lookup_key])
+                # Define the offset mapping
+                offset_map = {
+                    ('nonfoil', 'Near Mint'): 0,
+                    ('nonfoil', 'Lightly Played'): 1,
+                    ('nonfoil', 'Moderately Played'): 2,
+                    ('nonfoil', 'Heavily Played'): 3,
+                    ('nonfoil', 'Damaged'): 4,
+                    ('foil', 'Near Mint'): 6,
+                    ('foil', 'Lightly Played'): 7,
+                    ('foil', 'Moderately Played'): 8,
+                    ('foil', 'Heavily Played'): 9,
+                    ('foil', 'Damaged'): 10,
+                }
+                # Normalize printing and condition for lookup (match formatting)
+                printing_key = printing.lower() if printing else 'nonfoil'
+                condition_key = condition  # Already formatted as 'Near Mint', 'Lightly Played', etc.
+                offset = offset_map.get((printing_key, condition_key), 0)
+                # does not work when the condition is not near mint
+                #  NEED TO REBUILD THE DB TO HAVE CARD NAME tcgplayer_id {foil, nonfoil}
+                # so that i dont need to know if there is only a foil version or not
+
             
             tcgplayer_data.append({
                 "TCGplayer Id": int(tcgplayer_card_id) if tcgplayer_card_id else pd.NA,
@@ -231,7 +247,7 @@ if manabox_csv is not None:
                 "Title": '',
                 "Number": collector_number if len(card) > 3 else '',
                 "Rarity": rarity if len(card) > 5 else '',
-                "Condition": 'Near Mint Foil' if card[4] == 'foil' else 'Near Mint',
+                "Condition": f'{condition} Foil' if card[4] == 'foil' else f'{condition}',
                 "TCG Market Price": '',
                 "TCG Direct Low": '',
                 "TCG Low Price With Shipping": '',

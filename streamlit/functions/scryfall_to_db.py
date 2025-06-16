@@ -44,76 +44,26 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 # Drop the scryfall table if it exists to ensure schema matches
-logging.info('Dropping and recreating scryfall table.')
-cur.execute("DROP TABLE IF EXISTS scryfall;")
+logging.info('Dropping and recreating scryfall_to_tcgplayer table.')
+cur.execute("DROP TABLE IF EXISTS scryfall_to_tcgplayer;")
 # Create table with all fields from the sample card
 cur.execute("""
-CREATE TABLE IF NOT EXISTS scryfall (
-    object TEXT,
+CREATE TABLE IF NOT EXISTS scryfall_to_tcgplayer (
     id TEXT PRIMARY KEY,
-    oracle_id TEXT,
-    multiverse_ids JSONB,
-    mtgo_id INT,
-    mtgo_foil_id INT,
     tcgplayer_id INT,
-    cardmarket_id INT,
     name TEXT,
-    lang TEXT,
     released_at DATE,
-    uri TEXT,
-    scryfall_uri TEXT,
-    layout TEXT,
-    highres_image BOOLEAN,
-    image_status TEXT,
-    image_uris JSONB,
-    mana_cost TEXT,
-    cmc FLOAT,
-    type_line TEXT,
-    oracle_text TEXT,
-    power TEXT,
-    toughness TEXT,
-    colors JSONB,
-    color_identity JSONB,
-    keywords JSONB,
-    legalities JSONB,
-    games JSONB,
-    reserved BOOLEAN,
-    game_changer BOOLEAN,
-    foil BOOLEAN,
-    nonfoil BOOLEAN,
-    finishes JSONB,
-    oversized BOOLEAN,
-    promo BOOLEAN,
-    reprint BOOLEAN,
-    variation BOOLEAN,
-    set_id TEXT,
     set TEXT,
     set_name TEXT,
-    set_type TEXT,
-    set_uri TEXT,
-    set_search_uri TEXT,
-    scryfall_set_uri TEXT,
-    rulings_uri TEXT,
-    prints_search_uri TEXT,
     collector_number TEXT,
-    digital BOOLEAN,
     rarity TEXT,
-    flavor_text TEXT,
-    card_back_id TEXT,
-    artist TEXT,
-    artist_ids JSONB,
-    illustration_id TEXT,
-    border_color TEXT,
     frame TEXT,
     full_art BOOLEAN,
-    textless BOOLEAN,
-    booster BOOLEAN,
-    story_spotlight BOOLEAN,
-    edhrec_rank INT,
-    penny_rank INT,
     prices JSONB,
-    related_uris JSONB,
-    purchase_uris JSONB
+    tcgplayer_product_id_nonfoil INT,
+    tcgplayer_product_id_foil INT,
+    
+    tcgplayer
 );
 """)
 conn.commit()
