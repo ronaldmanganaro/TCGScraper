@@ -35,23 +35,27 @@ def scrape_tcgplayer_id(url):
 
         return None
 
-def add_tcgplayer_card_id_to_db(scryfall_id, tcgplayer_card_id):
+def add_tcgplayer_card_id_to_db(scryfall_id, tcgplayer_card_id, is_foil):
     """
     Connect to the Scryfall database and insert/update the tcgplayer_card_id column.
 
     Args:
         scryfall_id (str): The Scryfall ID of the card.
         tcgplayer_card_id (str): The TCGplayer card ID to insert.
+        is_foil (bool): Whether this is a foil card.
     """
     conn = db.connectDB('scryfall')
     cur = conn.cursor()
+    print(f"Adding TCGPlayer ID {tcgplayer_card_id} for Scryfall ID {scryfall_id} (Foil: {is_foil})")
+    column_name = "tcgplayer_id_foil" if is_foil else "tcgplayer_id_normal"
     try:
-        cur.execute("""
-            ALTER TABLE scryfall ADD COLUMN IF NOT EXISTS tcgplayer_card_id TEXT;
-            UPDATE scryfall
-            SET tcgplayer_card_id = %s
-            WHERE id = %s;
-        """, (tcgplayer_card_id, scryfall_id))
+        # Add the column if it doesn't exist
+        cur.execute(f"ALTER TABLE scryfall ADD COLUMN IF NOT EXISTS {column_name} TEXT;")
+        # Update the value
+        cur.execute(
+            f"UPDATE scryfall SET {column_name} = %s WHERE id = %s;",
+            (tcgplayer_card_id, scryfall_id)
+        )
         conn.commit()
     except Exception as e:
         logging.warning("Failed to update tcgplayer_card_id for %s: %s", scryfall_id, e)
@@ -136,7 +140,7 @@ def get_scryfall_card_info(name, set_symbol, collector_number):
         conn.close()
     return scryfall_id
 
-def add_single_scryfall_card_to_db(set_code, collector_number, lang='en'):
+def get_tcgplayerid_from_scryfall(set_code, collector_number, lang='en'):
     """
     Fetch a single card from Scryfall API by set code and collector number, and add it to the scryfall table in the database.
     Args:
@@ -150,6 +154,7 @@ def add_single_scryfall_card_to_db(set_code, collector_number, lang='en'):
         'object', 'id', 'oracle_id', 'multiverse_ids', 'mtgo_id', 'mtgo_foil_id', 'tcgplayer_id', 'cardmarket_id', 'name', 'lang', 'released_at', 'uri', 'scryfall_uri', 'layout', 'highres_image', 'image_status', 'image_uris', 'mana_cost', 'cmc', 'type_line', 'oracle_text', 'power', 'toughness', 'colors', 'color_identity', 'keywords', 'legalities', 'games', 'reserved', 'game_changer', 'foil', 'nonfoil', 'finishes', 'oversized', 'promo', 'reprint', 'variation', 'set_id', 'set', 'set_name', 'set_type', 'set_uri', 'set_search_uri', 'scryfall_set_uri', 'rulings_uri', 'prints_search_uri', 'collector_number', 'digital', 'rarity', 'flavor_text', 'card_back_id', 'artist', 'artist_ids', 'illustration_id', 'border_color', 'frame', 'full_art', 'textless', 'booster', 'story_spotlight', 'edhrec_rank', 'penny_rank', 'prices', 'related_uris', 'purchase_uris', 'tcgplayer_card_id'
     ]
     url = f"https://api.scryfall.com/cards/{set_code}/{collector_number}?lang={lang}"
+    print(f"scryfall url: {url}")
     resp = requests.get(url)
     if resp.status_code != 200:
         logging.warning(f"Scryfall API request failed: {resp.status_code} {resp.text}")

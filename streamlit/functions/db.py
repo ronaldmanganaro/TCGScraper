@@ -318,33 +318,35 @@ def get_tcgplayer_id(card_name, set_name):
 
 def batch_get_tcgplayer_ids_by_name_collector_set(card_info_list):
     """
-    card_info_list: List of (name, collector_number, set_name)
-    Returns: dict mapping (name, collector_number, set_name) -> tcgplayer_card_id
+    card_info_list: List of (name, collector_number, set)
+    Returns: dict mapping (name, collector_number, set) -> tcgplayer_card_id
     """
-    if not card_info_list:
-        return {}
+
     conn = connectDB("scryfall")
     cur = conn.cursor()
     try:
         # Build WHERE clause for batch query
+        print(f"{len(card_info_list)} cards to process")
+        # Query by (name, collector_number, set_name) only, ignore foil in SQL
         format_strings = ','.join(['(%s,%s,%s)'] * len(card_info_list))
-
-        print(format_strings)
         params = []
         for name, collector_number, set_name, foil in card_info_list:
-            if foil:
-                
-            params.extend([name, collector_number, set_name, foil])
+            params.extend([name, collector_number, set_name])
         query = f"""
-            SELECT name, collector_number, set_name, tcgplayer_card_id, foil FROM scryfall
+            SELECT name, collector_number, set_name, tcgplayer_id_normal, tcgplayer_id_foil FROM scryfall
             WHERE (name, collector_number, set_name) IN ({format_strings})
         """
         cur.execute(query, params)
         results = cur.fetchall()
+        # Build a lookup for quick access
+        result_dict = {(n, c, s): (normal, foil) for n, c, s, normal, foil in results}
         lookup = {}
-        for name, collector_number, set_name, tcgplayer_card_id, foil in results:
-            if tcgplayer_card_id is not None:
-                lookup[(name, collector_number, set_name, foil)] = tcgplayer_card_id
+        for name, collector_number, set_name, foil in card_info_list:
+            ids = result_dict.get((name, collector_number, set_name))
+            if ids:
+                tcg_id = ids[1] if foil else ids[0]
+                if tcg_id is not None:
+                    lookup[(name, collector_number, set_name, foil)] = tcg_id
         return lookup
     finally:
         cur.close()

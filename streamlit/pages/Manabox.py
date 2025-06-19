@@ -76,10 +76,16 @@ if manabox_csv is not None:
         # Use scryfall_id for all lookups
         card_info_list = [
             # name, collector_number, set_name, foil (True/False)
-            (str(card[0]), str(card[3]), str(card[2]), True if str(card[4]).lower() == 'foil' else False)
+            (
+                str(card[0]),
+                str(int(float(card[3]))) if str(card[3]).replace('.', '', 1).isdigit() else str(card[3]),
+                str(card[2]),
+                True if str(card[4]) == 'foil' else False
+            )
             for card in uploaded_df.itertuples()
             if pd.notna(card[0]) and pd.notna(card[3]) and pd.notna(card[2]) and pd.notna(card[4])
         ]
+        print(f"DEBUG: card_info_list: {card_info_list}")
         db_lookup = db.batch_get_tcgplayer_ids_by_name_collector_set(card_info_list)
         logging.info(f"DB lookup result: {db_lookup}")
         
@@ -97,11 +103,12 @@ if manabox_csv is not None:
             card_name = card[0]  # Name of the card
             set_symbol = card[1] if len(card) > 1 else ''
             set_name = card[2] if len(card) > 2 else ''
-            collector_number = card[3] if len(card) > 3 else ''
+            collector_number = int(card[3]) if len(card) > 3 else ''
             printing = card[4] if len(card) > 4 else ''
             rarity = card[5] if len(card) > 5 else ''
             rarity = rarity_map.get(rarity.lower(), rarity)  # Map rarity to single letter
             quantity = card[6] if len(card) > 6 else ''
+            scryfall_id = card[8] if len(card) > 7 else ''
             tcg_martket_price = card[9] if len(card) > 9 else ''
             printing = printing.capitalize()  # Capitalize only the first letter
             condition = card[12] if len(card) > 12 else ''
@@ -116,44 +123,40 @@ if manabox_csv is not None:
                 card_name = f"{card_name} (0{collector_number})"
                 rarity = 'L'  # Set rarity to 'L' for lands
 
-            lookup_key = (str(card[0]), str(card[3]), str(card[2]))
+            if printing == 'Foil':
+                is_foil = True
+            else:
+                print(f"DEBUG: Printing value for {card_name} is_foil: {printing}")
+                is_foil = False
+            
+            lookup_key = (card_name, str(collector_number), set_name, is_foil)
+            print(f"DEBUG: key: {lookup_key} -> {db_lookup.get(lookup_key, 'Not Found')}")
+            print (f"DEBUG: db: {db_lookup}")
             if lookup_key not in db_lookup:
                 logging.info(f"No TCGplayer ID for card: {card_name} ({set_symbol}), scraping Scryfall...")
-                tcgplayer_id = manabox_db_updater.add_single_scryfall_card_to_db(set_symbol, collector_number)
+                tcgplayer_id = manabox_db_updater.get_tcgplayerid_from_scryfall(set_symbol, collector_number)
                 print(f"DEBUG: tcgplayer_id returned: {(tcgplayer_id)}")
                 if tcgplayer_id is not None:
                     url = f"https://www.tcgplayer.com/product/{tcgplayer_id}?Language=English&page=1&Printing={printing}&Condition=Near+Mint"
                     logging.info(f"TCGPlayer URL for {card_name} ({set_symbol}): {url}")
                     tcgplayer_card_id = run_playwright_script(url)
                     logging.info(f"DEBUG: tcgplayer_card_id returned: {repr(tcgplayer_card_id)}")
-                    manabox_db_updater.add_tcgplayer_card_id_to_db(card[8], tcgplayer_card_id)
-            else:
-                # some cards will only come in foil and will not need the offset
-                
-
+                    manabox_db_updater.add_tcgplayer_card_id_to_db(scryfall_id, tcgplayer_card_id, is_foil)
+            else:                
                 tcgplayer_card_id = int(db_lookup[lookup_key])
                 # Define the offset mapping
                 offset_map = {
-                    ('nonfoil', 'Near Mint'): 0,
-                    ('nonfoil', 'Lightly Played'): 1,
-                    ('nonfoil', 'Moderately Played'): 2,
-                    ('nonfoil', 'Heavily Played'): 3,
-                    ('nonfoil', 'Damaged'): 4,
-                    ('foil', 'Near Mint'): 6,
-                    ('foil', 'Lightly Played'): 7,
-                    ('foil', 'Moderately Played'): 8,
-                    ('foil', 'Heavily Played'): 9,
-                    ('foil', 'Damaged'): 10,
+                    ('Near Mint'): 0,
+                    ('Lightly Played'): 1,
+                    ('Moderately Played'): 2,
+                    ('Heavily Played'): 3,
+                    ('Damaged'): 4,
                 }
                 # Normalize printing and condition for lookup (match formatting)
-                printing_key = printing.lower() if printing else 'nonfoil'
                 condition_key = condition  # Already formatted as 'Near Mint', 'Lightly Played', etc.
-                offset = offset_map.get((printing_key, condition_key), 0)
-                # does not work when the condition is not near mint
-                #  NEED TO REBUILD THE DB TO HAVE CARD NAME tcgplayer_id {foil, nonfoil}
-                # so that i dont need to know if there is only a foil version or not
+                offset = offset_map.get((condition_key), 0)
+                tcgplayer_card_id += offset  # Adjust the ID based on the condition offset
 
-            
             tcgplayer_data.append({
                 "TCGplayer Id": int(tcgplayer_card_id) if tcgplayer_card_id else pd.NA,
                 "Product Line": 'Magic',
