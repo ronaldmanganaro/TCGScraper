@@ -1,5 +1,5 @@
 import streamlit as st
-from functions import widgets, manabox_db_updater
+from functions import widgets, manabox_db_updater, db
 import pandas as pd
 import time
 import psycopg2
@@ -8,92 +8,7 @@ import logging
 import subprocess
 import os
 
-def get_db_connection():
-    
-    return psycopg2.connect(
-        dbname='scryfall',
-        user='rmangana',
-        password='password',
-        host='52.73.212.127',
-        port=5432
-)
 
-def get_tcgplayer_id_from_db(scryfall_id):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    try:
-        cur.execute("""
-            SELECT tcgplayer_id FROM scryfall
-            WHERE id = %s
-            LIMIT 1
-        """, (scryfall_id,))
-        result = cur.fetchone()
-        return result[0] if result and result[0] is not None else None
-    finally:
-        cur.close()
-        conn.close()
-
-def get_tcgplayer_id_from_scryfall_id(scryfall_id, foil=False):
-    """
-    Given a Scryfall card ID, fetch the card from the Scryfall API and return its TCGplayer ID.
-    If foil=True, prefer tcgplayer_foil_id. If foil=False, prefer tcgplayer_nonfoil_id.
-    Fallback to tcgplayer_id if specific field is missing.
-    """
-    url = f"https://api.scryfall.com/cards/{scryfall_id}"
-    try:
-        resp = requests.get(url, timeout=10)
-        if resp.status_code == 200:
-            data = resp.json()
-            if foil:
-                tcg_id = data.get("tcgplayer_foil_id")
-                if tcg_id is not None:
-                    return tcg_id
-            else:
-                tcg_id = data.get("tcgplayer_nonfoil_id")
-                if tcg_id is not None:
-                    return tcg_id
-            # Fallback
-            return data.get("tcgplayer_id")
-    except Exception as e:
-        logging.warning(
-            f"Error fetching Scryfall card by id {scryfall_id}: {e}")
-    return None
-
-def get_tcgplayer_id(card_name, set_name):
-    tcg_id = get_tcgplayer_id_from_db()
-    if tcg_id:
-        return tcg_id
-    return get_tcgplayer_id_from_scryfall_id(card_name, set_name)
-
-def batch_get_tcgplayer_ids_by_name_collector_set(card_info_list):
-    """
-    card_info_list: List of (name, collector_number, set_name)
-    Returns: dict mapping (name, collector_number, set_name) -> tcgplayer_card_id
-    """
-    if not card_info_list:
-        return {}
-    conn = get_db_connection()
-    cur = conn.cursor()
-    try:
-        # Build WHERE clause for batch query
-        format_strings = ','.join(['(%s,%s,%s,%s)'] * len(card_info_list))
-        params = []
-        for name, collector_number, set_name, foil in card_info_list:
-            params.extend([name, collector_number, set_name, foil])
-        query = f"""
-            SELECT name, collector_number, set_name, tcgplayer_card_id, foil FROM scryfall
-            WHERE (name, collector_number, set_name, foil) IN ({format_strings})
-        """
-        cur.execute(query, params)
-        results = cur.fetchall()
-        lookup = {}
-        for name, collector_number, set_name, tcgplayer_card_id, foil in results:
-            if tcgplayer_card_id is not None:
-                lookup[(name, collector_number, set_name, foil)] = tcgplayer_card_id
-        return lookup
-    finally:
-        cur.close()
-        conn.close()
 
 def run_playwright_script(url):
     """
@@ -165,7 +80,7 @@ if manabox_csv is not None:
             for card in uploaded_df.itertuples()
             if pd.notna(card[0]) and pd.notna(card[3]) and pd.notna(card[2]) and pd.notna(card[4])
         ]
-        db_lookup = batch_get_tcgplayer_ids_by_name_collector_set(card_info_list)
+        db_lookup = db.batch_get_tcgplayer_ids_by_name_collector_set(card_info_list)
         logging.info(f"DB lookup result: {db_lookup}")
         
         lands = ['Island', 'Mountain', 'Forest', 'Swamp', 'Plains']

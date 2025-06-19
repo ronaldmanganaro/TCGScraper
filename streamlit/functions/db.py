@@ -3,7 +3,7 @@ import logging
 import sys
 from datetime import datetime
 from psycopg2.extensions import connection
-
+import requests
 
 # Configure logging
 logging.basicConfig(
@@ -14,7 +14,6 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)  # Send logs to stdout
     ]
 )
-
 
 def connectDB(isTest=False) -> connection:
 
@@ -102,7 +101,6 @@ def writeDB(connection: connection, databaseEntries):
 
     cursor.close()
 
-
 def get_cards_by_listing_quantity(connection: connection, min_quantity: int):
     cursor = connection.cursor()
     query = """
@@ -120,7 +118,6 @@ def get_cards_by_listing_quantity(connection: connection, min_quantity: int):
         return []
     finally:
         cursor.close()
-
 
 def get_card_name(connection: connection, min_quantity: int):
     cursor = connection.cursor()
@@ -256,3 +253,99 @@ def add_card_data(converted_date, card_number, market_price, lowest_price):
     finally:
         if connection:
             connection.close()
+
+def get_tcgplayer_id_from_db(scryfall_id):
+    conn = connectDB("scryfall")
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT tcgplayer_id FROM scryfall
+            WHERE id = %s
+            LIMIT 1
+        """, (scryfall_id,))
+        result = cur.fetchone()
+        return result[0] if result and result[0] is not None else None
+    finally:
+        cur.close()
+        conn.close()
+
+def get_tcgplayer_id_from_db(scryfall_id):
+    conn = connectDB("scryfall")
+    cur = conn.cursor()
+    try:
+        cur.execute("""
+            SELECT tcgplayer_id FROM scryfall
+            WHERE id = %s
+            LIMIT 1
+        """, (scryfall_id,))
+        result = cur.fetchone()
+        return result[0] if result and result[0] is not None else None
+    finally:
+        cur.close()
+        conn.close()
+
+def get_tcgplayer_id_from_scryfall_id(scryfall_id, foil=False):
+    """
+    Given a Scryfall card ID, fetch the card from the Scryfall API and return its TCGplayer ID.
+    If foil=True, prefer tcgplayer_foil_id. If foil=False, prefer tcgplayer_nonfoil_id.
+    Fallback to tcgplayer_id if specific field is missing.
+    """
+    url = f"https://api.scryfall.com/cards/{scryfall_id}"
+    try:
+        resp = requests.get(url, timeout=10)
+        if resp.status_code == 200:
+            data = resp.json()
+            if foil:
+                tcg_id = data.get("tcgplayer_foil_id")
+                if tcg_id is not None:
+                    return tcg_id
+            else:
+                tcg_id = data.get("tcgplayer_nonfoil_id")
+                if tcg_id is not None:
+                    return tcg_id
+            # Fallback
+            return data.get("tcgplayer_id")
+    except Exception as e:
+        logging.warning(
+            f"Error fetching Scryfall card by id {scryfall_id}: {e}")
+    return None
+
+def get_tcgplayer_id(card_name, set_name):
+    tcg_id = get_tcgplayer_id_from_db()
+    if tcg_id:
+        return tcg_id
+    return get_tcgplayer_id_from_scryfall_id(card_name, set_name)
+
+def batch_get_tcgplayer_ids_by_name_collector_set(card_info_list):
+    """
+    card_info_list: List of (name, collector_number, set_name)
+    Returns: dict mapping (name, collector_number, set_name) -> tcgplayer_card_id
+    """
+    if not card_info_list:
+        return {}
+    conn = connectDB("scryfall")
+    cur = conn.cursor()
+    try:
+        # Build WHERE clause for batch query
+        format_strings = ','.join(['(%s,%s,%s)'] * len(card_info_list))
+
+        print(format_strings)
+        params = []
+        for name, collector_number, set_name, foil in card_info_list:
+            if foil:
+                
+            params.extend([name, collector_number, set_name, foil])
+        query = f"""
+            SELECT name, collector_number, set_name, tcgplayer_card_id, foil FROM scryfall
+            WHERE (name, collector_number, set_name) IN ({format_strings})
+        """
+        cur.execute(query, params)
+        results = cur.fetchall()
+        lookup = {}
+        for name, collector_number, set_name, tcgplayer_card_id, foil in results:
+            if tcgplayer_card_id is not None:
+                lookup[(name, collector_number, set_name, foil)] = tcgplayer_card_id
+        return lookup
+    finally:
+        cur.close()
+        conn.close()
