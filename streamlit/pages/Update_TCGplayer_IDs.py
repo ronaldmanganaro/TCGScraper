@@ -6,6 +6,9 @@ import json
 import psycopg2
 import time
 import pandas as pd
+from functions import widgets
+
+widgets.show_pages_sidebar()
 
 def run_playwright_script(url):
     script_path = os.path.join(os.path.dirname(__file__), '../functions/scrape_playwright.py')
@@ -25,6 +28,7 @@ def run_playwright_script(url):
     if output and output.isdigit():
         return output
     return None
+
 
 def update_tcgplayer_ids_from_json_streamlit(json_file, dbname='scryfall', selected_sets=None):
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
