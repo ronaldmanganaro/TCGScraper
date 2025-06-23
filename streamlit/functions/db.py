@@ -326,7 +326,7 @@ def batch_get_tcgplayer_ids_by_name_collector_set(card_info_list):
     cur = conn.cursor()
     try:
         # Build WHERE clause for batch query
-        print(f"{len(card_info_list)} cards to process")
+        #print(f"{len(card_info_list)} cards to process")
         # Query by (name, collector_number, set_name) only, ignore foil in SQL
         format_strings = ','.join(['(%s,%s,%s)'] * len(card_info_list))
         params = []
