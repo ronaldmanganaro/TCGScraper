@@ -140,6 +140,8 @@ def show_pages_sidebar():
             st.switch_page("pages/Manabox.py")
         if st.button("📦 Manage Inventory", use_container_width=True):
             st.switch_page("pages/Manage_Inventory.py")
+        if st.button("🔄 Update TCGplayer IDs", use_container_width=True):
+            st.switch_page("pages/Update_TCGplayer_IDs.py")
 
 def footer():
     """Display a divider and Buy Me a Coffee button as a footer on the page."""

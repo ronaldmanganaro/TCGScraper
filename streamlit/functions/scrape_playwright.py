@@ -10,18 +10,42 @@ def scrape_add_to_cart_id(url):
         context.add_init_script("Object.defineProperty(navigator, 'webdriver', { get: () => undefined })")
         page = context.new_page()
         try:
+            
             page.set_extra_http_headers({
                 "Accept-Language": "en-US,en;q=0.9"
             })
-            page.goto(url, wait_until="domcontentloaded", timeout=60000)
-            page.wait_for_selector("section[data-testid^='AddToCart_FS_']", timeout=60000)
+            page.goto(url, wait_until="domcontentloaded", timeout=5000)
+            
+            # Try to find the section or the button for AddToCart
+            try:
+                page.wait_for_selector("section[data-testid^='AddToCart_'], button[data-testid^='add-to-cart__submit--']", timeout=5000)
+            except Exception as e:
+                logging.warning(f"Could not find AddToCart section or button: {e}")
+                page.screenshot(path="error_screenshot.png")
+                with open("error_page.html", "w", encoding="utf-8") as f:
+                    f.write(page.content())
+                browser.close()
+                return None
 
-
-            section = page.locator("section[data-testid^='AddToCart_FS_']")
-            data_testid = section.get_attribute("data-testid")
-
-            if data_testid:
-                return data_testid.split('_')[2].split('-')[0]
+            # Try section first
+            section = page.query_selector("section[data-testid^='AddToCart_']")
+            if section:
+                data_testid = section.get_attribute("data-testid")
+                if data_testid:
+                    parts = data_testid.split('_')
+                    if len(parts) >= 3 and parts[1] == 'FS':
+                        return parts[2].split('-')[0]
+                    elif len(parts) >= 2:
+                        return parts[1].split('-')[0]
+            # Fallback to button
+            button = page.query_selector("button[data-testid^='add-to-cart__submit--']")
+            if button:
+                data_testid = button.get_attribute("data-testid")
+                if data_testid:
+                    # Example: add-to-cart__submit--5505819-1519259b
+                    parts = data_testid.split('--')
+                    if len(parts) == 2:
+                        return parts[1].split('-')[0]
 
         except Exception as e:
             logging.warning(f"Error scraping AddToCart ID: {e}")

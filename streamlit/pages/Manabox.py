@@ -96,14 +96,14 @@ if manabox_csv is not None:
             'rare': 'R',
             'mythic': 'M',
         }
-        
+        scraped_count = 0  # Counter for scraped cards
         # for each card not found in the db_lookup use scryfall api to update the database
         for idx, card in enumerate(uploaded_df.itertuples()):
             tcgplayer_card_id = None  # Initialize to None for each card
             card_name = card[0]  # Name of the card
             set_symbol = card[1] if len(card) > 1 else ''
             set_name = card[2] if len(card) > 2 else ''
-            collector_number = int(card[3]) if len(card) > 3 else ''
+            collector_number = str(card[3]) if len(card) > 3 else ''
             printing = card[4] if len(card) > 4 else ''
             rarity = card[5] if len(card) > 5 else ''
             rarity = rarity_map.get(rarity.lower(), rarity)  # Map rarity to single letter
@@ -129,14 +129,20 @@ if manabox_csv is not None:
                 print(f"DEBUG: Printing value for {card_name} is_foil: {printing}")
                 is_foil = False
             
-            lookup_key = (card_name, str(collector_number), set_name, is_foil)
+            lookup_key = (card[0], str(collector_number), set_name, is_foil)
             print(f"DEBUG: key: {lookup_key} -> {db_lookup.get(lookup_key, 'Not Found')}")
-            print (f"DEBUG: db: {db_lookup}")
-            if lookup_key not in db_lookup:
+            #print (f"DEBUG: db: {db_lookup}")
+            
+            # Don't scrape if the card is a token or set symbol includes 'T' and is 4 characters long
+            if 'T' in set_symbol and len(set_symbol) == 4:
+                logging.info(f"Skipping card: {card_name} (set: {set_symbol}) due to set symbol containing 'T' and being 4 characters long")
+                tcgplayer_card_id = None
+            elif lookup_key not in db_lookup:
                 logging.info(f"No TCGplayer ID for card: {card_name} ({set_symbol}), scraping Scryfall...")
                 tcgplayer_id = manabox_db_updater.get_tcgplayerid_from_scryfall(set_symbol, collector_number)
                 print(f"DEBUG: tcgplayer_id returned: {(tcgplayer_id)}")
                 if tcgplayer_id is not None:
+                    scraped_count +=1
                     url = f"https://www.tcgplayer.com/product/{tcgplayer_id}?Language=English&page=1&Printing={printing}&Condition=Near+Mint"
                     logging.info(f"TCGPlayer URL for {card_name} ({set_symbol}): {url}")
                     tcgplayer_card_id = run_playwright_script(url)
@@ -185,6 +191,10 @@ if manabox_csv is not None:
         st.session_state['manabox_tcgplayer_df'] = tcgplayer_df
         st.session_state['manabox_output_csv'] = output_csv
         st.session_state['manabox_last_filename'] = manabox_csv.name
+        # print the number of cards that came from the db vs the number that were scraped
+        
+        db_count = total_cards - scraped_count
+        st.success(f"Processed {total_cards} cards: {db_count} found in database, {scraped_count} scraped from Scryfall.")
     else:
         tcgplayer_df = st.session_state['manabox_tcgplayer_df']
         output_csv = st.session_state['manabox_output_csv']
@@ -242,6 +252,6 @@ if st.session_state.get('manabox_tcgplayer_df') is not None and not st.session_s
         file_name=st.session_state['manabox_output_csv'],
         mime='text/csv'
     )
-    st.warning(f"PLEASE KEEP IN MIND TOKENS ARE WILL NOT BE ASSIGNED A TCGPLAYER ID.")
+    st.warning(f"PLEASE KEEP IN MIND TOKENS WILL NOT BE ASSIGNED A TCGPLAYER ID.")
 
 widgets.footer()

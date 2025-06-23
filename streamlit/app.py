@@ -16,6 +16,7 @@ pg = st.navigation(
         st.Page('pages/Cloud_Control.py'),
         st.Page('pages/Manabox.py'),
         st.Page('pages/Manage_Inventory.py'),
+        st.Page('pages/Update_TCGplayer_IDs.py'),
     ], position="hidden"
 )
 
