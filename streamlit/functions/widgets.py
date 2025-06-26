@@ -196,7 +196,7 @@ def login():
 def show_pages_sidebar():
     # Expander for Pages
 
-    with st.sidebar.expander("📄 Pages", expanded=True):
+    with st.sidebar.expander("📄 Pages", expanded=False):
         login()
         if st.button("🏠 Home", use_container_width=True):
             st.switch_page("pages/home.py")
@@ -205,10 +205,7 @@ def show_pages_sidebar():
         if st.button("📦 EV Tools", use_container_width=True):
             st.switch_page("pages/EVTools.py")
         if st.button("⚡ Pokémon Price Tracker", use_container_width=True):
-            st.switch_page("pages/PokemonPriceTracker.py")
-        if st.session_state.get('current_user') == 'rmangana':
-            if st.button("☁️ Cloud Control", use_container_width=True):
-                st.switch_page("pages/Cloud_Control.py")
+            st.switch_page("pages/PokemonPriceTracker.py")            
         if st.button("📦 Manabox", use_container_width=True):
             st.switch_page("pages/Manabox.py")
         if st.button("📦 Manage Inventory", use_container_width=True):
@@ -216,15 +213,32 @@ def show_pages_sidebar():
         if st.session_state.get('current_user') == 'rmangana':
             if st.button("🔄 Update TCGplayer IDs", use_container_width=True):
                 st.switch_page("pages/Update_TCGplayer_IDs.py")
+            if st.button("☁️ Cloud Control", use_container_width=True):
+                st.switch_page("pages/Cloud_Control.py")
+            if st.button("🖨️ TCGPlayer Print", use_container_width=True):
+                st.switch_page("pages/Tcgplayer_Print_Orders.py")
+            if st.button("Test Crop", use_container_width=True):
+                st.switch_page("pages/test_crop.py")
 
 def footer():
-    """Display a divider and Buy Me a Coffee button as a footer on the page."""
+    """Display a divider, Buy Me a Coffee button, and Discord button as a footer on the page."""
     st.markdown('---')
+    discord_url = "https://discord.gg/mrxCZbrg"  # Replace with your actual Discord invite link
     st.markdown(
-        '''<div style="width: 100%; text-align: center; padding: 10px 0;">
-            <a href="https://www.buymeacoffee.com/ronaldmangu" target="_blank">
-                <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="40" style="margin-bottom: 0;" />
-            </a>
-        </div>''',
+        f"""
+        <style>
+        .footer-bar {{ position: fixed; left: 0; bottom: 0; width: 100%; background: #23272a; color: white; text-align: center; padding: 0.5em 0; z-index: 9999; }}
+        .footer-bar a.discord-link {{ color: #7289da; font-weight: bold; text-decoration: none; margin-left: 0.5em; }}
+        .footer-bar a.coffee-link img {{ vertical-align: middle; margin-bottom: 0; height: 32px; }}
+        </style>
+        <div class="footer-bar">
+            <span>Need help? Have a feature suggestion or bug report? Join our <a href="{discord_url}" class="discord-link" target="_blank">Discord</a>!</span>
+            <span style="margin-left: 1.5em;">
+                <a href="https://www.buymeacoffee.com/ronaldmangu" class="coffee-link" target="_blank">
+                    <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" />
+                </a>
+            </span>
+        </div>
+        """,
         unsafe_allow_html=True
     )

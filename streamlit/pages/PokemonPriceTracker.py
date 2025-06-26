@@ -6,6 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import asyncio
 import pyperclip
+from functions import widgets 
 
 widgets.show_pages_sidebar()
 

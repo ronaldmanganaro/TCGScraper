@@ -4,6 +4,11 @@ from PyPDF2 import PdfReader
 import re
 import pandas as pd
 from datetime import datetime
+from pdf2image import convert_from_path
+from PIL import Image
+from st_copy_to_clipboard import st_copy_to_clipboard
+import usaddress
+from functions import widgets   
 
 def preprocess_text(text):
     # Remove boilerplate and repeated seller info (all occurrences, flexible pattern)
@@ -140,44 +145,38 @@ def extract_orders_from_text(text):
             is_card = False
             if description.startswith('Magic -') and not re.search(r'(Unopened|Sealed)', description, re.IGNORECASE):
                 desc_parts = description[len('Magic -'):].split(' -')
-                if len(desc_parts) >= 3:
-                    # Robustly split set name and card name at the first hyphen not in a number
-                    set_and_card = desc_parts[0]
-                    if '-' in set_and_card:
-                        set_card_split = re.split(r'(?<!\d)-(?!\d)', set_and_card, maxsplit=1)
-                        set_name = set_card_split[0].strip()
-                        card_name = set_card_split[1].strip() if len(set_card_split) > 1 else desc_parts[1].strip()
-                    else:
-                        set_name = set_and_card.strip()
-                        card_name = desc_parts[1].strip()
-                    # If card name is still missing, try next part
-                    if not card_name and len(desc_parts) > 1:
-                        card_name = desc_parts[1].strip()
-                    collector_number = desc_parts[2].strip() if len(desc_parts) > 2 else ''
-                    rarity = ''
-                    condition = ''
-                    # Handle rarity and condition, e.g. 'R-Near Mint'
-                    if len(desc_parts) > 3:
-                        rc = desc_parts[3].strip()
-                        if '-' in rc:
-                            rarity, condition = rc.split('-', 1)
-                            rarity = rarity.strip()
-                            condition = condition.strip()
-                        else:
-                            rarity = rc
-                        if len(desc_parts) > 4 and not condition:
-                            condition = desc_parts[4].strip()
-                    card_items.append({
-                        'Quantity': quantity,
-                        'Set Name': set_name,
-                        'Card Name': card_name,
-                        'Collector Number': collector_number,
-                        'Rarity': rarity,
-                        'Condition': condition,
-                        'Price': price,
-                        'Total Price': total
-                    })
-                    is_card = True
+                # Improved: Try to robustly extract collector number, rarity, and condition
+                set_name = card_name = collector_number = rarity = condition = ''
+                if len(desc_parts) >= 2:
+                    set_name = desc_parts[0].strip()
+                    card_name = desc_parts[1].strip()
+                # Look for collector number, rarity, and condition in the remaining parts
+                for part in desc_parts[2:]:
+                    part = part.strip()
+                    # Collector number: starts with # or is all digits/letters
+                    if not collector_number and (part.startswith('#') or re.match(r'^[\w\-]+$', part)):
+                        collector_number = part.lstrip('#').strip()
+                        continue
+                    # Rarity and condition: look for e.g. 'R- Near Mint' or 'Near Mint'
+                    if '-' in part:
+                        rar, cond = part.split('-', 1)
+                        rarity = rar.strip()
+                        condition = cond.strip()
+                    elif not rarity and part in ['Common', 'Uncommon', 'Rare', 'Mythic', 'R', 'U', 'C', 'M']:
+                        rarity = part
+                    elif not condition:
+                        condition = part
+                card_items.append({
+                    'Quantity': quantity,
+                    'Set Name': set_name,
+                    'Card Name': card_name,
+                    'Collector Number': collector_number,
+                    'Rarity': rarity,
+                    'Condition': condition,
+                    'Price': price,
+                    'Total Price': total
+                })
+                is_card = True
             if not is_card:
                 sealed_items.append({
                     'Quantity': quantity,
@@ -188,18 +187,53 @@ def extract_orders_from_text(text):
         shipping_address_block = shipping_address.group(1).strip() if shipping_address else 'N/A'
         # Split shipping address into 3 lines: name, street, city/state/zip
         address_lines = [line.strip() for line in shipping_address_block.split('\n') if line.strip()]
-        name = address_lines[0] if len(address_lines) > 0 else ''
-        street = address_lines[1] if len(address_lines) > 1 else ''
-        city_state_zip = address_lines[2] if len(address_lines) > 2 else ''
-        # Normalize street: separate street number and name if joined (e.g., 821EMosier St -> 821 E Mosier St)
+        # Fix name capitalization (e.g., RoyDeWitt -> Roy Dewitt, Roy De Witt -> Roy Dewitt)
+        def fix_name(name):
+            # Remove extra spaces, split on capital letters, then join and title-case
+            name = re.sub(r'\s+', '', name)
+            name = re.sub(r'(?<!^)([A-Z])', r' \1', name)
+            # Special case: join 'De Witt' and similar to 'Dewitt'
+            name = re.sub(r'\bDe\s+Witt\b', 'Dewitt', name, flags=re.IGNORECASE)
+            return name.title().strip()
+        name = fix_name(address_lines[0]) if len(address_lines) > 0 else ''
+        # Improved address parsing to handle apartment/unit numbers on their own line
+        street = ''
+        apt = ''
+        city_state_zip = ''
+        if len(address_lines) == 2:
+            # Only street and city/state/zip
+            street = address_lines[1]
+        elif len(address_lines) == 3:
+            # Street, city/state/zip, or street, apt, city/state/zip
+            if re.match(r'^[\d\w\-]+$', address_lines[2].replace(',', '').strip()):
+                # If the third line is just a number or unit, treat as apt/unit
+                street = address_lines[1]
+                apt = address_lines[2]
+            else:
+                street = address_lines[1]
+                city_state_zip = address_lines[2]
+        elif len(address_lines) >= 4:
+            # Street, apt/unit, city/state/zip
+            street = address_lines[1]
+            apt = address_lines[2]
+            city_state_zip = address_lines[3]
+        else:
+            street = ''
+            city_state_zip = ''
+        # Combine street and apt/unit if present
+        if apt:
+            street = f"{street}, {apt}".strip(', ')
+        if not city_state_zip and len(address_lines) > 2:
+            city_state_zip = address_lines[-1]
+        # Only split street number and name if joined (e.g., 821EMosier St -> 821 E Mosier St)
         street_match = re.match(r'^(\d+)([A-Za-z].*)$', street)
-        if street_match:
+        if street_match and not street.startswith(' '):
             street_number = street_match.group(1)
-            street_name = street_match.group(2).replace('St', ' St')
-            # Add space between number and name, and between direction and name if needed
-            street = f"{street_number} {street_name.strip()}"
-            # Optionally, fix missing space after direction (E, W, N, S)
-            street = re.sub(r'([NSEW])([A-Z])', r'\1 \2', street)
+            street_name = street_match.group(2)
+            # Only add space if not already present
+            if not street_name.startswith(' '):
+                street = f"{street_number} {street_name.strip()}"
+        # Do NOT add extra spaces or replace 'St' with ' St'
         # Split city_state_zip into city, state, zip
         city, state, zip_code = '', '', ''
         city_state_zip_match = re.match(r'^(.*?),\s*([A-Z]{2})([\d\- ]+)$', city_state_zip.replace(' ', ''))
@@ -252,7 +286,7 @@ def main():
         # Only show orders not removed
         visible_orders = [order for order in orders if order['Order Number'] not in st.session_state['removed_orders']]
         for idx, order in enumerate(visible_orders, 1):
-            with st.expander(f"Order {idx}: {order['Order Number']}", expanded=True):
+            with st.expander(f"Order {idx}: {order['Order Number']}", expanded=False):
                 processed = st.checkbox(f"Processed", key=f"processed_{idx}")
                 st.markdown(f"**Order Date:** `{order['Order Date']}`  ")
                 # Shipping Method dropdown
@@ -266,13 +300,64 @@ def main():
                 )
                 st.markdown("**Shipping Address:**")
                 shipping_label = f"{order['Shipping Name']}\n{order['Shipping Street']}\n{order['Shipping City']}, {order['Shipping State']} {order['Shipping Zip']}"
-                st.code(shipping_label, language=None)
+                # Make shipping address editable
+                edited_address = st.text_area(
+                    "Edit Shipping Address:",
+                    value=shipping_label,
+                    key=f"shipping_address_{order['Order Number']}"
+                )
+                # Use streamlit-copy-to-clipboard for a copy button
+                st_copy_to_clipboard(
+                    edited_address,
+                    "Copy Address to Clipboard",
+                    key=f"copy_address_{order['Order Number']}"
+                )
+                # Validate shipping address using usaddress
+                address_valid = None
+                address_message = ""
+                try:
+                    # usaddress tag returns a dict of address components and a label
+                    parsed, address_type = usaddress.tag(edited_address)
+                    required_fields = ["AddressNumber", "StreetName", "PlaceName", "StateName", "ZipCode"]
+                    missing = [field for field in required_fields if field not in parsed]
+                    if not missing:
+                        address_valid = True
+                        address_message = ":white_check_mark: Address appears valid (usaddress)."
+                    else:
+                        address_valid = False
+                        address_message = f":warning: Address missing fields: {', '.join(missing)}"
+                except usaddress.RepeatedLabelError as e:
+                    address_valid = False
+                    address_message = f":warning: Address parsing error: {e}"
+                except Exception as e:
+                    address_valid = False
+                    address_message = f":warning: Address validation error: {e}"
+                # Show address validation as warning/info instead of markdown
+                if address_valid is True:
+                    st.info(address_message)
+                else:
+                    st.warning(address_message)
+                # Show cropped PDF region for cards ordered, just below the edit shipping address
+                pdf_path = "streamlit/temp_order.pdf"  # or the path to the current PDF
+                try:
+                    # Each order is on its own page: idx is 1-based for expander, so use idx for page number
+                    pages = convert_from_path(pdf_path, dpi=200, first_page=idx, last_page=idx)
+                    img = pages[0]
+                    # Use the exact crop numbers provided for each page
+                    crop_left = 92
+                    crop_top = 543
+                    crop_right = 1612
+                    crop_bottom = 820
+                    cropped = img.crop((crop_left, crop_top, crop_right, crop_bottom))
+                    st.image(cropped,  use_container_width=True)
+                except Exception as e:
+                    st.warning(f"Could not render card images: {e}")
                 if order['Card Items']:
                     st.markdown("**Cards Ordered:**")
                     items_df = pd.DataFrame(order['Card Items'])
                     st.dataframe(items_df, use_container_width=True, hide_index=True)
                     total_order_price = items_df["Total Price"].sum()
-                    st.markdown(f"**Total Card Order Price:** `${total_order_price:.2f}`")
+                    st.markdown(f"**Total Card Order Price:** `${{total_order_price:.2f}}`")
                 if order['Sealed Items']:
                     st.markdown("**Sealed/Unopened Products:**")
                     sealed_df = pd.DataFrame(order['Sealed Items'])
@@ -315,3 +400,6 @@ def main():
     
 if __name__ == "__main__":
     main()
+
+widgets.show_pages_sidebar()
+widgets.footer()

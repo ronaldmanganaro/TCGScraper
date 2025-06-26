@@ -4,6 +4,8 @@ import pandas as pd
 from functions import widgets
 import logging
 from st_aggrid import AgGrid, GridOptionsBuilder
+from functions import widgets
+
 widgets.show_pages_sidebar()
 
 st.title("💲 Repricer")

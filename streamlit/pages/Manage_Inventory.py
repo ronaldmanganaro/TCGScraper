@@ -2,6 +2,7 @@ from functions import widgets
 import streamlit as st
 import os 
 import pandas as pd
+from functions import widgets
 widgets.show_pages_sidebar()
 
 
