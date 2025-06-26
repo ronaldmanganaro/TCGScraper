@@ -8,8 +8,6 @@ import logging
 import subprocess
 import os
 
-
-
 def run_playwright_script(url):
     """
     Run the Playwright script as a separate process and retrieve the AddToCart ID.
@@ -39,7 +37,7 @@ def run_playwright_script(url):
         return output
     return None
 
-widgets.show_pages_sidebar()
+
 
 st.title("🧩 ManaBox Converter")
 st.markdown("""
@@ -254,4 +252,5 @@ if st.session_state.get('manabox_tcgplayer_df') is not None and not st.session_s
     )
     st.warning(f"PLEASE KEEP IN MIND TOKENS WILL NOT BE ASSIGNED A TCGPLAYER ID.")
 
+widgets.show_pages_sidebar()
 widgets.footer()

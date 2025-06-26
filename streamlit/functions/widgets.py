@@ -1,27 +1,118 @@
 import streamlit as st
 import os, json
+def ensure_users_table():
+    import psycopg2
+    conn = psycopg2.connect(
+        dbname='tcgplayerdb',
+        user='rmangana',
+        password='password',
+        host='52.73.212.127',
+        port=5432
+    )
+    cur = conn.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id SERIAL PRIMARY KEY,
+            username TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            rules JSONB,
+            templates JSONB
+        );
+    ''')
+    conn.commit()
+    cur.close()
+    conn.close()
+
+import bcrypt
+
+def create_user_db(username, password):
+    ensure_users_table()
+    import psycopg2
+    conn = psycopg2.connect(
+        dbname='tcgplayerdb',
+        user='rmangana',
+        password='password',
+        host='52.73.212.127',
+        port=5432
+    )
+    cur = conn.cursor()
+    password_hash = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    try:
+        cur.execute('INSERT INTO users (username, password_hash, rules, templates) VALUES (%s, %s, %s, %s)', (username, password_hash, json.dumps([]), json.dumps([])))
+        conn.commit()
+        return True
+    except psycopg2.errors.UniqueViolation:
+        conn.rollback()
+        return False
+    finally:
+        cur.close()
+        conn.close()
+
+def check_user_db(username, password):
+    ensure_users_table()
+    import psycopg2
+    conn = psycopg2.connect(
+        dbname='tcgplayerdb',
+        user='rmangana',
+        password='password',
+        host='52.73.212.127',
+        port=5432
+    )
+    cur = conn.cursor()
+    cur.execute('SELECT password_hash FROM users WHERE username = %s', (username,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    if row:
+        return bcrypt.checkpw(password.encode('utf-8'), row[0].encode('utf-8'))
+    return False
+
+def get_user_data_db(username):
+    ensure_users_table()
+    import psycopg2
+    conn = psycopg2.connect(
+        dbname='tcgplayerdb',
+        user='rmangana',
+        password='password',
+        host='52.73.212.127',
+        port=5432
+    )
+    cur = conn.cursor()
+    cur.execute('SELECT rules, templates FROM users WHERE username = %s', (username,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    if row:
+        return row[0] or [], row[1] or []
+    return [], []
+
+def save_user_data_db(username, rules, templates):
+    ensure_users_table()
+    import psycopg2
+    conn = psycopg2.connect(
+        dbname='tcgplayerdb',
+        user='rmangana',
+        password='password',
+        host='52.73.212.127',
+        port=5432
+    )
+    cur = conn.cursor()
+    cur.execute('UPDATE users SET rules = %s, templates = %s WHERE username = %s', (json.dumps(rules), json.dumps(templates), username))
+    conn.commit()
+    cur.close()
+    conn.close()
+
 def login():
     with st.popover("👤 Login/Logout", use_container_width=True):
         if st.session_state.get("current_user"):
             st.markdown(f"**👤 Logged in as:** `{st.session_state['current_user']}`")
             if st.button("Logout", key="logout_button_sidebar"):
                 # Save any new rules/templates before logging out
-                user_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'users')
-                os.makedirs(user_dir, exist_ok=True)
-                user_file = os.path.join(user_dir, f"{st.session_state['current_user']}.json")
-                rules = st.session_state.get("saved_rules", [])
-                templates = st.session_state.get("rule_templates", [])
-                # If password exists, preserve it
-                password = None
-                if os.path.exists(user_file):
-                    with open(user_file, 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                    password = data.get("password")
-                save_data = {"rules": rules, "templates": templates}
-                if password is not None:
-                    save_data["password"] = password
-                with open(user_file, 'w', encoding='utf-8') as f:
-                    json.dump(save_data, f, indent=2)
+                save_user_data_db(
+                    st.session_state['current_user'],
+                    st.session_state.get("saved_rules", []),
+                    st.session_state.get("rule_templates", [])
+                )
                 # Clear inventory from session state
                 st.session_state.pop("repricer_csv", None)
                 st.session_state.pop("filtered_df", None)
@@ -77,47 +168,28 @@ def login():
                 username = st.text_input("Username", key="login_username_sidebar")
                 password = st.text_input("Password", type="password", key="login_password_sidebar")
                 if st.button("Login", key="login_button_sidebar", use_container_width=True):
-                    if username.strip():
-                        user_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'users')
-                        user_file = os.path.join(user_dir, f"{username.strip()}.json")
-                        st.session_state.pop("saved_rules", None)
-                        st.session_state.pop("rule_templates", None)
-                        # Reload last inventory for this user if it exists
-                        inventory_file = os.path.join(user_dir, f"{username.strip()}_inventory.csv")
-                        if os.path.exists(user_file):
-                            with open(user_file, 'r', encoding='utf-8') as f:
-                                data = json.load(f)
-                            st.session_state["saved_rules"] = data.get("rules", [])
-                            st.session_state["rule_templates"] = data.get("templates", [])
-                            st.success(f"Loaded rules and templates for user: {username.strip()}")
-                            # Load last inventory if present
-                            if os.path.exists(inventory_file):
-                                import pandas as pd
-                                st.session_state["repricer_csv"] = pd.read_csv(inventory_file)
-                                st.success(f"Loaded last inventory for user: {username.strip()}")
+                    if username.strip() and password.strip():
+                        if check_user_db(username.strip(), password.strip()):
+                            st.session_state["current_user"] = username.strip()
+                            # Load user data from DB
+                            rules, templates = get_user_data_db(username.strip())
+                            st.session_state["saved_rules"] = rules
+                            st.session_state["rule_templates"] = templates
+                            st.success(f"Logged in as {username.strip()}")
+                            st.rerun()
                         else:
-                            st.session_state["saved_rules"] = []
-                            st.session_state["rule_templates"] = []
-                            st.info(f"No saved rules found for user: {username.strip()} (starting fresh)")
-                        st.session_state["current_user"] = username.strip()
+                            st.warning("Invalid username or password.")
                     else:
-                        st.warning("Please enter a username.")
-                    st.rerun()
+                        st.warning("Please enter a username and password.")
             with tab_create:
                 new_username = st.text_input("New Username", key="create_username_sidebar")
                 new_password = st.text_input("New Password", type="password", key="create_password_sidebar")
                 if st.button("Create Account", key="create_account_button", use_container_width=True):
                     if new_username.strip() and new_password.strip():
-                        user_dir = os.path.join(os.path.dirname(__file__), '..', 'data', 'users')
-                        os.makedirs(user_dir, exist_ok=True)
-                        user_file = os.path.join(user_dir, f"{new_username.strip()}.json")
-                        if os.path.exists(user_file):
-                            st.warning("Username already exists. Please choose another.")
-                        else:
-                            # Save password in plaintext for demo only (not secure!)
-                            with open(user_file, 'w', encoding='utf-8') as f:
-                                json.dump({"password": new_password.strip(), "rules": [], "templates": []}, f, indent=2)
+                        if create_user_db(new_username.strip(), new_password.strip()):
                             st.success(f"Account created for user: {new_username.strip()}. You can now log in.")
+                        else:
+                            st.warning("Username already exists. Please choose another.")
                     else:
                         st.warning("Please enter a username and password.")
 
@@ -134,14 +206,16 @@ def show_pages_sidebar():
             st.switch_page("pages/EVTools.py")
         if st.button("⚡ Pokémon Price Tracker", use_container_width=True):
             st.switch_page("pages/PokemonPriceTracker.py")
-        if st.button("☁️ Cloud Control", use_container_width=True):
-            st.switch_page("pages/Cloud_Control.py")
+        if st.session_state.get('current_user') == 'rmangana':
+            if st.button("☁️ Cloud Control", use_container_width=True):
+                st.switch_page("pages/Cloud_Control.py")
         if st.button("📦 Manabox", use_container_width=True):
             st.switch_page("pages/Manabox.py")
         if st.button("📦 Manage Inventory", use_container_width=True):
             st.switch_page("pages/Manage_Inventory.py")
-        if st.button("🔄 Update TCGplayer IDs", use_container_width=True):
-            st.switch_page("pages/Update_TCGplayer_IDs.py")
+        if st.session_state.get('current_user') == 'rmangana':
+            if st.button("🔄 Update TCGplayer IDs", use_container_width=True):
+                st.switch_page("pages/Update_TCGplayer_IDs.py")
 
 def footer():
     """Display a divider and Buy Me a Coffee button as a footer on the page."""

@@ -14,7 +14,7 @@ price_df, fig = None, None
 if 'card_list' not in st.session_state:
     st.session_state.card_list = []
 
-connection = db.connectDB()
+connection = db.connectDB("tcgplayerdb")
 
 # Create columns for the dropdown and number input
 col1, col2 = st.columns([3, 1])
