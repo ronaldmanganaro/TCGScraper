@@ -234,20 +234,24 @@ def main():
     st.title("Tcgplayer Print Orders Extractor")
     st.write("Upload a PDF file containing Tcgplayer order details to extract information.")
 
-    uploaded_file = st.file_uploader("Choose a PDF file", type="pdf", key=None if not st.session_state['clear_orders'] else str(datetime.now()))
+    uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
     if st.session_state['clear_orders']:
-        uploaded_file = None
+        st.session_state['removed_orders'] = set()
         st.session_state['clear_orders'] = False
+        st.rerun()
     if uploaded_file is not None:
         with open("temp_order.pdf", "wb") as f:
             f.write(uploaded_file.getbuffer())
-        
         # Get preprocessed text
         _, extracted_text = extract_order_info("temp_order.pdf")
-        
         # Extract all orders
         orders = extract_orders_from_text(extracted_text)
-        for idx, order in enumerate(orders, 1):
+        # Track removed orders in session state
+        if 'removed_orders' not in st.session_state:
+            st.session_state['removed_orders'] = set()
+        # Only show orders not removed
+        visible_orders = [order for order in orders if order['Order Number'] not in st.session_state['removed_orders']]
+        for idx, order in enumerate(visible_orders, 1):
             with st.expander(f"Order {idx}: {order['Order Number']}", expanded=True):
                 processed = st.checkbox(f"Processed", key=f"processed_{idx}")
                 st.markdown(f"**Order Date:** `{order['Order Date']}`  ")
@@ -263,7 +267,6 @@ def main():
                 st.markdown("**Shipping Address:**")
                 shipping_label = f"{order['Shipping Name']}\n{order['Shipping Street']}\n{order['Shipping City']}, {order['Shipping State']} {order['Shipping Zip']}"
                 st.code(shipping_label, language=None)
-                st.button(f"Copy Shipping Address {idx}", key=f"copy_address_{idx}")
                 if order['Card Items']:
                     st.markdown("**Cards Ordered:**")
                     items_df = pd.DataFrame(order['Card Items'])
@@ -278,10 +281,14 @@ def main():
                     st.markdown(f"**Total Sealed Order Price:** `${total_sealed_price:.2f}`")
                 if not order['Card Items'] and not order['Sealed Items']:
                     st.info("No items found for this order.")
+                # Add Remove Order button at the bottom
+                if st.button(f"Remove Order", key=f"remove_order_{order['Order Number']}"):
+                    st.session_state['removed_orders'].add(order['Order Number'])
+                    st.rerun()
         
-        # Add Print Shipping Labels and Clear Orders buttons at the bottom
+        # Add Print Shipping Labels, Clear Orders, and Clear Processed Orders buttons at the bottom
         if orders:
-            col1, col2 = st.columns([0.5, 0.5], gap="small")
+            col1, col2, col3 = st.columns([0.4, 0.3, 0.3], gap="small")
             with col1:
                 if st.button("Print Shipping Labels", use_container_width=True):
                     st.markdown("## Shipping Labels")
@@ -295,6 +302,15 @@ def main():
             with col2:
                 if st.button("Clear Orders", use_container_width=True):
                     st.session_state['clear_orders'] = True
+                    st.rerun()
+            with col3:
+                if st.button("Clear Processed Orders", use_container_width=True):
+                    # Remove all orders marked as processed
+                    to_remove = set()
+                    for idx, order in enumerate(visible_orders, 1):
+                        if st.session_state.get(f"processed_{idx}"):
+                            to_remove.add(order['Order Number'])
+                    st.session_state['removed_orders'].update(to_remove)
                     st.rerun()
     
 if __name__ == "__main__":
