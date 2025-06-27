@@ -244,3 +244,20 @@ def footer():
         """,
         unsafe_allow_html=True
     )
+    # Streamlit native theming via config.toml (see https://docs.streamlit.io/develop/concepts/configuration/theming)
+    # This will only take effect if the user has not overridden the theme in their own config or UI
+    if "theme" in st.session_state:
+        if st.session_state["theme"] == "Dark":
+            st.markdown("""
+                <style>
+                body, .stApp { background-color: #0E1117 !important; color: #FAFAFA !important; }
+                .stButton > button { color: #FAFAFA !important; background-color: #262730 !important; }
+                </style>
+            """, unsafe_allow_html=True)
+        elif st.session_state["theme"] == "Light":
+            st.markdown("""
+                <style>
+                body, .stApp { background-color: #FFFFFF !important; color: #262730 !important; }
+                .stButton > button { color: #262730 !important; background-color: #FAFAFA !important; }
+                </style>
+            """, unsafe_allow_html=True)

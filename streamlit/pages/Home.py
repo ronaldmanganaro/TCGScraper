@@ -78,9 +78,6 @@ else:
 
 widgets.show_pages_sidebar()
 
-# ---- Footer ----
-st.markdown("---")  # Add a horizontal line to separate the footer
-
 # User preferences dialog using decorator
 @st.dialog("User Preferences", width="medium")
 def preferences_dialog():
@@ -116,3 +113,5 @@ clicked = floating_button(
 
 if clicked:
     preferences_dialog()
+
+widgets.footer()
