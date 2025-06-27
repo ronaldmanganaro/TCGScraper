@@ -183,8 +183,10 @@ if manabox_csv is not None:
         progress_bar.empty()
         tcgplayer_df = pd.DataFrame(tcgplayer_data, columns=required_headers)
         # Ensure TCGplayer Id is nullable integer for Arrow compatibility
-        tcgplayer_df["TCGplayer Id"] = tcgplayer_df["TCGplayer Id"].astype(
-            'Int64')
+        tcgplayer_df["TCGplayer Id"] = tcgplayer_df["TCGplayer Id"].astype('Int64')
+        # Set TCG Marketplace Price to only show the dollar amount (no $ sign, just the number, rounded to 2 decimals)
+        if "TCG Marketplace Price" in tcgplayer_df.columns:
+            tcgplayer_df["TCG Marketplace Price"] = pd.to_numeric(tcgplayer_df["TCG Marketplace Price"], errors='coerce').fillna(0).round(2)
         output_csv = "manabox_tcgplayer_ids.csv"
         st.session_state['manabox_tcgplayer_df'] = tcgplayer_df
         st.session_state['manabox_output_csv'] = output_csv

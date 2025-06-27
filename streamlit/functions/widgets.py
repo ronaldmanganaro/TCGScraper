@@ -1,7 +1,10 @@
 import streamlit as st
-import os, json
+import json
+import psycopg2
+import bcrypt
+
 def ensure_users_table():
-    import psycopg2
+    
     conn = psycopg2.connect(
         dbname='tcgplayerdb',
         user='rmangana',
@@ -23,11 +26,10 @@ def ensure_users_table():
     cur.close()
     conn.close()
 
-import bcrypt
 
 def create_user_db(username, password):
     ensure_users_table()
-    import psycopg2
+    
     conn = psycopg2.connect(
         dbname='tcgplayerdb',
         user='rmangana',
@@ -50,7 +52,7 @@ def create_user_db(username, password):
 
 def check_user_db(username, password):
     ensure_users_table()
-    import psycopg2
+    
     conn = psycopg2.connect(
         dbname='tcgplayerdb',
         user='rmangana',
@@ -69,7 +71,7 @@ def check_user_db(username, password):
 
 def get_user_data_db(username):
     ensure_users_table()
-    import psycopg2
+    
     conn = psycopg2.connect(
         dbname='tcgplayerdb',
         user='rmangana',
@@ -88,7 +90,7 @@ def get_user_data_db(username):
 
 def save_user_data_db(username, rules, templates):
     ensure_users_table()
-    import psycopg2
+    
     conn = psycopg2.connect(
         dbname='tcgplayerdb',
         user='rmangana',

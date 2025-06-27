@@ -358,6 +358,4 @@ if 'processed_cards_df' in st.session_state:
         gridOptions = gb.build()
         AgGrid(df, gridOptions=gridOptions, enable_enterprise_modules=False, theme='streamlit', use_container_width=True)
 
-from streamlit.functions.widgets import footer
-
-footer()
+widgets.footer()
