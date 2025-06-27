@@ -15,7 +15,6 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
-
   db:
     container_name: TCGPlayerDB
     image: rmangana/tcgplayerdb:latest
