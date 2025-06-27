@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Webpage Interaction</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f7f7f7;
+      min-width: 250px;
+    }
+    h1 {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 12px;
+    }
+    button {
+      padding: 10px 16px;
+      background: #1976d2;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #1565c0;
+    }
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #388e3c;
+      min-height: 18px;
+    }
+  </style>
+  <script src="popup.js"></script>
+</head>
+<body>
+  <h1>TCGplayer Export Tool</h1>
+  <div class="container">
+    <button id="interact">Export From Live</button>
+    <div class="status" id="status"></div>
+  </div>
+</body>
+</html>

@@ -124,3 +124,5 @@ with tab2:
         st.session_state.precon_ev = commander_ev.calculate_ev(
             set_selectbox, precon)
         st.rerun()
+        
+widgets.footer()

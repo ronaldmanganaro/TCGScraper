@@ -2,6 +2,7 @@ from functions import widgets
 import streamlit as st
 import os 
 import pandas as pd
+from functions import widgets
 widgets.show_pages_sidebar()
 
 
@@ -343,8 +344,10 @@ def main():
 
     with inventory_analytics:
         inventory_summary_tab(df)
-    widgets.footer()
+    
 
 
 if __name__ == "__main__":
     main()
+
+    widgets.footer()

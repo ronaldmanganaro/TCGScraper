@@ -1,15 +1,16 @@
 # app.py
+from streamlit_extras.floating_button import floating_button
 import streamlit as st
 from PIL import Image
 # Import the coffee button
 from streamlit_extras.buy_me_a_coffee import button as coffee_button
 from functions import widgets
+
 # Set page configuration globally at the start
 
-st.title("🏠 Home")
+st.title("🏠 Home", anchor=None, help=None, width="stretch")
 
 # ---- Sidebar Navigation ----
-widgets.show_pages_sidebar()
 st.sidebar.header("Choose a TCG", divider=True)
 
 # Section for selecting TCG
@@ -75,5 +76,42 @@ else:
     st.image("https://cdn.vox-cdn.com/thumbor/dTQveLbtHn9ZJhH7qZoTx2Ika4A=/0x0:1300x650/1400x933/filters:focal(546x226:754x434):no_upscale()/cdn.vox-cdn.com/uploads/chorus_image/image/72780383/Screen_Shot_2024_01_24_at_9.23.56_AM.0.png",
              caption="Future support for more TCGs", use_column_width=True)
 
-# ---- Footer ----
-st.markdown("---")  # Add a horizontal line to separate the footer
+widgets.show_pages_sidebar()
+
+# User preferences dialog using decorator
+@st.dialog("User Preferences", width="medium")
+def preferences_dialog():
+    st.header("Preferences")
+    theme = st.selectbox("Theme", ["Light", "Dark", "Auto"], key="theme_select_dialog")
+    notifications = st.checkbox("Enable notifications", key="notif_checkbox_dialog")
+    if st.button("Save Preferences"):
+        st.session_state["theme"] = theme
+        st.session_state["notifications"] = notifications
+        st.success("Preferences saved!")
+        st.rerun()
+
+# Apply theme based on user preference
+if "theme" in st.session_state:
+    if st.session_state["theme"] == "Dark":
+        st.markdown("""
+            <style>
+            body, .stApp { background-color: #18191A !important; color: #F5F6F7 !important; }
+            </style>
+        """, unsafe_allow_html=True)
+    elif st.session_state["theme"] == "Light":
+        st.markdown("""
+            <style>
+            body, .stApp { background-color: #FFFFFF !important; color: #18191A !important; }
+            </style>
+        """, unsafe_allow_html=True)
+    # 'Auto' uses default Streamlit theme
+
+clicked = floating_button(
+    label="⚙️",  # Gear icon as label
+    key="prefs_btn"
+)
+
+if clicked:
+    preferences_dialog()
+
+widgets.footer()

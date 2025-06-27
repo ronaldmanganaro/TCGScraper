@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "TCG Export Button Clicker",
+    "version": "1.0",
+    "permissions": [
+      "tabs",
+      "scripting"
+    ],
+    "host_permissions": [
+      "https://store.tcgplayer.com/*"
+    ],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+          "matches": ["https://www.tcgplayer.com/*"],
+          "js": ["contentScript.js"],
+          "run_at": "document_end"
+        }
+      ]
+  }
