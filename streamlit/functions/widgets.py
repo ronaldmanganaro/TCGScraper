@@ -2,6 +2,9 @@ import streamlit as st
 import json
 import psycopg2
 import bcrypt
+from streamlit_cookies_controller import CookieController
+
+cookie_controller = CookieController()
 
 def ensure_users_table():
     
@@ -19,7 +22,8 @@ def ensure_users_table():
             username TEXT UNIQUE NOT NULL,
             password_hash TEXT NOT NULL,
             rules JSONB,
-            templates JSONB
+            templates JSONB,
+            return_address TEXT
         );
     ''')
     conn.commit()
@@ -80,15 +84,15 @@ def get_user_data_db(username):
         port=5432
     )
     cur = conn.cursor()
-    cur.execute('SELECT rules, templates FROM users WHERE username = %s', (username,))
+    cur.execute('SELECT rules, templates, return_address FROM users WHERE username = %s', (username,))
     row = cur.fetchone()
     cur.close()
     conn.close()
     if row:
-        return row[0] or [], row[1] or []
-    return [], []
+        return (row[0] or [], row[1] or [], row[2] or "")
+    return [], [], ""
 
-def save_user_data_db(username, rules, templates):
+def save_user_data_db(username, rules, templates, return_address):
     ensure_users_table()
     
     conn = psycopg2.connect(
@@ -99,22 +103,30 @@ def save_user_data_db(username, rules, templates):
         port=5432
     )
     cur = conn.cursor()
-    cur.execute('UPDATE users SET rules = %s, templates = %s WHERE username = %s', (json.dumps(rules), json.dumps(templates), username))
+    cur.execute('UPDATE users SET rules = %s, templates = %s, return_address = %s WHERE username = %s',
+                (json.dumps(rules), json.dumps(templates), return_address, username))
     conn.commit()
     cur.close()
     conn.close()
 
 def login():
+    # On app start, check for cookie and auto-login
+    remembered_user = cookie_controller.get("remembered_user")
+    if remembered_user and not st.session_state.get("current_user"):
+        st.session_state["current_user"] = remembered_user
+        st.session_state["reload_return_address"] = True
     with st.popover("👤 Login/Logout", use_container_width=True):
         if st.session_state.get("current_user"):
             st.markdown(f"**👤 Logged in as:** `{st.session_state['current_user']}`")
             if st.button("Logout", key="logout_button_sidebar"):
-                # Save any new rules/templates before logging out
                 save_user_data_db(
                     st.session_state['current_user'],
                     st.session_state.get("saved_rules", []),
-                    st.session_state.get("rule_templates", [])
+                    st.session_state.get("rule_templates", []),
+                    st.session_state.get("return_address", "")
                 )
+                # Remove cookie on logout
+                cookie_controller.set("remembered_user", "", max_age=0)
                 # Clear inventory from session state
                 st.session_state.pop("repricer_csv", None)
                 st.session_state.pop("filtered_df", None)
@@ -169,14 +181,22 @@ def login():
             with tab_login:
                 username = st.text_input("Username", key="login_username_sidebar")
                 password = st.text_input("Password", type="password", key="login_password_sidebar")
+                remember_me = st.checkbox("Remember me", key="remember_me_checkbox")
                 if st.button("Login", key="login_button_sidebar", use_container_width=True):
                     if username.strip() and password.strip():
                         if check_user_db(username.strip(), password.strip()):
                             st.session_state["current_user"] = username.strip()
+                            st.session_state["remember_me"] = remember_me
+                            # Set cookie if remember_me is checked
+                            if remember_me:
+                                cookie_controller.set("remembered_user", username.strip(), max_age=30*24*60*60)
+                            else:
+                                cookie_controller.set("remembered_user", "", max_age=0)
                             # Load user data from DB
-                            rules, templates = get_user_data_db(username.strip())
+                            rules, templates, return_address = get_user_data_db(username.strip())
                             st.session_state["saved_rules"] = rules
                             st.session_state["rule_templates"] = templates
+                            st.session_state["reload_return_address"] = True
                             st.success(f"Logged in as {username.strip()}")
                             st.rerun()
                         else:
@@ -212,13 +232,13 @@ def show_pages_sidebar():
             st.switch_page("pages/Manabox.py")
         if st.button("📦 Manage Inventory", use_container_width=True):
             st.switch_page("pages/Manage_Inventory.py")
+        if st.button("🖨️ TCGPlayer Print", use_container_width=True):
+            st.switch_page("pages/Tcgplayer_Print_Orders.py")
         if st.session_state.get('current_user') == 'rmangana':
             if st.button("🔄 Update TCGplayer IDs", use_container_width=True):
                 st.switch_page("pages/Update_TCGplayer_IDs.py")
             if st.button("☁️ Cloud Control", use_container_width=True):
                 st.switch_page("pages/Cloud_Control.py")
-            if st.button("🖨️ TCGPlayer Print", use_container_width=True):
-                st.switch_page("pages/Tcgplayer_Print_Orders.py")
             if st.button("Test Crop", use_container_width=True):
                 st.switch_page("pages/test_crop.py")
 
@@ -261,3 +281,4 @@ def footer():
                 .stButton > button { color: #262730 !important; background-color: #FAFAFA !important; }
                 </style>
             """, unsafe_allow_html=True)
+

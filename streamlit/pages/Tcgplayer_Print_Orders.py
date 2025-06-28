@@ -9,6 +9,10 @@ from PIL import Image
 from st_copy_to_clipboard import st_copy_to_clipboard
 import usaddress
 from functions import widgets   
+from io import BytesIO
+from reportlab.lib.pagesizes import landscape
+from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas
 
 def preprocess_text(text):
     # Remove boilerplate and repeated seller info (all occurrences, flexible pattern)
@@ -262,12 +266,150 @@ def extract_orders_from_text(text):
         })
     return orders
 
+def create_labels_pdf(orders, return_address, include_order_form=True):
+    from reportlab.lib.utils import simpleSplit
+    buffer = BytesIO()
+    label_width, label_height = 6 * inch, 4 * inch
+    c = canvas.Canvas(buffer, pagesize=landscape((6*inch, 4*inch)))
+    for order in orders:
+        # --- SHIPPING LABEL ---
+        c.setFont("Helvetica", 10)
+        ra_lines = return_address.split("\n")
+        for i, line in enumerate(ra_lines):
+            c.drawString(0.3*inch, 3.6*inch - i*12, line)
+        # Stamp box (move lower)
+        stamp_box_top = 3.0*inch
+        c.setLineWidth(2)
+        c.rect(6*inch-0.3*inch-0.85*inch, stamp_box_top, 0.85*inch, 0.85*inch)
+        c.setFont("Helvetica", 9)
+        stamp_x = 6*inch-0.3*inch-0.85*inch/2
+        stamp_y = stamp_box_top + 0.85*inch/2 - 6
+        c.drawCentredString(stamp_x, stamp_y, "STAMP HERE")
+        # Shipping address (centered, lowered, smaller font, wrap if needed)
+        ship_address = f"{order['Shipping Name']}\n{order['Shipping Street']}\n{order['Shipping City']}, {order['Shipping State']} {order['Shipping Zip']}"
+        c.setFont("Helvetica-Bold", 12)
+        lines = []
+        for line in ship_address.split("\n"):
+            wrapped = simpleSplit(line, "Helvetica-Bold", 12, 5*inch)
+            lines.extend(wrapped)
+        total_height = len(lines) * 14
+        y_start = 2.1*inch + total_height/2
+        for i, line in enumerate(lines):
+            text_width = c.stringWidth(line, "Helvetica-Bold", 12)
+            x = (label_width - text_width) / 2
+            y = y_start - i*14
+            c.drawString(x, y, line)
+        c.showPage()
+        if include_order_form:
+            # --- ORDER FORM ---
+            c.setFont("Helvetica-Bold", 12)
+            c.drawString(0.5*inch, 3.6*inch, f"Order Form: {order['Order Number']}")
+            c.setFont("Helvetica", 9)
+            c.drawString(0.5*inch, 3.3*inch, f"Order Date: {order['Order Date']}")
+            c.drawString(0.5*inch, 3.1*inch, f"Shipping Method: {order['Shipping Method']}")
+            c.drawString(0.5*inch, 2.9*inch, f"Buyer Name: {order['Shipping Name']}")
+            c.drawString(0.5*inch, 2.7*inch, f"Ship To: {order['Shipping Street']}, {order['Shipping City']}, {order['Shipping State']} {order['Shipping Zip']}")
+            # Items Table Header (column aligned)
+            c.setFont("Helvetica-Bold", 9)
+            x_qty = 0.5*inch
+            x_desc = 0.9*inch
+            x_price = 4.6*inch
+            x_total = 5.2*inch
+            c.drawString(x_qty, 2.4*inch, "Qty")
+            c.drawString(x_desc, 2.4*inch, "Description")
+            c.drawString(x_price, 2.4*inch, "Price")
+            c.drawString(x_total, 2.4*inch, "Total")
+            c.setFont("Helvetica", 8)
+            y = 2.2*inch
+            # Card Items
+            for item in order.get('Card Items', []):
+                desc = f"{item['Set Name']} - {item['Card Name']} ({item['Condition']})"
+                desc_lines = simpleSplit(desc, "Helvetica", 8, 3.5*inch)
+                first_line = True
+                for line in desc_lines:
+                    if first_line:
+                        c.drawString(x_qty, y, str(item['Quantity']))
+                        c.drawString(x_desc, y, line)
+                        c.drawRightString(x_price+0.5*inch, y, f"${item['Price']:.2f}")
+                        c.drawRightString(x_total+0.5*inch, y, f"${item['Total Price']:.2f}")
+                        first_line = False
+                    else:
+                        c.drawString(x_desc, y, line)
+                    y -= 0.15*inch
+            # Sealed Items
+            for item in order.get('Sealed Items', []):
+                desc = item['Description']
+                desc_lines = simpleSplit(desc, "Helvetica", 8, 3.5*inch)
+                first_line = True
+                for line in desc_lines:
+                    if first_line:
+                        c.drawString(x_qty, y, str(item['Quantity']))
+                        c.drawString(x_desc, y, line)
+                        c.drawRightString(x_price+0.5*inch, y, f"${item['Price']:.2f}")
+                        c.drawRightString(x_total+0.5*inch, y, f"${item['Total Price']:.2f}")
+                        first_line = False
+                    else:
+                        c.drawString(x_desc, y, line)
+                    y -= 0.15*inch
+            c.showPage()
+    c.save()
+    buffer.seek(0)
+    return buffer
+
 def main():
     if 'clear_orders' not in st.session_state:
         st.session_state['clear_orders'] = False
     st.title("Tcgplayer Print Orders Extractor")
     st.write("Upload a PDF file containing Tcgplayer order details to extract information.")
 
+    with st.expander("Return Address", expanded=True):
+        user_logged_in = st.session_state.get("current_user")
+        # Clear return address if no user is logged in
+        if not user_logged_in and "return_address" in st.session_state:
+            del st.session_state["return_address"]
+        if not user_logged_in:
+            st.info("If you create an account, your return address will be saved so you don't have to enter it every time.")
+        # Reload from DB after login if needed
+        if user_logged_in and st.session_state.get("reload_return_address"):
+            _, _, db_return_address = widgets.get_user_data_db(st.session_state["current_user"])
+            st.session_state["return_address"] = db_return_address or ""
+            del st.session_state["reload_return_address"]
+        # If not set, load from DB
+        if user_logged_in and "return_address" not in st.session_state:
+            _, _, db_return_address = widgets.get_user_data_db(st.session_state["current_user"])
+            st.session_state["return_address"] = db_return_address or ""
+        return_address = st.text_area("", key="return_address", height=100)
+        # Validate return address using usaddress
+        return_address_valid = None
+        return_address_message = ""
+        try:
+            parsed, address_type = usaddress.tag(return_address)
+            required_fields = ["AddressNumber", "StreetName", "PlaceName", "StateName", "ZipCode"]
+            missing = [field for field in required_fields if field not in parsed]
+            if not missing:
+                return_address_valid = True
+                return_address_message = ":white_check_mark: Return address appears valid (usaddress)."
+            else:
+                return_address_valid = False
+                return_address_message = f":warning: Return address missing fields: {', '.join(missing)}"
+        except usaddress.RepeatedLabelError as e:
+            return_address_valid = False
+            return_address_message = f":warning: Return address parsing error: {e}"
+        except Exception as e:
+            return_address_valid = False
+            return_address_message = f":warning: Return address validation error: {e}"
+        if return_address_valid is True:
+            st.info(return_address_message)
+        else:
+            st.warning(return_address_message)
+        if user_logged_in and st.button("Save Return Address", key="save_return_address_btn"):
+            widgets.save_user_data_db(
+                st.session_state["current_user"],
+                st.session_state.get("saved_rules", []),
+                st.session_state.get("rule_templates", []),
+                st.session_state["return_address"]
+            )
+            st.success("Return address saved!")
     uploaded_file = st.file_uploader("Choose a PDF file", type="pdf")
     if st.session_state['clear_orders']:
         st.session_state['removed_orders'] = set()
@@ -373,17 +515,26 @@ def main():
         
         # Add Print Shipping Labels, Clear Orders, and Clear Processed Orders buttons at the bottom
         if orders:
-            col1, col2, col3 = st.columns([0.4, 0.3, 0.3], gap="small")
+            col1, col2, col3 = st.columns([0.3, 0.3, 0.3], gap="small")
             with col1:
-                if st.button("Print Shipping Labels", use_container_width=True):
-                    st.markdown("## Shipping Labels")
-                    for idx, order in enumerate(orders, 1):
-                        st.markdown(f"**Order {idx}:**")
-                        st.markdown(
-                            f"{order['Shipping Name']}<br>{order['Shipping Street']}<br>{order['Shipping City']}, {order['Shipping State']} {order['Shipping Zip']}",
-                            unsafe_allow_html=True
-                        )
-                        st.markdown("---")
+                return_address = st.session_state.get("return_address", "")
+                include_order_form = st.checkbox("Include order form with shipping labels", value=True, key="include_order_form_below")
+                if not return_address.strip():
+                    st.button(
+                        label="Print Shipping Labels",
+                        disabled=True,
+                        use_container_width=True
+                    )
+                    st.warning("Please enter a return address before printing shipping labels.")
+                else:
+                    pdf_buffer = create_labels_pdf(visible_orders, return_address, include_order_form)
+                    st.download_button(
+                        label="Print Shipping Labels",
+                        data=pdf_buffer,
+                        file_name="shipping_labels.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
             with col2:
                 if st.button("Clear Orders", use_container_width=True):
                     st.session_state['clear_orders'] = True
@@ -398,8 +549,10 @@ def main():
                     st.session_state['removed_orders'].update(to_remove)
                     st.rerun()
     
+
+
 if __name__ == "__main__":
     main()
 
-widgets.show_pages_sidebar()
-widgets.footer()
+    widgets.show_pages_sidebar()
+    widgets.footer()

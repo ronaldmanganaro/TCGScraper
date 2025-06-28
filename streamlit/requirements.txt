@@ -9,3 +9,10 @@ pyperclip
 pandas
 streamlit_extras
 plotly
+bcrypt
+st-btn-group
+requests
+numpy
+pillow
+pytest
+streamlit-cookies-controller

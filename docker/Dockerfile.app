@@ -37,4 +37,4 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY app ./app
 WORKDIR ./app
 
-ENTRYPOINT ["python3", "watch.py"]
+ENTRYPOINT ["python3", "scripts/watch.py"]
