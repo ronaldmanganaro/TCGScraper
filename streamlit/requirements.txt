@@ -16,3 +16,4 @@ numpy
 pillow
 pytest
 streamlit-cookies-controller
+pdf2image

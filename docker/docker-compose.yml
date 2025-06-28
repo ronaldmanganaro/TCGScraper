@@ -47,12 +47,14 @@ services:
       dockerfile: docker/Dockerfile.streamlit
     container_name: streamlit-dev
     volumes:
-      - ../streamlit:/app
+      - ../streamlit:/streamlit
+    env_file:
+      - .env
     ports:
-      - "8501:8501"
+      - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
       - PYTHONUNBUFFERED=1
-    command: streamlit run app.py --server.enableCORS false --server.enableXsrfProtection false
+    
 
   pgadmin:
     container_name: pgadmin
