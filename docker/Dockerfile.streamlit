@@ -19,7 +19,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm awscliv2.zip
 
 # Install Python dependencies
-COPY /streamlit /streamlit
+COPY streamlit /streamlit
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r /streamlit/requirements.txt
 
