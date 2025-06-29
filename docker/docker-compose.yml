@@ -29,7 +29,7 @@ services:
       - "5432:5432"
     volumes:
       - $VOLUME_PATH:/var/lib/postgresql/data
-    alwayss_restart: unless-stopped
+    restart: always
 
   streamlit:
     container_name: streamlit
