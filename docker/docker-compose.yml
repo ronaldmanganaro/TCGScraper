@@ -44,10 +44,10 @@ services:
   streamlit-dev:
     build:
       context: ..
-      dockerfile: docker/Dockerfile.streamlit
+      dockerfile: docker/Dockerfile.streamlit-dev
     container_name: streamlit-dev
     volumes:
-      - ../streamlit:/streamlit
+      - ../TCGScraper:/TCGScraper
     env_file:
       - .env
     ports:

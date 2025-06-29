@@ -1,16 +1,28 @@
 {
   "name": "Streamlit Dev Container",
-  "dockerFile": "../docker/Dockerfile.streamlit",
+  "dockerFile": "../docker/Dockerfile.streamlit-dev",
   "context": "..",
-  "workspaceFolder": "/streamlit",
+  "workspaceFolder": "/TCGScraper",
   "mounts": [
-    "source=${localWorkspaceFolder}/streamlit,target=/,type=bind"
+    "source=${localWorkspaceFolder},target=/TCGScraper,type=bind"
   ],
-  "forwardPorts": [8501],
+  "portsAttributes": {
+    "80": {
+      "label": "Application",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "forwardPorts": [80],
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"
   },
   "extensions": [
-    "ms-python.python"
-  ]
-} 
+    "ms-python.python",
+    "cweijan.vscode-postgresql-client2"
+  ],
+  "env": {
+    "PYTHONUNBUFFERED": "1"
+  },
+  "envFile": "../docker/.env",
+  "postStartCommand": "streamlit run /TCGScraper/streamlit/app.py --server.port ${SERVER_PORT:-80} --server.headless true"
+}

@@ -5,7 +5,6 @@ import re
 import pandas as pd
 from datetime import datetime
 from pdf2image import convert_from_path
-from PIL import Image
 from st_copy_to_clipboard import st_copy_to_clipboard
 import usaddress
 from functions import widgets   
@@ -416,10 +415,11 @@ def main():
         st.session_state['clear_orders'] = False
         st.rerun()
     if uploaded_file is not None:
-        with open("temp_order.pdf", "wb") as f:
+        temp_order_path = "../data/tcgplayer/temp_order.pdf"
+        with open(temp_order_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         # Get preprocessed text
-        _, extracted_text = extract_order_info("temp_order.pdf")
+        _, extracted_text = extract_order_info(temp_order_path)
         # Extract all orders
         orders = extract_orders_from_text(extracted_text)
         # Track removed orders in session state

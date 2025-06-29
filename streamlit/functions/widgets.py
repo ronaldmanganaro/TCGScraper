@@ -221,7 +221,7 @@ def show_pages_sidebar():
     with st.sidebar.expander("📄 Pages", expanded=False):
         login()
         if st.button("🏠 Home", use_container_width=True):
-            st.switch_page("pages/home.py")
+            st.switch_page("pages/Home.py")
         if st.button("💲 Repricer", use_container_width=True):
             st.switch_page("pages/Repricer.py")
         if st.button("📦 EV Tools", use_container_width=True):

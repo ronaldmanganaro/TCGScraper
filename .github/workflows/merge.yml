@@ -55,33 +55,16 @@ jobs:
         echo "SERVER_PORT=80" > docker/.env
         echo "VOLUME_PATH=./streamlit" >> docker/.env
     
-    - name: Build Docker image
+    - name: Build Streamlit Docker image with Compose
       run: |
-        tag="rmangana/streamlit:latest"
-        docker build --no-cache . -f docker/Dockerfile.streamlit --tag $tag 
-    
-    - name: Upload streamlit image to Dockerhub
-      run: |
-        tag="rmangana/streamlit:latest"
-        echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME}}" --password-stdin
-        docker push $tag
-
-    - name: upload streamlit app
-      uses: actions/upload-artifact@v4
-      with:
-        name: streamlit
-        path: streamlit/
+        cd docker
+        docker compose build streamlit
 
   deploy-ec2:
     needs: build-streamlit
     if: needs.build-streamlit.result == 'success'
     runs-on: self-hosted
     steps:
-    - name: Download the streamlit code
-      uses: actions/download-artifact@v4
-      with:
-        name: streamlit
-
     - name: Checkout code with authentication
       uses: actions/checkout@v4
       with:
@@ -91,14 +74,11 @@ jobs:
           docker/docker-compose.yml
         sparse-checkout-cone-mode: false
     
-    - name: Deploy Latest Version of Streamlit
+    - name: Deploy Latest Version of Streamlit with Compose
       run: |
         echo "OLLAMA_VOLUME_PATH=/home/ubuntu/ollama" >> docker/.env
         echo "SERVER_PORT=80" >> docker/.env
         echo "VOLUME_PATH=/home/ubuntu/postgres" >> docker/.env
-        docker rm -f streamlit
-        docker system prune -af
-        docker pull rmangana/streamlit:latest
         cd docker
         docker compose up streamlit -d --no-build
 
