@@ -54,13 +54,19 @@ jobs:
         docker compose build streamlit
 
     - name: Log in to DockerHub
-      run: echo %DOCKERHUB_TOKEN% | docker login -u "%DOCKERHUB_USERNAME%" --password-stdin
+      run: echo %DOCKERHUB_PAT% | docker login -u "%DOCKERHUB_USERNAME%" --password-stdin
       shell: cmd
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_PAT }}
 
     - name: Push Streamlit image to DockerHub
       run: |
         docker tag streamlit ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:latest
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:latest
+      env:
+        DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_PAT }}
 
   deploy-ec2:
     needs: build-streamlit
