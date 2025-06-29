@@ -1,5 +1,5 @@
 import streamlit as st
-st.set_page_config(page_title="app", layout="wide")
+st.set_page_config(page_title="app", layout="wide", page_icon="icon.png")
 
 # --- Startup logic: You can add any initialization here ---
 if "startup_complete" not in st.session_state:

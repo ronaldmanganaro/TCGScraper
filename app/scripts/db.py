@@ -67,4 +67,26 @@ def writeDB(connection: connection, databaseEntries):
             connection.rollback()
 
     cursor.close()
+
+def get_precon_value(set, precon):
+    connection = connectDB()
+    cursor = connection.cursor()
+
+    query = """
+        SELECT value FROM public.precon_values 
+        WHERE set_name = %s AND precon_name = %s AND date = CURRENT_DATE
+    """
+    cursor.execute(query, (set, precon))
+    result = cursor.fetchone()
+
+    if result:
+        value = result[0]
+        logging.info(f"Precon value for {set} - {precon} found: {value}")
+    else:
+        value = None
+        logging.info(f"No precon value found for {set} - {precon}")
+
+    cursor.close()
+    connection.close()
     
+    return value
