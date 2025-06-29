@@ -10,7 +10,11 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     poppler-utils \
     vim \
+    git \
     && rm -rf /var/lib/apt/lists/*
+
+# Fixes line endings for git on Windows
+RUN git config --global core.autocrlf input
 
 # Install AWS CLI
 RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
@@ -19,9 +23,9 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm awscliv2.zip
 
 # Install Python dependencies
-COPY /streamlit /streamlit
+COPY . /TCGScraper
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r /streamlit/requirements.txt
+    pip install --no-cache-dir -r /TCGScraper/streamlit/requirements.txt
 
 # Install the required browser binaries
 RUN playwright install --with-deps
@@ -33,4 +37,4 @@ ENV AWS_SECRET_ACCESS_KEY /fucuqdF2BWZPhuWmFqvVBa/0Ge88QAOqWzydJZp
 ENV AWS_DEFAULT_REGION us-east-1
 
 EXPOSE ${SERVER_PORT}
-ENTRYPOINT ["sh", "-c", "streamlit run /streamlit/app.py --server.port ${SERVER_PORT}"]
+ENTRYPOINT ["sh", "-c", "streamlit run /TCGScraper/streamlit/app.py --server.port ${SERVER_PORT} --server.headless true"]

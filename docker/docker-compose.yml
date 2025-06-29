@@ -29,6 +29,7 @@ services:
       - "5432:5432"
     volumes:
       - $VOLUME_PATH:/var/lib/postgresql/data
+    restart: always
 
   streamlit:
     container_name: streamlit
@@ -40,6 +41,21 @@ services:
       - .env
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
+
+  streamlit-dev:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.streamlit-dev
+    container_name: streamlit-dev
+    volumes:
+      - ../TCGScraper:/TCGScraper
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      - PYTHONUNBUFFERED=1
+    
 
   pgadmin:
     container_name: pgadmin

@@ -8,7 +8,7 @@ from functions import widgets
 
 # Set page configuration globally at the start
 
-st.title("🏠 Home", anchor=None, help=None, width="stretch")
+st.title("Home", anchor=None, help=None, width="stretch")
 
 # ---- Sidebar Navigation ----
 st.sidebar.header("Choose a TCG", divider=True)
