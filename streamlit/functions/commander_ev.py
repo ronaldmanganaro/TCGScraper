@@ -73,9 +73,11 @@ def get_tcgplayerid(set_code, collector_number):
     return card.get("tcgplayer_id")
 
 def calculate_ev(set, precon):
-    #Check if the precon value was already calculated today in the db
-    # db.get_precon_value(set, precon)
-    
+    # Check if the precon value was already calculated today in the db
+    value = db.get_precon_value(set, precon)
+    if value is not None:
+        return value
+
     cwd = os.getcwd()
     path = os.path.join(cwd, "data", "precons", f"{set}", f"{precon}.txt")
     with open(path, "r") as decklist:
@@ -83,61 +85,40 @@ def calculate_ev(set, precon):
         for line in decklist:
             collector_number = None
             treatment = ''
-            
             line = line.strip()
             if not line: 
                 continue
-            
-            #check if <> exists
             if '<' in line and '>' in line:
                 start = line.index('<')
                 end = line.index('>')
                 between_less_than_greater_than = line[start+1: end]
                 if between_less_than_greater_than == "borderless" or between_less_than_greater_than == "extended" or between_less_than_greater_than == "retro" or between_less_than_greater_than == "showcase":
                     treatment = between_less_than_greater_than
-                    # print("Treatment:", treatment)           
                     line = line.replace(f"<{treatment}>", "")
                 else:
                     collector_number = between_less_than_greater_than
-                    # print("Collector Number:", collector_number)           
                     line = line.replace(f"<{collector_number}>", "")
-                    
-            #check if <> exists
             if '(' in line and ')' in line:
                 start = line.index('(')
                 end = line.index(')')
                 between_parans = line[start+1: end]
                 if between_parans == "F":
                     is_foil = "foil"
-                    # print("is foil:", is_foil)           
                     line = line.replace(f"F", "")
             else:
                 is_foil = "nonfoil"
-                
-                
-            # Step 1: Extract set from brackets
             start = line.index('[')
             end = line.index(']')
             set_code = line[start+1:end]
-
-            # Step 2: Get quantity and card name
-            before_set = line[:start].strip()  # "1 Arcane Signet"
+            before_set = line[:start].strip()
             parts = before_set.split(" ", 1)
             quantity = parts[0]
             card_name = parts[1]
-            
-            # print("Quantity:", quantity)
-            # print("Card Name:", card_name)
-            # print("Set Code:", set_code)
-            
             if collector_number is not None:
                 price = search_card(card_name=card_name, set_code=set_code.lower(), collector_number=collector_number, is_foil=is_foil)
             else:
                 price = search_card(card_name=card_name, set_code=set_code.lower(), treatment=treatment, is_foil=is_foil)
-            
-                
             EV += (float(price) * float(quantity))
-            # print(f"{card_name} price: {float(price)}")
             time.sleep(0.101)
-        print(EV)
+        db.add_precon_value(set, precon, EV)
         return EV

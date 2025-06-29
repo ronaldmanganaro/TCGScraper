@@ -72,6 +72,18 @@ def get_precon_value(set, precon):
     connection = connectDB()
     cursor = connection.cursor()
 
+    # Ensure the precon_values table exists
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS public.precon_values (
+            id SERIAL PRIMARY KEY,
+            set_name TEXT NOT NULL,
+            precon_name TEXT NOT NULL,
+            value NUMERIC,
+            date DATE NOT NULL
+        )
+    ''')
+    connection.commit()
+
     query = """
         SELECT value FROM public.precon_values 
         WHERE set_name = %s AND precon_name = %s AND date = CURRENT_DATE
@@ -90,3 +102,29 @@ def get_precon_value(set, precon):
     connection.close()
     
     return value
+
+def add_precon_value(set_name, precon_name, value):
+    connection = connectDB()
+    cursor = connection.cursor()
+
+    # Ensure the precon_values table exists
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS public.precon_values (
+            id SERIAL PRIMARY KEY,
+            set_name TEXT NOT NULL,
+            precon_name TEXT NOT NULL,
+            value NUMERIC,
+            date DATE NOT NULL
+        )
+    ''')
+    connection.commit()
+
+    insert_query = '''
+        INSERT INTO public.precon_values (set_name, precon_name, value, date)
+        VALUES (%s, %s, %s, CURRENT_DATE)
+    '''
+    cursor.execute(insert_query, (set_name, precon_name, value))
+    connection.commit()
+
+    cursor.close()
+    connection.close()
