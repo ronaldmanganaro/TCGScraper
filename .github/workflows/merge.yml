@@ -38,7 +38,7 @@ jobs:
   build-streamlit:
     needs: filter
     if: needs.filter.outputs.streamlit == 'true'
-    runs-on: self-hosted
+    runs-on: rgbtower
     steps:
     - name: Cleanup workspace
       run: |
@@ -60,10 +60,18 @@ jobs:
         cd docker
         docker compose build streamlit
 
+    - name: Log in to DockerHub
+      run: echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+    - name: Push Streamlit image to DockerHub
+      run: |
+        docker tag streamlit ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:latest
+
   deploy-ec2:
     needs: build-streamlit
     if: needs.build-streamlit.result == 'success'
-    runs-on: self-hosted
+    runs-on: ec2
     steps:
     - name: Checkout code with authentication
       uses: actions/checkout@v4
@@ -80,5 +88,6 @@ jobs:
         echo "SERVER_PORT=80" >> docker/.env
         echo "VOLUME_PATH=/home/ubuntu/postgres" >> docker/.env
         cd docker
+        docker compose down
+        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:latest
         docker compose up streamlit -d --no-build
-
