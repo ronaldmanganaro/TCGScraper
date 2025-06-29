@@ -35,12 +35,6 @@ jobs:
     if: needs.filter.outputs.streamlit == 'true'
     runs-on: rgbtower
     steps:
-    - name: Cleanup workspace
-      run: |
-        del /q /f /s C:\Users\MrCool\Documents\Repos\actions-runner\_work\TCGScraper\TCGScraper\*.*
-        del /q /f /s C:\Users\MrCool\Documents\Repos\actions-runner\_work\TCGScraper\TCGScraper\.[^.]* 2>nul
-      shell: cmd
-
     - name: Checkout code with authentication
       uses: actions/checkout@v4
       with:
