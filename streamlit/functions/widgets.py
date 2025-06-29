@@ -111,7 +111,9 @@ def save_user_data_db(username, rules, templates, return_address):
 
 def login():
     # On app start, check for cookie and auto-login
-    remembered_user = cookie_controller.get("remembered_user")
+    remembered_user = None
+    if hasattr(cookie_controller, "_CookieController__cookies") and cookie_controller._CookieController__cookies is not None:
+        remembered_user = cookie_controller.get("remembered_user")
     if remembered_user and not st.session_state.get("current_user"):
         st.session_state["current_user"] = remembered_user
         st.session_state["reload_return_address"] = True

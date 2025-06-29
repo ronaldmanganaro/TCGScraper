@@ -2,6 +2,7 @@ import requests
 import time
 import json
 import os
+from functions import db
 from urllib.parse import quote_plus
 
 def search_card(card_name, set_code, collector_number=None, treatment=None, is_foil="nonfoil"):
@@ -72,6 +73,9 @@ def get_tcgplayerid(set_code, collector_number):
     return card.get("tcgplayer_id")
 
 def calculate_ev(set, precon):
+    #Check if the precon value was already calculated today in the db
+    # db.get_precon_value(set, precon)
+    
     cwd = os.getcwd()
     path = os.path.join(cwd, "data", "precons", f"{set}", f"{precon}.txt")
     with open(path, "r") as decklist:
