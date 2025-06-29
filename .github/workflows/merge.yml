@@ -37,8 +37,8 @@ jobs:
     steps:
     - name: Cleanup workspace
       run: |
-        del /q /f /s C:\Users\ubuntu\actions-runner\_work\TCGScraper\TCGScraper\*.*
-        del /q /f /s C:\Users\ubuntu\actions-runner\_work\TCGScraper\TCGScraper\.[^.]* 2>nul
+        del /q /f /s C:\Users\MrCool\Documents\Repos\actions-runner\_work\TCGScraper\TCGScraper\*.*
+        del /q /f /s C:\Users\MrCool\Documents\Repos\actions-runner\_work\TCGScraper\TCGScraper\.[^.]* 2>nul
       shell: cmd
 
     - name: Checkout code with authentication
