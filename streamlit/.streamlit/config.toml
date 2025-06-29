@@ -1,6 +1,7 @@
 [server]
 maxUploadSize = 1024
-
+enableXsrfProtection = false
+enableCORS = false
 # if you don't want to start the default browser:
 headless = true
 # you will need this for local development:

@@ -415,7 +415,7 @@ def main():
         st.session_state['clear_orders'] = False
         st.rerun()
     if uploaded_file is not None:
-        temp_order_path = "../data/tcgplayer/temp_order.pdf"
+        temp_order_path = "/TCGScraper/streamlit/data/tcgplayer/temp_order.pdf"
         with open(temp_order_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         # Get preprocessed text
@@ -480,10 +480,10 @@ def main():
                 else:
                     st.warning(address_message)
                 # Show cropped PDF region for cards ordered, just below the edit shipping address
-                pdf_path = "streamlit/temp_order.pdf"  # or the path to the current PDF
+                
                 try:
                     # Each order is on its own page: idx is 1-based for expander, so use idx for page number
-                    pages = convert_from_path(pdf_path, dpi=200, first_page=idx, last_page=idx)
+                    pages = convert_from_path(temp_order_path, dpi=200, first_page=idx, last_page=idx)
                     img = pages[0]
                     # Use the exact crop numbers provided for each page
                     crop_left = 92
