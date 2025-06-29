@@ -37,7 +37,9 @@ jobs:
     steps:
     - name: Cleanup workspace
       run: |
-        sudo rm -rf /home/ubuntu/actions-runner/_work/TCGScraper/TCGScraper/.[^.]* * 
+        del /q /f /s C:\Users\ubuntu\actions-runner\_work\TCGScraper\TCGScraper\*.*
+        del /q /f /s C:\Users\ubuntu\actions-runner\_work\TCGScraper\TCGScraper\.[^.]* 2>nul
+      shell: cmd
 
     - name: Checkout code with authentication
       uses: actions/checkout@v4
@@ -47,16 +49,18 @@ jobs:
 
     - name: Create .env file
       run: |
-        echo "SERVER_PORT=80" > docker/.env
-        echo "VOLUME_PATH=./streamlit" >> docker/.env
-    
+        echo SERVER_PORT=80 > docker\.env
+        echo VOLUME_PATH=./streamlit >> docker\.env
+      shell: cmd
+
     - name: Build Streamlit Docker image with Compose
       run: |
         cd docker
         docker compose build streamlit
 
     - name: Log in to DockerHub
-      run: echo "${{ secrets.DOCKERHUB_PAT }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+      run: echo %DOCKERHUB_TOKEN% | docker login -u "%DOCKERHUB_USERNAME%" --password-stdin
+      shell: cmd
 
     - name: Push Streamlit image to DockerHub
       run: |
