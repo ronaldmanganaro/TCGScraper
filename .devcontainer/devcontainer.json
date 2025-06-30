@@ -6,12 +6,6 @@
   "mounts": [
     "source=${localWorkspaceFolder},target=/TCGScraper,type=bind"
   ],
-  "portsAttributes": {
-    "80": {
-      "label": "Application",
-      "onAutoForward": "openPreview"
-    }
-  },
   "forwardPorts": [80],
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"

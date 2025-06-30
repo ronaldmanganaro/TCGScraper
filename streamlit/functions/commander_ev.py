@@ -4,6 +4,7 @@ import json
 import os
 from functions import db
 from urllib.parse import quote_plus
+import streamlit as st
 
 def search_card(card_name, set_code, collector_number=None, treatment=None, is_foil="nonfoil"):
     
@@ -79,10 +80,13 @@ def calculate_ev(set, precon):
         return value
 
     cwd = os.getcwd()
-    path = os.path.join(cwd, "data", "precons", f"{set}", f"{precon}.txt")
+    path = os.path.join(cwd, "streamlit", "data", "precons", f"{set}", f"{precon}.txt")
     with open(path, "r") as decklist:
+        lines = [line for line in decklist if line.strip()]
+        total = len(lines)
+        progress = st.progress(0, text="Starting...")
         EV = 0
-        for line in decklist:
+        for idx, line in enumerate(lines):
             collector_number = None
             treatment = ''
             line = line.strip()
@@ -119,6 +123,8 @@ def calculate_ev(set, precon):
             else:
                 price = search_card(card_name=card_name, set_code=set_code.lower(), treatment=treatment, is_foil=is_foil)
             EV += (float(price) * float(quantity))
+            progress.progress((idx + 1) / total, text=f"Calculating EV: {idx + 1}/{total} cards processed. Current EV: ${EV:.2f} Processing: {card_name} ({set_code})")
             time.sleep(0.101)
         db.add_precon_value(set, precon, EV)
+        progress.empty()
         return EV
