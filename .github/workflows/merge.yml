@@ -72,7 +72,7 @@ jobs:
 
   deploy-ec2:
     needs: build-streamlit
-    if: (needs.build-streamlit.result == 'success' && github.event.inputs.skip_to_deploy != 'true') || github.event.inputs.skip_to_deploy == 'true'
+    if: (needs.build-streamlit.result == 'success' && (github.event.inputs.skip_to_deploy != 'true' || github.event.inputs.skip_to_deploy == null)) || github.event.inputs.skip_to_deploy == 'true'
     runs-on: ec2
     steps:
     - name: Checkout code with authentication
