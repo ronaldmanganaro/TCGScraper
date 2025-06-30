@@ -53,7 +53,7 @@ services:
     volumes:
       - /etc/nginx/certs:/etc/nginx/certs:ro
       - /etc/nginx/vhost.d:/etc/nginx/vhost.d
-      - /usr/share/nginx/html:/usr/share/nginx/html
+      - nginx-html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
     networks:
       - web
@@ -85,3 +85,6 @@ services:
 networks:
   web:
     external: false
+
+volumes:
+    nginx-html:
