@@ -2,9 +2,10 @@ name: Deploy Latest
 
 on:
   workflow_dispatch:
+
   push:
-    branches: 
-      - '*'
+    branches:
+      - main  # Only deploy automatically when pushing to main
 
 jobs:
   deploy-ec2:
