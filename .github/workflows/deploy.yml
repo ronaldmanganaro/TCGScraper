@@ -1,19 +1,19 @@
 name: Deploy Latest
 
-  workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to deploy'
-        required: true
-        type: choice
-        options:
-          - main
-          - staging
-          - dev
+workflow_dispatch:
+  inputs:
+    branch:
+      description: 'Branch to deploy'
+      required: true
+      type: choice
+      options:
+        - main
+        - staging
+        - dev
 
-  push:
-    branches:
-      - main  # Only deploy automatically when pushing to main
+push:
+  branches:
+    - main  # Only deploy automatically when pushing to main
 
 jobs:
   deploy-ec2:
