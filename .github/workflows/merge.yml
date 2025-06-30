@@ -2,6 +2,11 @@ name: Continious Deployment
 
 on:
   workflow_dispatch:
+    inputs:
+      skip_to_deploy:
+        description: 'Skip all steps except deploy-ec2'
+        required: false
+        default: 'false'
   pull_request:
     types: [closed]
     branches:
@@ -32,7 +37,7 @@ jobs:
 
   build-streamlit:
     needs: filter
-    if: needs.filter.outputs.streamlit == 'true'
+    if: needs.filter.outputs.streamlit == 'true' && github.event.inputs.skip_to_deploy != 'true'
     runs-on: rgbtower
     steps:
     - name: Checkout code with authentication
@@ -67,7 +72,7 @@ jobs:
 
   deploy-ec2:
     needs: build-streamlit
-    if: needs.build-streamlit.result == 'success'
+    if: (needs.build-streamlit.result == 'success' && github.event.inputs.skip_to_deploy != 'true') || github.event.inputs.skip_to_deploy == 'true'
     runs-on: ec2
     steps:
     - name: Checkout code with authentication
