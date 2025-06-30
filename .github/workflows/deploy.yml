@@ -2,6 +2,11 @@ name: Deploy Latest
 
 on:
   workflow_dispatch:
+    inputs:
+      deploy_branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
 
 jobs:
   deploy-ec2:
