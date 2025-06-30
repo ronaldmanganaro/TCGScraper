@@ -1,0 +1,87 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: TCGPlayerDB
+    image: rmangana/tcgplayerdb:latest
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.db
+    environment:
+      - POSTGRES_USER=rmangana
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=tcgplayerdb
+    ports: 
+      - "5432:5432"
+    volumes:
+      - $VOLUME_PATH:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "rmangana"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  streamlit:
+    container_name: streamlit
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile.streamlit
+    image: rmangana/streamlit:latest
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    volumes:
+      - /etc/letsencrypt/live/tcg-toolkit.com/fullchain.pem:/etc/ssl/certs/fullchain.pem:ro
+      - /etc/letsencrypt/live/tcg-toolkit.com/privkey.pem:/etc/ssl/private/privkey.pem:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:latest
+    container_name: nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/nginx/certs:/etc/nginx/certs:ro
+      - /etc/nginx/vhost.d:/etc/nginx/vhost.d
+      - /usr/share/nginx/html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    networks:
+      - web
+    depends_on:
+      streamlit:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  letsencrypt:
+    image: nginxproxy/acme-companion:latest
+    container_name: nginx-proxy-acme
+    environment:
+      - DEFAULT_EMAIL=ronaldmanganaro@gmail.com
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/acme.sh:/etc/acme.sh
+    networks:
+      - web
+    depends_on:
+      nginx-proxy:
+        condition: service_healthy
+
+networks:
+  web:
+    external: false

@@ -31,17 +31,6 @@ services:
       - $VOLUME_PATH:/var/lib/postgresql/data
     restart: always
 
-  streamlit:
-    container_name: streamlit
-    build: 
-      context: ../
-      dockerfile: docker/Dockerfile.streamlit
-    image: rmangana/streamlit:latest
-    env_file:
-      - .env
-    ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
-
   streamlit-dev:
     build:
       context: ..
@@ -55,7 +44,9 @@ services:
       - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
       - PYTHONUNBUFFERED=1
-    
+    depends_on:
+      - nginx
+      - db
 
   pgadmin:
     container_name: pgadmin
