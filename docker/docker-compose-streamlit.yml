@@ -76,6 +76,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /etc/acme.sh:/etc/acme.sh
+      - nginx-certs:/etc/nginx/certs
     networks:
       - web
     depends_on:
@@ -88,3 +89,4 @@ networks:
 
 volumes:
     nginx-html:
+    nginx-certs:
