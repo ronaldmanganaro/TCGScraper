@@ -23,6 +23,7 @@ jobs:
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> docker/.env
             echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> docker/.env
             echo "VIRTUAL_HOST=${{ secrets.VIRTUAL_HOST }}" >> docker/.env
+            echo "VIRTUAL_PORT=${{ secrets.SERVER_PORT }}" >> docker/.env
             echo "LETSENCRYPT_HOST=${{ secrets.LETSENCRYPT_HOST }}" >> docker/.env
             echo "LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}" >> docker/.env
             echo "VOLUME_PATH=/home/ubuntu/postgres" >> docker/.env
