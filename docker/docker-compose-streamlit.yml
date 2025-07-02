@@ -32,6 +32,8 @@ services:
       - .env
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
+    networks:
+      - web
     volumes:
       - /etc/letsencrypt/live/tcg-toolkit.com/fullchain.pem:/etc/ssl/certs/fullchain.pem:ro
       - /etc/letsencrypt/live/tcg-toolkit.com/privkey.pem:/etc/ssl/private/privkey.pem:ro
