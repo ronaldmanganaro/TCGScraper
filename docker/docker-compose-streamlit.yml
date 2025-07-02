@@ -51,7 +51,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /etc/nginx/certs:/etc/nginx/certs:ro
+      - nginx-certs:/etc/nginx/certs
       - /etc/nginx/vhost.d:/etc/nginx/vhost.d
       - nginx-html:/usr/share/nginx/html
       - /var/run/docker.sock:/tmp/docker.sock:ro
@@ -82,6 +82,11 @@ services:
     depends_on:
       nginx-proxy:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD", "test", "-f", "/etc/nginx/certs/tcg-toolkit.com.crt"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
 
 networks:
   web:
