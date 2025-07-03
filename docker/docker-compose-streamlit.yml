@@ -1,24 +1,4 @@
 services:
-  db:
-    container_name: TCGPlayerDB
-    image: rmangana/tcgplayerdb:latest
-    build:
-      context: ../
-      dockerfile: docker/Dockerfile.db
-    environment:
-      - POSTGRES_USER=rmangana
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=tcgplayerdb
-    ports: 
-      - "5432:5432"
-    volumes:
-      - $VOLUME_PATH:/var/lib/postgresql/data
-    restart: always
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "rmangana"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   streamlit:
     container_name: streamlit
@@ -32,9 +12,6 @@ services:
       - "${SERVER_PORT}:${SERVER_PORT}"
     networks:
       - web
-    depends_on:
-      db:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT}"]
       interval: 10s

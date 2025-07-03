@@ -30,6 +30,11 @@ services:
     volumes:
       - $VOLUME_PATH:/var/lib/postgresql/data
     restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "rmangana"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   streamlit-dev:
     build:
