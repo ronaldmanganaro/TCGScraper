@@ -15,15 +15,13 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm awscliv2.zip
 
-# Install Python dependencies
-COPY streamlit /streamlit
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r /streamlit/requirements.txt
+# Make the empty directory so path are the same between dev and prod
+RUN mkdir /TCGScraper
+COPY streamlit /TCGScraper/streamlit
+RUN pip install --no-cache-dir -r /streamlit/requirements.txt
 
 # Install the required browser binaries
 RUN playwright install --with-deps
-
-USER root
 
 ENV AWS_DEFAULT_REGION us-east-1
 
