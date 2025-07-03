@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS scryfall_to_tcgplayer (
     frame TEXT,
     full_art BOOLEAN,
     prices JSONB,
-    tcgplayer_product_id_nonfoil INT,
-    tcgplayer_product_id_foil INT
+    tcgplayer_id_normal INT,
+    tcgplayer_id_foil INT
 );
 """)
 conn.commit()
@@ -73,7 +73,7 @@ json_files = [f for f in os.listdir(data_dir) if f.endswith('.json')]
 
 columns = [
     "id", "tcgplayer_id", "name", "released_at", "set", "set_name", "collector_number",
-    "rarity", "frame", "full_art", "prices", "tcgplayer_product_id_nonfoil", "tcgplayer_product_id_foil"
+    "rarity", "frame", "full_art", "prices", "tcgplayer_id_normal", "tcgplayer_id_foil"
 ]
 json_keys = ["prices"]
 column_str = ", ".join(columns)
@@ -107,8 +107,8 @@ ON CONFLICT (id) DO UPDATE SET
     frame = EXCLUDED.frame,
     full_art = EXCLUDED.full_art,
     prices = EXCLUDED.prices,
-    tcgplayer_product_id_nonfoil = EXCLUDED.tcgplayer_product_id_nonfoil,
-    tcgplayer_product_id_foil = EXCLUDED.tcgplayer_product_id_foil
+    tcgplayer_id_normal = EXCLUDED.tcgplayer_id_normal,
+    tcgplayer_id_foil = EXCLUDED.tcgplayer_id_foil
 """
 
 batch_size = 500
