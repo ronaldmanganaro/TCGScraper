@@ -33,6 +33,6 @@ jobs:
         - name: Deploy Latest Version of Streamlit with Compose
           run: |
             cd docker
-            docker compose -f docker-compose-streamlit.yml down --remove-orphans
+            docker compose -f docker-compose-streamlit.yml down
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:latest
             docker compose -f docker-compose-streamlit.yml up -d --no-build
