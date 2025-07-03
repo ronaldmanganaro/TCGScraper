@@ -333,7 +333,7 @@ def batch_get_tcgplayer_ids_by_name_collector_set(card_info_list):
         for name, collector_number, set_name, foil in card_info_list:
             params.extend([name, collector_number, set_name])
         query = f"""
-            SELECT name, collector_number, set_name, tcgplayer_id_normal, tcgplayer_id_foil FROM scryfall
+            SELECT name, collector_number, set_name, tcgplayer_id_normal, tcgplayer_id_foil FROM scryfall_to_tcgplayer
             WHERE (name, collector_number, set_name) IN ({format_strings})
         """
         cur.execute(query, params)
