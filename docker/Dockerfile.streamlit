@@ -18,7 +18,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
 # Make the empty directory so path are the same between dev and prod
 RUN mkdir /TCGScraper
 COPY streamlit /TCGScraper/streamlit
-RUN pip install --no-cache-dir -r /streamlit/requirements.txt
+RUN pip install --no-cache-dir -r /TCGScraper/streamlit/requirements.txt
 
 # Install the required browser binaries
 RUN playwright install --with-deps
@@ -26,4 +26,4 @@ RUN playwright install --with-deps
 ENV AWS_DEFAULT_REGION us-east-1
 
 EXPOSE ${SERVER_PORT}
-ENTRYPOINT ["sh", "-c", "streamlit run /streamlit/app.py --server.port ${SERVER_PORT}"]
+ENTRYPOINT ["sh", "-c", "streamlit run /TCGScraper/streamlit/app.py --server.port ${SERVER_PORT}"]

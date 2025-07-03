@@ -80,7 +80,7 @@ def calculate_ev(set, precon):
         return value
 
     cwd = os.getcwd()
-    path = os.path.join(cwd, "streamlit", "data", "precons", f"{set}", f"{precon}.txt")
+    path = os.path.join(cwd,"TCGScraper", "streamlit", "data", "precons", f"{set}", f"{precon}.txt")
     with open(path, "r") as decklist:
         lines = [line for line in decklist if line.strip()]
         total = len(lines)
