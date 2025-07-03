@@ -50,10 +50,10 @@ def add_tcgplayer_card_id_to_db(scryfall_id, tcgplayer_card_id, is_foil):
     column_name = "tcgplayer_id_foil" if is_foil else "tcgplayer_id_normal"
     try:
         # Add the column if it doesn't exist
-        cur.execute(f"ALTER TABLE scryfall ADD COLUMN IF NOT EXISTS {column_name} TEXT;")
+        cur.execute(f"ALTER TABLE scryfall_to_tcgplayer ADD COLUMN IF NOT EXISTS {column_name} TEXT;")
         # Update the value
         cur.execute(
-            f"UPDATE scryfall SET {column_name} = %s WHERE id = %s;",
+            f"UPDATE scryfall_to_tcgplayer SET {column_name} = %s WHERE id = %s;",
             (tcgplayer_card_id, scryfall_id)
         )
         conn.commit()
@@ -79,7 +79,7 @@ def get_scryfall_id_by_card_details(name, set_name, collector_number):
     cur = conn.cursor()
     try:
         cur.execute("""
-            SELECT name, set_name, collector_number FROM scryfall
+            SELECT name, set_name, collector_number FROM scryfall_to_tcgplayer
             WHERE name ILIKE %s AND set_name ILIKE %s AND collector_number = %s;
         """, (name, set_name, collector_number))
         result = cur.fetchone()
@@ -121,12 +121,12 @@ def get_scryfall_card_info(name, set_symbol, collector_number):
     cur = conn.cursor()
     try:
         # Check if card already exists
-        cur.execute("SELECT id FROM scryfall WHERE id = %s", (scryfall_id,))
+        cur.execute("SELECT id FROM scryfall_to_tcgplayer WHERE id = %s", (scryfall_id,))
         if not cur.fetchone():
             # Insert minimal card info (expand as needed)
             cur.execute(
                 sql.SQL("""
-                    INSERT INTO scryfall (id, name, set_name, collector_number, json_data)
+                    INSERT INTO scryfall_to_tcgplayer (id, name, set_name, collector_number, json_data)
                     VALUES (%s, %s, %s, %s, %s)
                 """),
                 (scryfall_id, card_json.get('name'), card_json.get('set'), card_json.get('collector_number'), card_json)
@@ -168,7 +168,7 @@ def get_tcgplayerid_from_scryfall(set_code, collector_number, lang='en'):
         values.append(val)
     placeholders = ','.join(['%s'] * len(columns))
     insert_query = f"""
-        INSERT INTO scryfall ({','.join(columns)})
+        INSERT INTO scryfall_to_tcgplayer ({','.join(columns)})
         VALUES ({placeholders})
         ON CONFLICT (id) DO UPDATE SET
         {', '.join([f'{col}=EXCLUDED.{col}' for col in columns if col != 'id'])}

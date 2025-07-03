@@ -75,7 +75,7 @@ with tab2:
 
     sets = []
     cwd = os.getcwd()
-    set_path = os.path.join(cwd, "streamlit", "data", "precons")
+    set_path = os.path.join(cwd, "TCGScraper",  "streamlit", "data", "precons")
     for set in os.listdir(set_path):
         sets = set
         precons_by_set[set] = []
