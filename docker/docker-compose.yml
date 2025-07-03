@@ -49,9 +49,6 @@ services:
       - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
       - PYTHONUNBUFFERED=1
-    depends_on:
-      - nginx
-      - db
 
   pgadmin:
     container_name: pgadmin
