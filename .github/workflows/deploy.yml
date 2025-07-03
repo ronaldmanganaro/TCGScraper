@@ -27,6 +27,8 @@ jobs:
             echo "LETSENCRYPT_HOST=${{ secrets.LETSENCRYPT_HOST }}" >> docker/.env
             echo "LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}" >> docker/.env
             echo "VOLUME_PATH=/home/ubuntu/postgres" >> docker/.env
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> docker/.env
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> docker/.env
 
         - name: Deploy Latest Version of Streamlit with Compose
           run: |

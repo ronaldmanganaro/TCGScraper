@@ -115,7 +115,7 @@ with tab2:
         if "precon_ev" not in st.session_state:
             st.session_state.precon_ev = 0  # Initialize to 0 or a default value
 
-        # Display the number input with the session state value
+        # Display the number input with the s2fgvbv2e   ession state value
         st.number_input("EV", value=st.session_state.precon_ev, key="ev_input")
 
     
