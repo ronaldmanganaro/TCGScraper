@@ -2,15 +2,7 @@ name: Continuous Deployment
 
 on:
   workflow_dispatch:
-    inputs:
-      skip_to_deploy:
-        description: 'Skip all steps except deploy-ec2'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'false'
-          - 'true'
+
   pull_request:
     types: [closed]
     branches:
@@ -76,10 +68,7 @@ jobs:
 
   deploy-ec2:
     needs: [build-streamlit, filter]
-    if: >
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_to_deploy == 'true') ||
-      (github.event_name != 'workflow_dispatch' && needs.filter.outputs.streamlit == 'true' && needs.build-streamlit.result == 'success') ||
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.skip_to_deploy != 'true' && needs.build-streamlit.result == 'success')
+    if: needs.build-streamlit.result == 'success'
     runs-on: ec2
     steps:
       - name: Checkout code with authentication
@@ -93,20 +82,21 @@ jobs:
 
       - name: Create .env file
         run: |
-          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" >> docker/.env
+          echo "SERVER_PORT=${{ secrets.SERVER_PORT }}" > docker/.env
           echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> docker/.env
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> docker/.env
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> docker/.env
           echo "VIRTUAL_HOST=${{ secrets.VIRTUAL_HOST }}" >> docker/.env
+          echo "VIRTUAL_PORT=${{ secrets.SERVER_PORT }}" >> docker/.env
           echo "LETSENCRYPT_HOST=${{ secrets.LETSENCRYPT_HOST }}" >> docker/.env
           echo "LETSENCRYPT_EMAIL=${{ secrets.LETSENCRYPT_EMAIL }}" >> docker/.env
           echo "VOLUME_PATH=/home/ubuntu/postgres" >> docker/.env
-          echo AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }} >> docker/.env
-          echo AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} >> docker/.env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> docker/.env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> docker/.env
 
       - name: Deploy Latest Version of Streamlit with Compose
         run: |
           cd docker
-          docker compose -f docker-compose-streamlit.yml down --remove-orphans
+          docker compose -f docker-compose-streamlit.yml down
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/streamlit:latest
-          docker compose -f docker-compose-streamlit.yml up streamlit -d --no-build
+          docker compose -f docker-compose-streamlit.yml up -d --no-build
