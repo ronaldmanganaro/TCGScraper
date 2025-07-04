@@ -2,7 +2,11 @@ name: Continuous Deployment
 
 on:
   workflow_dispatch:
-
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
   pull_request:
     types: [closed]
     branches:
@@ -40,7 +44,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.CM_PAT }}
-          ref: main
+          ref: ${{ github.event.inputs.branch || 'main' }}
 
       - name: Create .env file
         run: |
