@@ -45,6 +45,8 @@ jobs:
       - name: Create .env file
         run: |
           echo SERVER_PORT=${{ secrets.SERVER_PORT }} >> docker\.env
+          echo AWS_ACCESS_KEY_ID="AKIAR4PHQSUDHT5QEYOE"
+          echo AWS_SECRET_ACCESS_KEY="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"
         shell: cmd
 
       - name: Build Streamlit Docker image with Compose
