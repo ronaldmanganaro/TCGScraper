@@ -12,7 +12,8 @@
   },
   "extensions": [
     "ms-python.python",
-    "cweijan.vscode-postgresql-client2"
+    "cweijan.vscode-postgresql-client2",
+    "github.copilot-chat-0.26.7"
   ],
   "env": {
     "PYTHONUNBUFFERED": "1"
