@@ -21,7 +21,7 @@ COPY streamlit /TCGScraper/streamlit
 RUN pip install --no-cache-dir -r /TCGScraper/streamlit/requirements.txt
 
 # Install the required browser binaries
-RUN playwright install --with-deps
+RUN playwright install chromium --with-deps
 
 ENV AWS_DEFAULT_REGION us-east-1
 
