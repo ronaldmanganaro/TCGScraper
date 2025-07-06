@@ -1,7 +1,5 @@
 FROM python:3.10-slim
 
-ENV PYTHONUNBUFFERED=1
-
 # Install the AWS CLI dependencies
 RUN apt-get update && apt-get install -y \
     curl \
@@ -9,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     python3-dev \
     libpq-dev \
     poppler-utils \
-    vim \
     && rm -rf /var/lib/apt/lists/*
 
 # Install AWS CLI
@@ -18,19 +15,15 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm awscliv2.zip
 
-# Install Python dependencies
-COPY streamlit /streamlit
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r /streamlit/requirements.txt
+# Make the empty directory so path are the same between dev and prod
+RUN mkdir /TCGScraper
+COPY streamlit /TCGScraper/streamlit
+RUN pip install --no-cache-dir -r /TCGScraper/streamlit/requirements.txt
 
 # Install the required browser binaries
-RUN playwright install --with-deps
+RUN playwright install chromium --with-deps
 
-USER root
-
-ENV AWS_ACCESS_KEY_ID AKIAR4PHQSUDHT5QEYOE
-ENV AWS_SECRET_ACCESS_KEY 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
 ENV AWS_DEFAULT_REGION us-east-1
 
 EXPOSE ${SERVER_PORT}
-ENTRYPOINT ["sh", "-c", "streamlit run /streamlit/app.py --server.port ${SERVER_PORT}"]
+ENTRYPOINT ["sh", "-c", "streamlit run /TCGScraper/streamlit/app.py --server.port ${SERVER_PORT}"]

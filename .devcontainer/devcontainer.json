@@ -6,19 +6,14 @@
   "mounts": [
     "source=${localWorkspaceFolder},target=/TCGScraper,type=bind"
   ],
-  "portsAttributes": {
-    "80": {
-      "label": "Application",
-      "onAutoForward": "openPreview"
-    }
-  },
   "forwardPorts": [80],
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"
   },
   "extensions": [
     "ms-python.python",
-    "cweijan.vscode-postgresql-client2"
+    "cweijan.vscode-postgresql-client2",
+    "github.copilot-chat-0.26.7"
   ],
   "env": {
     "PYTHONUNBUFFERED": "1"

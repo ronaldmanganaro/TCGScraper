@@ -30,17 +30,11 @@ services:
     volumes:
       - $VOLUME_PATH:/var/lib/postgresql/data
     restart: always
-
-  streamlit:
-    container_name: streamlit
-    build: 
-      context: ../
-      dockerfile: docker/Dockerfile.streamlit
-    image: rmangana/streamlit:latest
-    env_file:
-      - .env
-    ports:
-      - "${SERVER_PORT}:${SERVER_PORT}"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "rmangana"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   streamlit-dev:
     build:
@@ -55,7 +49,6 @@ services:
       - "${SERVER_PORT}:${SERVER_PORT}"
     environment:
       - PYTHONUNBUFFERED=1
-    
 
   pgadmin:
     container_name: pgadmin

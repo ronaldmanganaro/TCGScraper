@@ -90,3 +90,7 @@ coverage/
 
 # OAuth
 streamlit/.streamlit/secrets.toml
+
+# debug images etc
+.html
+.png

@@ -60,10 +60,8 @@ CREATE TABLE IF NOT EXISTS scryfall_to_tcgplayer (
     frame TEXT,
     full_art BOOLEAN,
     prices JSONB,
-    tcgplayer_product_id_nonfoil INT,
-    tcgplayer_product_id_foil INT,
-    
-    tcgplayer
+    tcgplayer_id_normal INT,
+    tcgplayer_id_foil INT
 );
 """)
 conn.commit()
@@ -72,6 +70,14 @@ logging.info('Table created.')
 # Directory containing all set JSON files
 data_dir = os.path.join(os.path.dirname(__file__), '../data/cards_by_set')
 json_files = [f for f in os.listdir(data_dir) if f.endswith('.json')]
+
+columns = [
+    "id", "tcgplayer_id", "name", "released_at", "set", "set_name", "collector_number",
+    "rarity", "frame", "full_art", "prices", "tcgplayer_id_normal", "tcgplayer_id_foil"
+]
+json_keys = ["prices"]
+column_str = ", ".join(columns)
+placeholder_str = ", ".join(["%s"] * len(columns))
 
 all_values = []
 for json_file in json_files:
@@ -88,12 +94,21 @@ for json_file in json_files:
         all_values.append(values)
 
 sql = f"""
-INSERT INTO scryfall ({column_str})
+INSERT INTO scryfall_to_tcgplayer ({column_str})
 VALUES ({placeholder_str})
 ON CONFLICT (id) DO UPDATE SET
-    foil = EXCLUDED.foil,
-    nonfoil = EXCLUDED.nonfoil,
-    finishes = EXCLUDED.finishes
+    tcgplayer_id = EXCLUDED.tcgplayer_id,
+    name = EXCLUDED.name,
+    released_at = EXCLUDED.released_at,
+    set = EXCLUDED.set,
+    set_name = EXCLUDED.set_name,
+    collector_number = EXCLUDED.collector_number,
+    rarity = EXCLUDED.rarity,
+    frame = EXCLUDED.frame,
+    full_art = EXCLUDED.full_art,
+    prices = EXCLUDED.prices,
+    tcgplayer_id_normal = EXCLUDED.tcgplayer_id_normal,
+    tcgplayer_id_foil = EXCLUDED.tcgplayer_id_foil
 """
 
 batch_size = 500

@@ -90,7 +90,7 @@ def update_tcgplayer_ids_from_json_streamlit(json_file, dbname='scryfall', selec
             if add_to_cart_id_normal:
                 cur.execute(
                     """
-                    UPDATE scryfall
+                    UPDATE scryfall_to_tcgplayer
                     SET tcgplayer_id_normal = %s
                     WHERE id = %s
                     """,
@@ -103,7 +103,7 @@ def update_tcgplayer_ids_from_json_streamlit(json_file, dbname='scryfall', selec
             if add_to_cart_id_foil:
                 cur.execute(
                     """
-                    UPDATE scryfall
+                    UPDATE scryfall_to_tcgplayer
                     SET tcgplayer_id_foil = %s
                     WHERE id = %s
                     """,
@@ -133,9 +133,7 @@ def update_tcgplayer_ids_from_json_streamlit(json_file, dbname='scryfall', selec
 
 
 def insert_cards_from_json_streamlit(json_file, dbname='scryfall', selected_sets=None):
-    import psycopg2
-    import json
-    import logging
+
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(message)s')
     cards = json.load(json_file)
     filtered_cards = [c for c in cards if c.get('set') in selected_sets]
@@ -178,9 +176,12 @@ def insert_cards_from_json_streamlit(json_file, dbname='scryfall', selected_sets
         progress.progress((idx + 1) / len(filtered_cards), text=progress_text)
         scryfall_id = card.get('id')
         card_name = card.get('name', scryfall_id)
-        cur.execute("SELECT tcgplayer_id_normal, tcgplayer_id_foil FROM scryfall WHERE id = %s", (scryfall_id,))
+        cur.execute("SELECT tcgplayer_id_normal, tcgplayer_id_foil FROM scryfall_to_tcgplayer WHERE id = %s", (scryfall_id,))
         row = cur.fetchone()
-        logging.debug(f"DB values for {scryfall_id}: normal={row[0]}, foil={row[1]}")
+        if row:
+            logging.debug(f"DB values for {scryfall_id}: normal={row[0]}, foil={row[1]}")
+        else:
+            logging.debug(f"No DB row found for {scryfall_id}")
         status = {
             'Card Name': card_name,
             'Scryfall ID': scryfall_id,
@@ -205,7 +206,7 @@ def insert_cards_from_json_streamlit(json_file, dbname='scryfall', selected_sets
                     if add_to_cart_id_normal:
                         cur.execute(
                             """
-                            UPDATE scryfall SET tcgplayer_id_normal = %s WHERE id = %s
+                            UPDATE scryfall_to_tcgplayer SET tcgplayer_id_normal = %s WHERE id = %s
                             """,
                             (add_to_cart_id_normal, scryfall_id)
                         )
@@ -232,7 +233,7 @@ def insert_cards_from_json_streamlit(json_file, dbname='scryfall', selected_sets
                     if add_to_cart_id_foil:
                         cur.execute(
                             """
-                            UPDATE scryfall SET tcgplayer_id_foil = %s WHERE id = %s
+                            UPDATE scryfall_to_tcgplayer SET tcgplayer_id_foil = %s WHERE id = %s
                             """,
                             (add_to_cart_id_foil, scryfall_id)
                         )
@@ -272,7 +273,7 @@ def insert_cards_from_json_streamlit(json_file, dbname='scryfall', selected_sets
         try:
             cur.execute(
                 """
-                INSERT INTO scryfall (id, name, collector_number, set, tcgplayer_id)
+                INSERT INTO scryfall_to_tcgplayer (id, name, collector_number, set, tcgplayer_id)
                 VALUES (%s, %s, %s, %s, %s)
                 """,
                 (scryfall_id, card.get('name'), card.get('collector_number'), card.get('set'), card.get('tcgplayer_id'))
@@ -351,11 +352,25 @@ if 'processed_cards_df' in st.session_state:
     with st.expander('Processed Cards Summary', expanded=False):
         df = st.session_state['processed_cards_df']
         gb = GridOptionsBuilder.from_dataframe(df)
-        gb.configure_default_column(filter=True, sortable=True, resizable=True, autoHeight=True, wrapText=True)
+        gb.configure_default_column(
+            filter=True,
+            sortable=True,
+            resizable=True,
+            autoHeight=True,
+            wrapText=True,
+            minWidth=120,      # Set a minimum width for columns
+            flex=1             # Allow columns to flex to available space
+        )
         gb.configure_pagination(paginationAutoPageSize=100)
-        # Autosize columns to fit the longest text
         gb.configure_grid_options(domLayout='autoHeight')
         gridOptions = gb.build()
-        AgGrid(df, gridOptions=gridOptions, enable_enterprise_modules=False, theme='streamlit', use_container_width=True)
+        AgGrid(
+            df,
+            gridOptions=gridOptions,
+            enable_enterprise_modules=False,
+            theme='streamlit',
+            use_container_width=True,
+            fit_columns_on_grid_load=True  # This will auto-fit columns on load
+        )
 
 widgets.footer()

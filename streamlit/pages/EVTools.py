@@ -75,7 +75,7 @@ with tab2:
 
     sets = []
     cwd = os.getcwd()
-    set_path = os.path.join(cwd, "data", "precons")
+    set_path = os.path.join(cwd, "TCGScraper",  "streamlit", "data", "precons")
     for set in os.listdir(set_path):
         sets = set
         precons_by_set[set] = []
@@ -115,14 +115,16 @@ with tab2:
         if "precon_ev" not in st.session_state:
             st.session_state.precon_ev = 0  # Initialize to 0 or a default value
 
-        # Display the number input with the session state value
+        # Display the number input with the s2fgvbv2e   ession state value
         st.number_input("EV", value=st.session_state.precon_ev, key="ev_input")
 
+    
     # Calculate EV button
-    if st.button("Calculate EV", use_container_width=True):
+    if st.button("Calculate EV", use_container_width=True, help="The EV will either be retrieved from the database or calculated if it has not been calculated today."):
         # Calculate the EV and update the session state
         st.session_state.precon_ev = commander_ev.calculate_ev(
             set_selectbox, precon)
         st.rerun()
+    
         
 widgets.footer()
