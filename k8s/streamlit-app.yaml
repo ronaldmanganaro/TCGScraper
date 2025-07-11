@@ -17,6 +17,8 @@ spec:
         image: rmangana/streamlit:latest
         ports:
         - containerPort: 8501
+      imagePullSecrets:
+      - name: dockerhub-pat
 ---
 apiVersion: v1
 kind: Service
