@@ -26,4 +26,4 @@ RUN playwright install chromium --with-deps
 ENV AWS_DEFAULT_REGION us-east-1
 
 EXPOSE ${SERVER_PORT}
-ENTRYPOINT ["sh", "-c", "streamlit run /TCGScraper/streamlit/app.py --server.port ${SERVER_PORT}"]
+ENTRYPOINT ["sh", "-c", "streamlit run /TCGScraper/streamlit/app.py --server.port ${SERVER_PORT} --server.address=0.0.0.0"]

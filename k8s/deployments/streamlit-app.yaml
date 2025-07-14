@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: streamlit-app
+  namespace: streamlit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: streamlit-app
+  template:
+    metadata:
+      labels:
+        app: streamlit-app
+    spec:
+      nodeSelector:
+        role: streamlit
+      tolerations:
+      - key: "node.kubernetes.io/disk-pressure"
+        operator: "Exists"
+        effect: "NoSchedule"
+      containers:
+      - name: streamlit
+        image: rmangana/streamlit:latest
+        imagePullPolicy: Always
+        env:
+        - name: SERVER_PORT
+          value: "8501"
+        ports:
+        - containerPort: 8501
+      imagePullSecrets:
+      - name: dockerhub-pat
