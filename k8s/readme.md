@@ -14,3 +14,4 @@ kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy
 ssh -L 8443:localhost:8443 rmangana@k3s-server
 kubectl get serviceaccounts -n kubernetes-dashboard
 kubectl -n kubernetes-dashboard create token dashboard-admin-sa
+
