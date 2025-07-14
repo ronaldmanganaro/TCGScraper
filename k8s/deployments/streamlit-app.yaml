@@ -22,6 +22,7 @@ spec:
       containers:
       - name: streamlit
         image: rmangana/streamlit:latest
+        imagePullPolicy: Always
         env:
         - name: SERVER_PORT
           value: "8501"
