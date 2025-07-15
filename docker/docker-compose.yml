@@ -62,7 +62,7 @@ services:
     volumes:
       - $VOLUME_PATH/pgadmin:/var/lib/pgadmin/storage/
     ports:
-      - 80:80
+      - 8080:80
 
   ai:
     container_name: ai
@@ -73,3 +73,14 @@ services:
       - $OLLAMA_VOLUME_PATH:/root/.ollama
     env_file:
     - .env
+
+  fastapi:
+    container_name: fastapi
+    image: rmangana/fastapi:latest
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.fastapi
+    ports:
+      - "80:80"
+    env_file:
+      - .env

@@ -6,7 +6,7 @@
   "mounts": [
     "source=${localWorkspaceFolder},target=/TCGScraper,type=bind"
   ],
-  "forwardPorts": [80],
+  "forwardPorts": [8051],
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"
   },
