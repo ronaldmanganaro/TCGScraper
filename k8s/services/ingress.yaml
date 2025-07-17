@@ -3,6 +3,10 @@ kind: Ingress
 metadata:
   name: streamlit-ingress
   namespace: streamlit
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
 spec:
   rules:
     - host: tcg-toolkit.com
@@ -15,3 +19,7 @@ spec:
                 name: streamlit-service
                 port:
                   number: 8501
+  tls:
+    - hosts:
+        - tcg-toolkit.com
+      secretName: streamlit-tls
