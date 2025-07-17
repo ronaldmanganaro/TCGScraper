@@ -9,9 +9,6 @@ spec:
     repoURL: https://traefik.github.io/charts
     chart: traefik
     targetRevision: 28.1.0 # Use the desired chart version
-    helm:
-      valueFiles:
-        - k8s/charts/traefik/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
@@ -21,3 +18,17 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+helm:
+  values: |
+    certificatesResolvers:
+      letsencrypt:
+        acme:
+          email: ronaldmanganaro@gmail.com
+          storage: /data/acme.json
+          httpChallenge:
+            entryPoint: web
+    persistence:
+      enabled: true
+      path: /data
+      size: 128Mi
+      accessMode: ReadWriteOnce
