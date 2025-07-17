@@ -3,13 +3,16 @@ kind: Application
 metadata:
   name: traefik
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   project: default
   source:
-    repoURL: https://traefik.github.io/charts
+    repoURL: https://helm.traefik.io/traefik
     chart: traefik
     targetRevision: 28.1.0
     helm:
+      releaseName: traefik
       values: |
         certificatesResolvers:
           letsencrypt:
@@ -20,16 +23,16 @@ spec:
                 entryPoint: web
         persistence:
           enabled: true
-          path: /data
           size: 128Mi
-          accessMode: ReadWriteOnce
-
+          accessModes:
+            - ReadWriteOnce
+          mountPath: /data
         dashboard:
           enabled: true
           ingressRoute:
             enabled: true
-            entryPoints: ["web"]
-            # Optionally set a domain for dashboard access
+            entryPoints:
+              - web
   destination:
     server: https://kubernetes.default.svc
     namespace: traefik
