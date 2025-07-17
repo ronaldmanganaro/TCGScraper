@@ -15,3 +15,6 @@ ssh -L 8443:localhost:8443 rmangana@k3s-server
 kubectl get serviceaccounts -n kubernetes-dashboard
 kubectl -n kubernetes-dashboard create token dashboard-admin-sa
 
+patch the service so that it uses node port instread of cluserip
+kubectl -n kubernetes-dashboard patch svc kubernetes-dashboard-kong-proxy \
+  -p '{"spec": {"type": "NodePort"}}'
