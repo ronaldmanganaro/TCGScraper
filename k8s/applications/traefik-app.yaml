@@ -32,3 +32,10 @@ helm:
       path: /data
       size: 128Mi
       accessMode: ReadWriteOnce
+
+    dashboard:
+      enabled: true
+      ingressRoute:
+        enabled: true
+        entryPoints: ["web"]
+        # Optionally set a domain for dashboard access
