@@ -1,0 +1,30 @@
+services:
+
+  streamlit:
+    container_name: streamlit
+    build: 
+      context: ../
+      dockerfile: docker/Dockerfile.streamlit
+    image: rmangana/streamlit:latest
+    env_file:
+      - .env
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fastapi:
+    container_name: fastapi
+    image: rmangana/fastapi:latest
+    volumes:
+      - ../fastapi:/fastapi 
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.fastapi-dev
+    ports:
+      - "80:80"
+    env_file:
+      - .env
