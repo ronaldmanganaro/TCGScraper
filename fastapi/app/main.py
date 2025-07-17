@@ -9,7 +9,7 @@ app.include_router(pdf.router)
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World rloade"}
+    return {"Hello": "World test"}
 
 
 @app.get("/items/{item_id}")
