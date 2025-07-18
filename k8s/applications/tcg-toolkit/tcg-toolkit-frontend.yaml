@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: git@github.com:ronaldmanganaro/TCGScraper.git
     path: k8s/applications/tcg-toolkit
-    targetRevision: feature-IngressController
+    targetRevision: feature-DeployStreamlitArgocd
   destination:
     server: https://kubernetes.default.svc
     namespace: streamlit
