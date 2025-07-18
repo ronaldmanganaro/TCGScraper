@@ -1,17 +1,13 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  name: streamlit-ingress
+  name: streamlit-service
   namespace: streamlit
 spec:
-  rules:
-    - host: tcg-toolkit.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: streamlit-service
-                port:
-                  number: 8501
+  type: NodePort
+  selector:
+    app: streamlit-app
+  ports:
+    - port: 8501
+      targetPort: 8501
+      nodePort: 30080  # Must be in the range 30000-32767
