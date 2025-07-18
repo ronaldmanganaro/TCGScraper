@@ -4,13 +4,13 @@ metadata:
   name: traefik
   namespace: kube-system
 spec:
-  type: NodePort  # or LoadBalancer on cloud
+  type: LoadBalancer
   selector:
     app: traefik
   ports:
     - name: web
       port: 80
-      nodePort: 30080
+      targetPort: 80
     - name: websecure
       port: 443
-      nodePort: 30443
+      targetPort: 443
