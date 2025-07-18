@@ -7,12 +7,13 @@ metadata:
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: streamlit-service
-                port:
-                  number: 8501
+  - host: tcg-toolkit.com
+    http:
+      paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: streamlit-service
+              port:
+                number: 8501
