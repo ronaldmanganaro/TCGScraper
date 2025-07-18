@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tcg-toolkit
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:ronaldmanganaro/TCGScraper.git
+    path: k8s/applications/tcg-toolkit
+    targetRevision: feature-IngressController
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: streamlit
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
