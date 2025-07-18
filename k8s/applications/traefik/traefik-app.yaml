@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://traefik.github.io/charts
     chart: traefik
-    targetRevision: 19.4.5  # or "latest" or a specific version
+    targetRevision: latest  # or "latest" or a specific version
     helm:
       values: |
         service:
