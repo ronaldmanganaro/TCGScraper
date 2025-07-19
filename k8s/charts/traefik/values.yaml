@@ -52,9 +52,11 @@ extraObjects:
 rbac:
   enabled: true
   namespaced: true
-
 oci_meta:
   enabled: false
+  images:
+    proxy:
+      tag: ""
 
 
 # We will route with Gateway API instead.
