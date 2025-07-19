@@ -52,6 +52,7 @@ extraObjects:
 # We will route with Gateway API instead.
 ingressClass:
   enabled: false
+  
 providers:
   kubernetesIngress:
     namespaces: []
@@ -59,6 +60,9 @@ providers:
     namespaces: []
   kubernetesGateway:
     namespaces: []
+
+hub:
+  namespaces: []
 
 ## Gateway Listeners
 gateway:
