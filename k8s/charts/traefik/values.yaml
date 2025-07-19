@@ -49,6 +49,9 @@ extraObjects:
       basicAuth:
         secret: dashboard-auth-secret
 
+image:
+  tag: "v3.0.0"  # or whatever tag your version of Traefik uses
+
 rbac:
   enabled: true
   namespaced: true
