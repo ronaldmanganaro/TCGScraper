@@ -1,8 +1,6 @@
 deployment:
   nodeSelector:
     kubernetes.io/hostname: ec2-prod
-service:
-  type: LoadBalancer
 ingressClass:
   enabled: true
   isDefaultClass: true
