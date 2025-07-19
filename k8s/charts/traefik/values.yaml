@@ -1,5 +1,5 @@
-# Enables the dashboard in Secure Mode
-
+# Configure Network Ports and EntryPoints
+# EntryPoints are the network listeners for incoming traffic.
 ports:
   # Defines the HTTP entry point named 'web'
   web:
@@ -17,8 +17,7 @@ ports:
     port: 443
     nodePort: 30001
 
-
-
+# Enables the dashboard in Secure Mode
 api:
   dashboard: true
   insecure: false
@@ -54,8 +53,10 @@ extraObjects:
 ingressClass:
   enabled: false
 
+# Enable Gateway API Provider & Disables the KubernetesIngress provider
+# Providers tell Traefik where to find routing configuration.
 providers:
-  kubernetesIngress:
+  kubernetesCRD:
     namespaces: []
 
 
@@ -89,6 +90,3 @@ logs:
 metrics:
   prometheus:
     enabled: true
-
-serviceAccount:
-  name: ""
