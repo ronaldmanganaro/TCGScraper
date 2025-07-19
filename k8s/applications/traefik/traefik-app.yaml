@@ -11,6 +11,11 @@ spec:
     targetRevision: 36.3.0  # or "latest" or a specific version
     helm:
       values: |
+        deployment:
+          podAnnotations: {}
+          podLabels: {}
+          nodeSelector:
+            role: streamlit
         service:
           type: LoadBalancer
         ingressClass:
