@@ -21,6 +21,7 @@ spec:
           isDefaultClass: true
         dashboard:
           enabled: true
+          domain: traefik.local
           ingressRoute:
             enabled: true
         certificatesResolvers:
@@ -30,11 +31,19 @@ spec:
               storage: /data/acme.json
               httpChallenge:
                 entryPoint: web
+        entryPoints:
+          web:
+            address: ":80"
+          websecure:
+            address: ":443"
         persistence:
           enabled: true
           path: /data
-          size: 128Mi
-          accessMode: ReadWriteOnce
+          volumeClaimSpec:
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 128Mi
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
