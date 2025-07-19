@@ -53,6 +53,10 @@ rbac:
   enabled: true
   namespaced: true
 
+oci_meta:
+  enabled: false
+
+
 # We will route with Gateway API instead.
 ingressClass:
   enabled: false
