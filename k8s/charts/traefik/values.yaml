@@ -49,6 +49,10 @@ extraObjects:
       basicAuth:
         secret: dashboard-auth-secret
 
+global:
+  azure:
+    enabled: false
+
 image:
   tag: "v3.0.0"  # or whatever tag your version of Traefik uses
 
