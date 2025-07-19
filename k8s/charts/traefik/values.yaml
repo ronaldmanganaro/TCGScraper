@@ -55,9 +55,9 @@ ingressClass:
 
 providers:
   kubernetesIngress:
-    namespaces:
-      - default
-      - kube-system
+    namespaces: []
+  kubernetesCRD:
+    namespaces: []
 
 ## Gateway Listeners
 gateway:
