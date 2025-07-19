@@ -6,12 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://traefik.github.io/charts
-    chart: traefik
-    targetRevision: 36.3.0 
+    repoURL: git@github.com:ronaldmanganaro/TCGScraper.git
+    path: k8s/charts/traefik
+    targetRevision: feature-DeployStreamlitArgocd
     helm:
       valuesFiles:
-        - traefik-values.yaml
+        - k8s/charts/traefik/traefik-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
