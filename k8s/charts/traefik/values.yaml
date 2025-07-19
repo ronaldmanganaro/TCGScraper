@@ -54,13 +54,10 @@ extraObjects:
 ingressClass:
   enabled: false
 
-# Enable Gateway API Provider & Disables the KubernetesIngress provider
-# Providers tell Traefik where to find routing configuration.
 providers:
   kubernetesIngress:
-     enabled: false
-  kubernetesGateway:
-     enabled: true
+    namespaces: []
+
 
 ## Gateway Listeners
 gateway:
