@@ -49,10 +49,14 @@ extraObjects:
       basicAuth:
         secret: dashboard-auth-secret
 
+rbac:
+  enabled: true
+  namespaced: true
+
 # We will route with Gateway API instead.
 ingressClass:
   enabled: false
-  
+
 providers:
   kubernetesIngress:
     namespaces: []
