@@ -11,7 +11,7 @@ spec:
     targetRevision: feature-DeployStreamlitArgocd
     helm:
       valuesFiles:
-        - traefik-values.yaml
+        - ../chart/traefik/traefik-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
