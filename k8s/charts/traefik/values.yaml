@@ -90,3 +90,7 @@ logs:
 metrics:
   prometheus:
     enabled: true
+
+serviceAccount:
+  create: true
+  name: traefik
