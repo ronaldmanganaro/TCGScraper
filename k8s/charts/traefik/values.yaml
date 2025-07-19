@@ -72,3 +72,6 @@ logs:
 metrics:
   prometheus:
     enabled: true
+
+serviceAccount:
+  name: traefik
