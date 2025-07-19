@@ -74,4 +74,4 @@ metrics:
     enabled: true
 
 serviceAccount:
-  name: traefik
+  name: ""
