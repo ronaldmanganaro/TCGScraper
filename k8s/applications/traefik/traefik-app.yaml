@@ -10,40 +10,8 @@ spec:
     chart: traefik
     targetRevision: 36.3.0  # or "latest" or a specific version
     helm:
-      values: |
-        deployment:
-          nodeSelector:
-            kubernetes.io/hostname: ec2-prod
-        service:
-          type: LoadBalancer
-        ingressClass:
-          enabled: true
-          isDefaultClass: true
-        dashboard:
-          enabled: true
-          domain: traefik.local
-          ingressRoute:
-            enabled: true
-        certificatesResolvers:
-          letsencrypt:
-            acme:
-              email: ronaldmanganaro@gmail.com
-              storage: /data/acme.json
-              httpChallenge:
-                entryPoint: web
-        entryPoints:
-          web:
-            address: ":80"
-          websecure:
-            address: ":443"
-        persistence:
-          enabled: true
-          path: /data
-          volumeClaimSpec:
-            accessModes: [ "ReadWriteOnce" ]
-            resources:
-              requests:
-                storage: 128Mi
+      valuesFiles:
+        - traefik-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

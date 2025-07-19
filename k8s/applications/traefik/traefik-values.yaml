@@ -1,0 +1,35 @@
+deployment:
+  nodeSelector:
+    kubernetes.io/hostname: ec2-prod
+service:
+  type: LoadBalancer
+ingressClass:
+  enabled: true
+  isDefaultClass: true
+ingressRoute:
+  dashboard:
+    enabled: true
+    # Optionally, set entryPoints to expose the dashboard on web/websecure
+    entryPoints: ["web", "websecure"]
+    # Optionally, add annotations for authentication or ingress class
+    annotations: {}
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: ronaldmanganaro@gmail.com
+      storage: /data/acme.json
+      httpChallenge:
+        entryPoint: web
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+persistence:
+  enabled: true
+  path: /data
+  volumeClaimSpec:
+    accessModes: [ "ReadWriteOnce" ]
+    resources:
+      requests:
+        storage: 128Mi
