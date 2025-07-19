@@ -1,6 +1,8 @@
 deployment:
   nodeSelector:
     kubernetes.io/hostname: ec2-prod
+service:
+  type: ClusterIP
 ingressClass:
   enabled: true
   isDefaultClass: true
