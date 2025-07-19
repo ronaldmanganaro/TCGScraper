@@ -19,6 +19,10 @@ spec:
         ingressClass:
           enabled: true
           isDefaultClass: true
+        dashboard:
+          enabled: true
+          ingressRoute:
+            enabled: true
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
