@@ -23,6 +23,18 @@ spec:
           enabled: true
           ingressRoute:
             enabled: true
+        certificatesResolvers:
+          letsencrypt:
+            acme:
+              email: ronaldmanganaro@gmail.com
+              storage: /data/acme.json
+              httpChallenge:
+                entryPoint: web
+        persistence:
+          enabled: true
+          path: /data
+          size: 128Mi
+          accessMode: ReadWriteOnce
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
