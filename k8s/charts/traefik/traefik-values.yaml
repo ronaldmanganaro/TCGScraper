@@ -25,7 +25,7 @@ api:
 ingressRoute:
   dashboard:
     enabled: true
-    matchRule: Host(`dashboard.docker.localhost`)
+    matchRule: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
     entryPoints:
       - websecure
     middlewares:
