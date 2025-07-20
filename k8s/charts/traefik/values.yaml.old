@@ -2,6 +2,12 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into templates
 
+api:
+  dashboard: true
+  insecure: false
+
+
+
 image:  # @schema additionalProperties: false
   # -- Traefik image host registry
   registry: docker.io
@@ -101,6 +107,10 @@ deployment:
   #     scheme: HTTP
   # -- Set a runtimeClassName on pod
   runtimeClassName: ""
+  # -- Percentage of memory limit to set for GOMEMLIMIT
+  # -- set as decimal (0.9 = 90%, 0.95 = 95% etc)
+  # -- only takes effect when resources.limits.memory is set
+  goMemLimitPercentage: 0.9
 
 # -- [Pod Disruption Budget](https://kubernetes.io/docs/reference/kubernetes-api/policy-resources/pod-disruption-budget-v1/)
 podDisruptionBudget:  # @schema additionalProperties: false
@@ -110,7 +120,7 @@ podDisruptionBudget:  # @schema additionalProperties: false
 
 # -- Create a default IngressClass for Traefik
 ingressClass:  # @schema additionalProperties: false
-  enabled: true
+  enabled: false
   isDefaultClass: true
   name: ""
 
@@ -136,6 +146,11 @@ experimental:
   # demo:
   #   moduleName: github.com/traefik/plugindemo
   #   version: v0.2.1
+  localPlugins: {}
+    # demo:
+    #   moduleName: github.com/traefik/plugindemo
+    #   mountPath: /plugins-local/src/github.com/traefik/plugindemo
+    #   hostPath: /plugins-local/src/github.com/traefik/plugindemo
 
 gateway:
   # -- When providers.kubernetesGateway.enabled, deploy a default gateway
@@ -153,29 +168,32 @@ gateway:
     web:
       # -- Port is the network port. Multiple listeners may use the same port, subject to the Listener compatibility rules.
       # The port must match a port declared in ports section.
-      port: 8000
+      port: 80
       # -- Optional hostname. See [Hostname](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.Hostname)
       hostname: ""
       # Specify expected protocol on this listener. See [ProtocolType](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.ProtocolType)
       protocol: HTTP
       # -- Routes are restricted to namespace of the gateway [by default](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.FromNamespaces
-      namespacePolicy:  # @schema type:[string, null]
+      namespacePolicy: All # @schema type:[string, null]
     # websecure listener is disabled by default because certificateRefs needs to be added,
     # or you may specify TLS protocol with Passthrough mode and add "--providers.kubernetesGateway.experimentalChannel=true" in additionalArguments section.
-    # websecure:
+    websecure:
     #   # -- Port is the network port. Multiple listeners may use the same port, subject to the Listener compatibility rules.
     #   # The port must match a port declared in ports section.
-    #   port: 8443
+      port: 443
     #   # -- Optional hostname. See [Hostname](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.Hostname)
     #   hostname:
     #   # Specify expected protocol on this listener See [ProtocolType](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.ProtocolType)
-    #   protocol: HTTPS
+      protocol: HTTPS
     #   # -- Routes are restricted to namespace of the gateway [by default](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.FromNamespaces)
-    #   namespacePolicy:
+      namespacePolicy: All
     #   # -- Add certificates for TLS or HTTPS protocols. See [GatewayTLSConfig](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io%2fv1.GatewayTLSConfig)
-    #   certificateRefs:
+      certificateRefs:
+      - kind: Secret
+        name: local-selfsigned-tls
+        group: ""
     #   # -- TLS behavior for the TLS session initiated by the client. See [TLSModeType](https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.TLSModeType).
-    #   mode:
+      mode: Terminate
 
 gatewayClass:  # @schema additionalProperties: false
   # -- When providers.kubernetesGateway.enabled and gateway.enabled, deploy a default gatewayClass
@@ -189,7 +207,7 @@ gatewayClass:  # @schema additionalProperties: false
 ingressRoute:
   dashboard:
     # -- Create an IngressRoute for the dashboard
-    enabled: false
+    enabled: true
     # -- Additional ingressRoute annotations (e.g. for kubernetes.io/ingress.class)
     annotations: {}
     # -- Additional ingressRoute labels (e.g. for filtering IngressRoute by custom labels)
@@ -203,9 +221,11 @@ ingressRoute:
     # -- Specify the allowed entrypoints to use for the dashboard ingress route, (e.g. traefik, web, websecure).
     # By default, it's using traefik entrypoint, which is not exposed.
     # /!\ Do not expose your dashboard without any protection over the internet /!\
-    entryPoints: ["traefik"]
+    entryPoints: 
+      - websecure
     # -- Additional ingressRoute middlewares (e.g. for authentication)
-    middlewares: []
+    middlewares: 
+      - name: dashboard-auth
     # -- TLS options (e.g. secret containing certificate)
     tls: {}
   healthcheck:
@@ -282,7 +302,7 @@ providers:  # @schema additionalProperties: false
 
   kubernetesIngress:
     # -- Load Kubernetes Ingress provider
-    enabled: true
+    enabled: false
     # -- Allows to reference ExternalName services in Ingress
     allowExternalNameServices: false
     # -- Allows to return 503 when there is no endpoints available
@@ -304,7 +324,7 @@ providers:  # @schema additionalProperties: false
 
   kubernetesGateway:
     # -- Enable Traefik Gateway provider for Gateway API
-    enabled: false
+    enabled: true
     # -- Toggles support for the Experimental Channel resources (Gateway API release channels documentation).
     # This option currently enables support for TCPRoute and TLSRoute.
     experimentalChannel: false
@@ -367,7 +387,7 @@ logs:
     noColor: false
   access:
     # -- To enable access logs
-    enabled: false
+    enabled: true
     # -- Set [access log format](https://doc.traefik.io/traefik/observability/access-logs/#format)
     format:  # @schema enum:["common", "json", null]; type:[string, null]; default: "common"
     # filePath: "/var/log/traefik/access.log
@@ -444,6 +464,7 @@ metrics:
       enabled: false
       additionalLabels: {}
       namespace: ""
+    enabled: true
 
   #  datadog:
   #    ## Address instructs exporter to send metrics to datadog-agent at this address.
@@ -657,7 +678,7 @@ ports:
   web:
     ## -- Enable this entrypoint as a default entrypoint. When a service doesn't explicitly set an entrypoint it will only use this entrypoint.
     # asDefault: true
-    port: 8000
+    port: 80
     # hostPort: 8000
     # containerPort: 8000
     expose:
@@ -668,13 +689,16 @@ ports:
     # The port protocol (TCP/UDP)
     protocol: TCP
     # -- See [upstream documentation](https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport)
-    nodePort:  # @schema type:[integer, null]; minimum:0
+    nodePort:  30000
     redirections:
       # -- Port Redirections
       # Added in 2.2, one can make permanent redirects via entrypoints.
       # Same sets of parameters: to, scheme, permanent and priority.
       # https://docs.traefik.io/routing/entrypoints/#redirection
-      entryPoint: {}
+      entryPoint: 
+        to: websecure
+        scheme: https
+        permanent: true
     forwardedHeaders:
       # -- Trust forwarded headers information (X-Forwarded-*).
       trustedIPs: []
@@ -698,12 +722,12 @@ ports:
   websecure:
     ## -- Enable this entrypoint as a default entrypoint. When a service doesn't explicitly set an entrypoint it will only use this entrypoint.
     # asDefault: true
-    port: 8443
+    port: 443
     hostPort:  # @schema type:[integer, null]; minimum:0
     containerPort:  # @schema type:[integer, null]; minimum:0
     expose:
       default: true
-    exposedPort: 443
+    exposedPort: 30001
     ## -- Different target traefik port on the cluster, useful for IP type LB
     targetPort:  # @schema type:[string, integer, null]; minimum:0
     ## -- The port protocol (TCP/UDP)
@@ -953,7 +977,23 @@ podSecurityContext:
 #
 # In some cases, it can avoid the need for additional, extended or adhoc deployments.
 # See #595 for more details and traefik/tests/values/extra.yaml for example.
-extraObjects: []
+# Creates a BasiAuth Middleware and Secret for the Dashboard Security
+extraObjects:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: dashboard-auth-secret
+    type: kubernetes.io/basic-auth
+    stringData:
+      username: admin
+      password: "P@ssw0rd"      # Replace with an Actual Password
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: dashboard-auth
+    spec:
+      basicAuth:
+        secret: dashboard-auth-secret
 
 # -- This field override the default Release Namespace for Helm.
 # It will not affect optional CRDs such as `ServiceMonitor` and `PrometheusRules`

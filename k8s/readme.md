@@ -15,3 +15,6 @@ ssh -L 8443:localhost:8443 rmangana@k3s-server
 kubectl get serviceaccounts -n kubernetes-dashboard
 kubectl -n kubernetes-dashboard create token dashboard-admin-sa
 
+traefik Dashboard
+https://3.233.208.225:30001/dashboard/#/
+

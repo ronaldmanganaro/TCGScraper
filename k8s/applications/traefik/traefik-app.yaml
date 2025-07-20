@@ -9,6 +9,9 @@ spec:
     repoURL: git@github.com:ronaldmanganaro/TCGScraper.git
     path: k8s/charts/traefik
     targetRevision: feature-DeployStreamlitArgocd
+    helm:
+      valueFiles:
+      - traefik-values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system
