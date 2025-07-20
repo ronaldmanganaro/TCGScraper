@@ -76,8 +76,21 @@ gateway:
       mode: Terminate
       certificateRefs:    
         - kind: Secret
-          name: local-selfsigned-tls  # the Secret we created before the installation
+          name: traefik-tls  # the Secret we created before the installation
           group: ""
+
+certifcateResolvers:
+  letsencrypt:
+    email: ronaldmanganar@gmail.com
+    storage: /data/acme.json
+    httpChallenge:
+      entrypoint: web
+
+persistance:
+  enabled: true
+  path: /data
+  size: 128Mi
+  accessMode: ReadWriteOnce
 
 # Enable Observability
 logs:
