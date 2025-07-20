@@ -25,7 +25,7 @@ api:
 ingressRoute:
   dashboard:
     enabled: true
-    matchRule: Host(`tcg-toolkit.com`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`)) || (PathPrefix(`/dashboard`)
+    matchRule: Host(`tcg-toolkit.com`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
     entryPoints:
       - websecure
     middlewares:
