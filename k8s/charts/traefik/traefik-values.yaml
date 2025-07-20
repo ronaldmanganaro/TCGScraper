@@ -81,7 +81,7 @@ gateway:
 
 certificatesResolvers:
   letsencrypt:
-    email: ronaldmanganar@gmail.com
+    email: ronaldmanganaro@gmail.com
     storage: /data/acme.json
     httpChallenge:
       entrypoint: web
