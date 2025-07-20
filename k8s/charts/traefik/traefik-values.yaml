@@ -83,15 +83,15 @@ certificatesResolvers:
   letsencrypt:
     acme:
       email: ronaldmanganaro@gmail.com
-      storage: /data/acme.json
+      storage: acme.json
       httpChallenge:
         entrypoint: web
 
-persistance:
-  enabled: true
-  path: /data
-  size: 128Mi
-  accessMode: ReadWriteOnce
+# persistance:
+#   enabled: true
+#   path: /data
+#   size: 128Mi
+#   accessMode: ReadWriteOnce
 
 # Enable Observability
 logs:
