@@ -118,6 +118,5 @@ env:
   - name: GODADDY_API_SECRET
     value: "JQcESRjiwegMfvkYT9Jzo7"
 
-deployment:
-  spec:
-    replicas: 0
+spec:
+  replicas: 0
