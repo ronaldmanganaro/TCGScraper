@@ -117,6 +117,3 @@ env:
     value: "AQAzJcvgMiM_2kdRCuuCuwon9rRH9Z1v5b"
   - name: GODADDY_API_SECRET
     value: "JQcESRjiwegMfvkYT9Jzo7"
-
-spec:
-  replicas: 0
