@@ -79,7 +79,7 @@ gateway:
           name: traefik-tls  # the Secret we created before the installation
           group: ""
 
-certifcateResolvers:
+certificatesResolvers:
   letsencrypt:
     email: ronaldmanganar@gmail.com
     storage: /data/acme.json
