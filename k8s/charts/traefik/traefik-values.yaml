@@ -81,10 +81,11 @@ gateway:
 
 certificatesResolvers:
   letsencrypt:
-    email: ronaldmanganaro@gmail.com
-    storage: /data/acme.json
-    httpChallenge:
-      entrypoint: web
+    acme:
+      email: ronaldmanganaro@gmail.com
+      storage: /data/acme.json
+      httpChallenge:
+        entrypoint: web
 
 persistance:
   enabled: true
