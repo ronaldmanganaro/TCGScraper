@@ -119,4 +119,5 @@ env:
     value: "JQcESRjiwegMfvkYT9Jzo7"
 
 deployment:
-  replicas: 0
+  spec:
+    replicas: 0
