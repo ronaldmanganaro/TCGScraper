@@ -80,7 +80,7 @@ gateway:
           group: ""
 
 certificatesResolvers:
-  letsencrypt:
+  myresolver:
     acme:
       email: ronaldmanganaro@gmail.com+
       storage: /data/acme.json
