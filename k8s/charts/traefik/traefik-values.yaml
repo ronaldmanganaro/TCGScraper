@@ -15,7 +15,7 @@ ports:
   # Defines the HTTPS entry point named 'websecure'
   websecure:
     port: 443
-    nodePort: 30001
+    nodePort: 30002
 
 # Enables the dashboard in Secure Mode
 api:
