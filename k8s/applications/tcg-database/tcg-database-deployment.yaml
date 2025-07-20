@@ -18,8 +18,10 @@ spec:
         role: streamlit
       containers:
       - name: tcg-database
-        image: rmangana/tcgplayerdb:latest
+        image: rmangana/tcgplayerdb:k8s
         imagePullPolicy: Always
+        imagePullSecrets:
+        - name: dockerhub-pat
         env:
         - name: POSTGRES_USER
           value: rmangana
