@@ -79,19 +79,19 @@ gateway:
           name: traefik-tls   # This should be the name of a valid TLS secret in the kube-system namespace
           group: ""
 
-# certificatesResolvers:
-#   myresolver:
-#     acme:
-#       email: ronaldmanganaro@gmail.com+
-#       storage: /data/acme.json
-#       dnsChallenge:
-#         provider: godaddy
-#         delayBeforeCheck: 0
+certificatesResolvers:
+  myresolver:
+    acme:
+      email: ronaldmanganaro@gmail.com+
+      storage: /data/acme.json
+      dnsChallenge:
+        provider: godaddy
+        delayBeforeCheck: 0
 
-additionalArguments:
-  - "--certificatesresolvers.le.acme.email=ronaldmanganaro@gmail.com"
-  - "--certificatesresolvers.le.acme.storage=/data/acme.json"
-  - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+# additionalArguments:
+#   - "--certificatesresolvers.le.acme.email=ronaldmanganaro@gmail.com"
+#   - "--certificatesresolvers.le.acme.storage=/data/acme.json"
+#   - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
 
 persistence:
   enabled: true
