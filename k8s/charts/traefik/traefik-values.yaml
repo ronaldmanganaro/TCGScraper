@@ -74,17 +74,15 @@ gateway:
       protocol: HTTPS  # TLS terminates inside Traefik
       namespacePolicy: All
       mode: Terminate
-      certificateRefs:    
-        - kind: Secret
-          name: traefik-tls  # the Secret we created before the installation
-          group: ""
 
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: ronaldmanganaro@gmail.com
+      email: ronaldmanganaro@gmail.com+
+      storage: /data/acme.json
       dnsChallenge:
         provider: godaddy
+        delayBeforeCheck: 0
 
 persistence:
   enabled: true
@@ -104,3 +102,9 @@ logs:
 metrics:
   prometheus:
     enabled: true
+
+env:
+  - name: GODADDY_API_KEY
+    value: "AQAzJcvgMiM_2kdRCuuCuwon9rRH9Z1v5b"
+  - name: GODADDY_API_SECRET
+    value: "JQcESRjiwegMfvkYT9Jzo7"
