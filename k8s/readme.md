@@ -28,3 +28,8 @@ installed the cli
 downloaded the helm chart
 created the application manifest
 added app to argocd
+added sealed_secrets_values.yaml to override the nodeSelector
+exported the secret
+kubectl get secret <secret_name> -n <namespace> -o yaml > <secret.yaml>
+sealed the secret and added the sealed secret to git
+kubeseal --controller-name=sealed-secrets --controller-namespace=kube-system --format yaml < dockerhub-pat.yaml > dockerhub-pat-sealed.yaml
