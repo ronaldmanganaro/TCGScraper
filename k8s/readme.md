@@ -22,3 +22,9 @@ Good way to gauge cpu needs
 rmangana@k3s-server:~/k8s$ kubectl top pod streamlit-app-58dd6974f-lc6v4 -n streamlit
 NAME                            CPU(cores)   MEMORY(bytes)
 streamlit-app-58dd6974f-lc6v4   4m           191Mi
+
+Sealed Secret 
+installed the cli
+downloaded the helm chart
+created the application manifest
+added app to argocd
