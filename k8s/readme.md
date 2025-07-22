@@ -4,9 +4,11 @@ kubectl get nodes -o wide
 kubectl get pods
 kubectl describe pod <podname>
 
-k3s-agent
-k3s
+Adding Nodes
+Install the k3s-agent
 
+Installing the k3s server
+k3s
 
 kubernetes dashboard 
 helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
