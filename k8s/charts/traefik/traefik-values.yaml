@@ -51,13 +51,14 @@ extraObjects:
   - apiVersion: traefik.io/v1alpha1
     kind: Middleware
     metadata:
-      name: streamlit-sticky
-      namespace: streamlit
+      name: stickyheader-middleware
+      namespace: dev-1
     spec:
-      stickyCookie:
-        Name: streamlit-sticky-cookie
-        secure: false
-        httpOnly: true
+      plugin:
+        stickyheader:
+          cacheSize: 100
+          headerName: X-Custom-Session
+          cookieName: session_cookie
 
 # We will route with Gateway API instead.
 ingressClass:

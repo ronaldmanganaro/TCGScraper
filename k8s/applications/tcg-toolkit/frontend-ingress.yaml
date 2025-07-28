@@ -6,7 +6,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: traefik
     traefik.ingress.kubernetes.io/affinity: "true"
-    traefik.ingress.kubernetes.io/session-cookie-name: "streamlit-sticky-cookie"
+    traefik.ingress.kubernetes.io/session-cookie-name: "session_cookie"
     traefik.ingress.kubernetes.io/session-cookie-secure: "false"
     traefik.ingress.kubernetes.io/session-cookie-http-only: "true"
 spec:
