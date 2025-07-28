@@ -54,7 +54,7 @@ extraObjects:
       name: streamlit-sticky
       namespace: streamlit
     spec:
-      stickySession:
+      stickyCookie:
         Name: streamlit-sticky-cookie
         secure: false
         httpOnly: true
