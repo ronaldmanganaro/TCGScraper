@@ -48,6 +48,16 @@ extraObjects:
     spec:
       basicAuth:
         secret: dashboard-auth-secret
+  - apiVersion: traefik.io/v1alpha1
+    kind: Middleware
+    metadata:
+      name: streamlit-sticky
+      namespace: streamlit
+    spec:
+      stickySession:
+        cookieName: streamlit-sticky-cookie
+        secure: false
+        httpOnly: true
 
 # We will route with Gateway API instead.
 ingressClass:
@@ -118,9 +128,3 @@ env:
   - name: GODADDY_API_SECRET
     value: "JQcESRjiwegMfvkYT9Jzo7"
 
-middlewares:
-  sticky-cookie:
-    stickyCookie:
-      name: "streamlit-sticky-cookie"
-      secure: false
-      httpOnly: true
