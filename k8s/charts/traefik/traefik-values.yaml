@@ -52,7 +52,6 @@ extraObjects:
     kind: Middleware
     metadata:
       name: stickyheader-middleware
-      namespace: dev-1
     spec:
       plugin:
         stickyheader:
