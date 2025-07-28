@@ -82,7 +82,7 @@ gateway:
 certificatesResolvers:
   myresolver:
     acme:
-      email: ronaldmanganaro@gmail.com+
+      email: ronaldmanganaro@gmail.com
       storage: /data/acme.json
       dnsChallenge:
         provider: godaddy
@@ -117,3 +117,10 @@ env:
     value: "AQAzJcvgMiM_2kdRCuuCuwon9rRH9Z1v5b"
   - name: GODADDY_API_SECRET
     value: "JQcESRjiwegMfvkYT9Jzo7"
+
+middlewares:
+  sticky-cookie:
+    stickyCookie:
+      name: "streamlit-sticky-cookie"
+      secure: false
+      httpOnly: true
