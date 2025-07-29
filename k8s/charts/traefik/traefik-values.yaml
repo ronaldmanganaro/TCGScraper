@@ -30,7 +30,7 @@ ingressRoute:
       - websecure
     middlewares:
       - name: dashboard-auth
-      - name: streamlit-sticky
+      - name: streamlit-streamlit-sticky
 
 # Creates a BasiAuth Middleware and Secret for the Dashboard Security
 extraObjects:
