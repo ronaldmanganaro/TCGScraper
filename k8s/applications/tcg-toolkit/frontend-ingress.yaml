@@ -5,10 +5,7 @@ metadata:
   namespace: streamlit
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/affinity: "true"
-    traefik.ingress.kubernetes.io/session-cookie-name: "session_cookie"
-    traefik.ingress.kubernetes.io/session-cookie-secure: "false"
-    traefik.ingress.kubernetes.io/session-cookie-http-only: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: streamlit-streamlit-sticky@kubernetescrd
 spec:
   rules:
   - host: tcg-toolkit.com

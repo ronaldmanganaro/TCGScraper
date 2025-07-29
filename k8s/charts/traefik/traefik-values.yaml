@@ -52,6 +52,7 @@ extraObjects:
     kind: Middleware
     metadata:
       name: stickyheader-middleware
+      namespace: streamlit
     spec:
       plugin:
         stickyheader:
