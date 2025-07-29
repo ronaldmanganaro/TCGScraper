@@ -129,3 +129,8 @@ env:
   - name: GODADDY_API_SECRET
     value: "JQcESRjiwegMfvkYT9Jzo7"
 
+experimental:
+  plugins:
+    stickyheader:
+      moduleName: "github.com/akierat/stickyheader"
+      version: "v1.0.0"
