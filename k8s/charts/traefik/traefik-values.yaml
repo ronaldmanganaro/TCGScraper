@@ -51,14 +51,14 @@ extraObjects:
   - apiVersion: traefik.io/v1alpha1
     kind: Middleware
     metadata:
-      name: stickyheader-middleware
+      name: streamlit-sticky
       namespace: streamlit
     spec:
-      plugin:
-        stickyheader:
-          cacheSize: 100
-          headerName: X-Custom-Session
-          cookieName: session_cookie
+      stickySession:
+        cookieName: session_cookie
+        secure: false
+        httpOnly: true
+
 
 # We will route with Gateway API instead.
 ingressClass:
@@ -128,9 +128,3 @@ env:
     value: "AQAzJcvgMiM_2kdRCuuCuwon9rRH9Z1v5b"
   - name: GODADDY_API_SECRET
     value: "JQcESRjiwegMfvkYT9Jzo7"
-
-experimental:
-  plugins:
-    stickyheader:
-      moduleName: "github.com/akierat/stickyheader"
-      version: "v1.0.0"
