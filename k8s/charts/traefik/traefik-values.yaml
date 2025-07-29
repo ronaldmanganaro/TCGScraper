@@ -30,19 +30,6 @@ ingressRoute:
       - websecure
     middlewares:
       - name: dashboard-auth
-  streamlit:
-    enabled: true
-    matchRule: Host(`tcg-toolkit.com`) && PathPrefix(`/`)
-    entryPoints:
-      - websecure
-    service:
-      name: streamlit-service
-      port: 8501
-    middlewares:
-      - name: streamlit-sticky
-  
-
-  
 
 # Creates a BasiAuth Middleware and Secret for the Dashboard Security
 extraObjects:
@@ -66,12 +53,7 @@ extraObjects:
     metadata:
       name: streamlit-sticky
       namespace: streamlit
-    spec:
-      stickySession:
-        cookieName: streamlit-sticky
-        secure: true
-        httpOnly: true
-        # domain: tcg-toolkit.com   # Uncomment if you want to set the domain  
+    spec: {}
 
 service: 
   sticky:
