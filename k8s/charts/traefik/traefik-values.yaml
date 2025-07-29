@@ -55,11 +55,10 @@ extraObjects:
       name: streamlit-sticky
       namespace: streamlit
     spec:
-      sticky:
-        cookie:
-          name: session_cookie
-          secure: false
-          httpOnly: true
+      stickyCookie:
+        cookieName: session_cookie
+        secure: false
+        httpOnly: true 
 
 
 # We will route with Gateway API instead.
