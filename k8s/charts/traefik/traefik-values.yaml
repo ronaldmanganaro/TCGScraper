@@ -38,9 +38,6 @@ extraObjects:
     metadata:
       name: dashboard-auth-secret
     type: kubernetes.io/basic-auth
-    stringData:
-      username: admin
-      password: "password"      # Replace with an Actual Password
   - apiVersion: traefik.io/v1alpha1
     kind: Middleware
     metadata:
@@ -120,8 +117,6 @@ metrics:
   prometheus:
     enabled: true
 
-env:
-  - name: GODADDY_API_KEY
-    value: "AQAzJcvgMiM_2kdRCuuCuwon9rRH9Z1v5b"
-  - name: GODADDY_API_SECRET
-    value: "JQcESRjiwegMfvkYT9Jzo7"
+envFrom:
+  - secretRef:
+      name: godaddy-api-secret
