@@ -5,7 +5,7 @@ metadata:
   namespace: streamlit
   annotations:
     kubernetes.io/ingress.class: traefik
-    traefik.ingress.kubernetes.io/router.middlewares: stickyheader-middleware@kubernetescrd
+    traefik.ingress.kubernetes.io/router.middlewares: streamlit-stickyheader-middleware@kubernetescrd
 spec:
   rules:
   - host: tcg-toolkit.com
