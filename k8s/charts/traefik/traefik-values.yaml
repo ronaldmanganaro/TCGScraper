@@ -48,17 +48,6 @@ extraObjects:
     spec:
       basicAuth:
         secret: dashboard-auth-secret
-  - apiVersion: traefik.io/v1alpha1
-    kind: Middleware
-    metadata:
-      name: streamlit-sticky
-      namespace: streamlit
-    spec:
-      stickySession:
-        cookieName: streamlit-sticky
-        secure: true
-        httpOnly: true
-        # domain: tcg-toolkit.com   # Uncomment if you want to set the domain
 
 service: 
   sticky:
