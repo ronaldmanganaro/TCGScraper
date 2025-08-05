@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: git@github.com:ronaldmanganaro/TCGScraper.git
     path: k8s/charts/kubernetes-dashboard
-    targetRevision: feature-DeployStreamlitArgocd
+    targetRevision: main
     # helm set values files manually in the parameters section of the app in argocd
   destination:
     server: https://kubernetes.default.svc
