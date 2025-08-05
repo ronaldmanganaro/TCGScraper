@@ -1,0 +1,19 @@
+kong:
+  nodeSelector:
+    kubernetes.io/hostname: k3s-server
+
+web:
+  nodeSelector:
+    kubernetes.io/hostname: k3s-server
+
+api:
+  nodeSelector:
+    kubernetes.io/hostname: k3s-server
+
+auth:
+  nodeSelector:
+    kubernetes.io/hostname: k3s-server
+
+metricsScraper:
+  nodeSelector:
+    kubernetes.io/hostname: k3s-server

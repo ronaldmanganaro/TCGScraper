@@ -94,3 +94,25 @@ streamlit/.streamlit/secrets.toml
 # debug images etc
 .html
 .png
+
+# Local .terraform directories
+.terraform/
+# Terraform state files
+*.tfstate
+*.tfstate.*
+# Crash log files
+crash.log
+# Terraform variable files with secrets
+*.tfvars
+*.tfvars.json
+# Terraform plan output
+*.tfplan
+# Sensitive override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+# Backup files
+*.backup
+# Provider-specific files
+.terraform.lock.hcl
