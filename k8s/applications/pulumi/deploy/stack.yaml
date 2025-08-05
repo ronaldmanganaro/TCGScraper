@@ -1,0 +1,63 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-app:system:auth-delegator
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/instance: my-app
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: my-app
+  namespace: some-namepace
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: my-app:cluster-admin
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  labels:
+    app.kubernetes.io/instance: my-app
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: my-app
+  namespace: some-namepace
+---
+apiVersion: pulumi.com/v1
+kind: Stack
+metadata:
+  name: my-app-dev
+  namespace: some-namepace
+  labels:
+    app.kubernetes.io/instance: my-app
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+    pulumi.com/reconciliation-request: "before-first-update"
+    link.argocd.argoproj.io/external-link: http://app.pulumi.com/my-org/my-prject/dev
+spec:
+  serviceAccountName: my-app
+  stack: my-org/my-project/dev
+  projectRepo: "https://github.com/my-repo/my-app.git"
+  branch: main
+  refresh: true
+  resyncFrequencySeconds: 60
+  destroyOnFinalize: true
+  envRefs:
+    PULUMI_ACCESS_TOKEN:
+      type: Secret
+      secret:
+        name: pulumi-access-token-secret
+        key: PULUMI_ACCESS_TOKEN
+  workspaceTemplate:
+    spec:
+      image: pulumi/pulumi:3.134.1-nonroot
