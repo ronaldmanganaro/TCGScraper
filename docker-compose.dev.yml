@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Database service
+  db:
+    container_name: TCGPlayerDB
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=rmangana
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=tcgplayerdb
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "rmangana", "-d", "tcgplayerdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend with live reload
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: TCGScraper-API-Dev
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=tcgplayerdb
+      - DB_USER=rmangana
+      - DB_PASSWORD=password
+      - JWT_SECRET_KEY=your-secret-key-change-in-production
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+    volumes:
+      - ./api:/app  # Mount source code for live reload
+      - ./streamlit/data:/app/data  # Mount existing data directory
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # React Frontend with live reload - using Node image directly
+  frontend:
+    image: node:18-alpine
+    container_name: ap
+    TCGScraper-Frontend-Dev
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+      - CHOKIDAR_USEPOLLING=true  # Enable polling for file changes
+    volumes:
+      - ./frontend:/app  # Mount source code for live reload
+      - /app/node_modules  # Anonymous volume for node_modules
+    depends_on:
+      - api
+    restart: always
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+
+volumes:
+  postgres_data:
+  pgadmin_data:

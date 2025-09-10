@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Database service
+  db:
+    container_name: TCGPlayerDB
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=rmangana
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=tcgplayerdb
+    ports: 
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "rmangana", "-d", "tcgplayerdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI Backend
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: TCGScraper-API
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=tcgplayerdb
+      - DB_USER=rmangana
+      - DB_PASSWORD=password
+      - JWT_SECRET_KEY=your-secret-key-change-in-production
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+    volumes:
+      - ./api:/app
+      - ./streamlit/data:/app/data  # Mount existing data directory
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: always
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: TCGScraper-Frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - api
+    restart: always
+    command: npm run dev -- --host 0.0.0.0
+
+  # pgAdmin for database management
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: dpage/pgadmin4:latest
+  #   environment:
+  #     - PGADMIN_DEFAULT_PASSWORD=password
+  #     - PGADMIN_DEFAULT_EMAIL=admin@tcgscraper.com
+  #   volumes:
+  #     - pgadmin_data:/var/lib/pgadmin
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - db
+
+volumes:
+  postgres_data:
+  pgadmin_data:
