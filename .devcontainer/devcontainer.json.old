@@ -1,0 +1,23 @@
+{
+  "name": "Streamlit Dev Container",
+  "dockerFile": "../docker/Dockerfile.streamlit-dev",
+  "context": "..",
+  "workspaceFolder": "/TCGScraper",
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/TCGScraper,type=bind"
+  ],
+  "forwardPorts": [8051],
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "extensions": [
+    "ms-python.python",
+    "cweijan.vscode-postgresql-client2",
+    "github.copilot-chat-0.26.7"
+  ],
+  "env": {
+    "PYTHONUNBUFFERED": "1"
+  },
+  "envFile": "../docker/.env",
+  "postStartCommand": "streamlit run /TCGScraper/streamlit/app.py --server.port ${SERVER_PORT:-80}"
+}

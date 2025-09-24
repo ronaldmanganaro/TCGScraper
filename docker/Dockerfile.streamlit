@@ -15,7 +15,7 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     ./aws/install && \
     rm awscliv2.zip
 
-RUN pip install --no-cache-dir -r /TCGScraper/streamlit/requirements.txt
+RUN pip install --no-cache-dir -r /streamlit/requirements.txt
 
 # Install the required browser binaries
 RUN playwright install chromium --with-deps
