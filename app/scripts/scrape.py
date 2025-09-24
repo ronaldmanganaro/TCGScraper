@@ -9,7 +9,9 @@ import db
 import sys
 import argparse
 import logging
+import os
 
+DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 
 def send_discord_alert(message, webhook_url):
     data = {"content": message}
@@ -18,7 +20,7 @@ def send_discord_alert(message, webhook_url):
 # Logging and startup message
 start = datetime.now()
 msg = f"Started Scraping {start.strftime('%Y-%m-%d %I:%M:%S %p')}"
-send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+send_discord_alert(msg, DISCORD_WEBHOOK)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", handlers=[logging.StreamHandler(sys.stdout)])
 
 class Data:
@@ -115,4 +117,4 @@ end = datetime.now()
 elapsed = end - start
 minutes, seconds = divmod(elapsed.total_seconds(), 60)
 msg = f"Finished Scraping {end.strftime('%Y-%m-%d %I:%M:%S %p')}\nTime elapsed: {int(minutes)} min {int(seconds)} sec"
-send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+send_discord_alert(msg, DISCORD_WEBHOOK)

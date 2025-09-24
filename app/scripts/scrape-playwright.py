@@ -7,6 +7,9 @@ import requests
 import db
 import sys
 import logging
+import os 
+
+DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 
 CONCURRENT_LIMIT = 3  # Try 2-5 to start
 
@@ -96,7 +99,7 @@ async def main():
     # Logging and startup message
     start = datetime.now()
     msg = f"Started Scraping {start.strftime('%Y-%m-%d %I:%M:%S %p')}"
-    send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+    send_discord_alert(msg, DISCORD_WEBHOOK)
 
     sem = Semaphore(CONCURRENT_LIMIT)
     all_data = []
@@ -128,7 +131,7 @@ async def main():
         elapsed = end - start
         minutes, seconds = divmod(elapsed.total_seconds(), 60)
         msg = f"Finished Scraping {end.strftime('%Y-%m-%d %I:%M:%S %p')}\nTime elapsed: {int(minutes)} min {int(seconds)} sec"
-        send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+        send_discord_alert(msg, DISCORD_WEBHOOK)
 
     if all_data:
         start = datetime.now()
@@ -138,7 +141,7 @@ async def main():
         elapsed = end - start
         minutes, seconds = divmod(elapsed.total_seconds(), 60)
         msg = f"Finished Writing to DB {end.strftime('%Y-%m-%d %I:%M:%S %p')}\nTime elapsed: {int(minutes)} min {int(seconds)} sec"
-        send_discord_alert(msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+        send_discord_alert(msg, DISCORD_WEBHOOK)
 
 if __name__ == "__main__":
     asyncio.run(main())

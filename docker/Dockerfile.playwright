@@ -25,4 +25,4 @@ COPY app /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Run your script using xvfb-run to simulate an X display
-ENTRYPOINT ["python3", "scrape-playwright.py"]
+ENTRYPOINT ["python3", "./scripts/scrape-playwright.py"]

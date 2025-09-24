@@ -1,6 +1,7 @@
 import time
 import logging
 import sys
+import os
 
 import argparse
 import requests
@@ -8,6 +9,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 
 class Listing:
     def __init__(self, cardName, seller, price, quantity):
@@ -128,4 +131,4 @@ for card in cards:
             url  = shortenLink(url)
             msg = separator + listings[0].display() + f"\nMy Price: {myPrice}" + "\nLINK: " + url + "\nSeller Link: " + sellerLink + separator
             
-            send_discord_alert( msg, "https://discord.com/api/webhooks/1348736048066461788/7cLvt3ajZ9-hX7ZIFjurWyNyv87ka44-eViI3U2eWXEdAogqMehev5hIsGduUCbdkudV")
+            send_discord_alert( msg, DISCORD_WEBHOOK)
