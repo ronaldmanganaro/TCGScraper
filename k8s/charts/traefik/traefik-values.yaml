@@ -85,14 +85,14 @@ gateway:
           group: ""
 
 certificatesResolvers:
-  myresolver:
+  letsencrypt:
     acme:
       email: ronaldmanganaro@gmail.com
       storage: /data/acme.json
       dnsChallenge:
         provider: godaddy
         delayBeforeCheck: 0
-
+        
 # additionalArguments:
 #   - "--certificatesresolvers.le.acme.email=ronaldmanganaro@gmail.com"
 #   - "--certificatesresolvers.le.acme.storage=/data/acme.json"
