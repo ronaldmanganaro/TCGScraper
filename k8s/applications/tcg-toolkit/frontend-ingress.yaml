@@ -4,7 +4,8 @@ metadata:
   name: streamlit-ingress
   namespace: streamlit
   annotations:
-    kubernetes.io/ingress.class: traefik
+    annotations:
+      traefik.ingress.kubernetes.io/router.entrypoints: web
 spec:
   rules:
   - host: tcg-toolkit.com
