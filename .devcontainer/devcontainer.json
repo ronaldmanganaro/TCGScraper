@@ -1,23 +1,23 @@
 {
-  "name": "Streamlit Dev Container",
-  "dockerFile": "../docker/Dockerfile.streamlit-dev",
-  "context": "..",
-  "workspaceFolder": "/TCGScraper",
-  "mounts": [
-    "source=${localWorkspaceFolder},target=/TCGScraper,type=bind"
+  "name": "FastAPI DevContainer",
+  "dockerComposeFile": [
+    "../docker/docker-compose-streamlit-dev.yml"
   ],
-  "forwardPorts": [80],
+  "service": "fastapi",
+  "workspaceFolder": "/workspace",
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"
   },
   "extensions": [
     "ms-python.python",
-    "cweijan.vscode-postgresql-client2",
-    "github.copilot-chat-0.26.7"
+    "ms-python.vscode-pylance"
   ],
-  "env": {
+  "forwardPorts": [80],
+  "postCreateCommand": "pip install -r requirements.txt",
+  "remoteEnv": {
     "PYTHONUNBUFFERED": "1"
   },
-  "envFile": "../docker/.env",
-  "postStartCommand": "streamlit run /TCGScraper/streamlit/app.py --server.port ${SERVER_PORT:-80}"
+  "mounts": [
+    "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"
+  ]
 }
