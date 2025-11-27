@@ -26,3 +26,11 @@ variable "k3s_token" {
     description = "K3S cluster token for agent nodes to join the server"
     type        = string
 }
+
+variable "argocd_url" {
+  type = string
+}
+
+variable "argocd_password" {
+  type = string
+}
