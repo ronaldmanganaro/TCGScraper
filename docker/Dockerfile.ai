@@ -1,3 +1,0 @@
-FROM ollama/ollama:latest
-
-ENTRYPOINT ["ollama", "run", "llama3"]

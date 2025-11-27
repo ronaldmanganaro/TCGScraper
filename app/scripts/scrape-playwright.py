@@ -8,8 +8,9 @@ import db
 import sys
 import logging
 import os 
+DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1420127534598848572/ooBttCltht5DZtO5SCvnV1d7z1wD8DIrn3VUxuyDl5KtFZ5CivPe-k0K5I0gC4KVijnx"
 
-DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
+#DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
 
 CONCURRENT_LIMIT = 3  # Try 2-5 to start
 
@@ -105,17 +106,29 @@ async def main():
     all_data = []
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
-        context = await browser.new_context()
+        context = await browser.new_context(
+            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+            viewport={"width": 1280, "height": 800}
+        )
 
         # Determine total pages
         page = await context.new_page()
         await page.goto(URL_TEMPLATE.format(page=1))
+        # DEBUG: Run in non-headless mode and take a screenshot to see what Playwright loads
+        await page.screenshot(path="app/screenshots/playwright_page1.png")
         try:
-            await page.wait_for_selector(".search-pagination", timeout=10000)
-            pagination = await page.query_selector(".search-pagination")
-            page_links = await pagination.query_selector_all("a")
-            total_pages = int(await page_links[-2].inner_text())
-        except Exception:
+            await page.wait_for_selector(".tcg-pagination.search-pagination", timeout=30000)
+            pagination = await page.query_selector(".tcg-pagination.search-pagination")
+            # Find all spans with class 'tcg-standard-button__content' and get the max page number
+            page_spans = await pagination.query_selector_all("span.tcg-standard-button__content")
+            page_numbers = []
+            for span in page_spans:
+                text = (await span.inner_text()).strip()
+                if text.isdigit():
+                    page_numbers.append(int(text))
+            total_pages = max(page_numbers) if page_numbers else 1
+        except Exception as e:
+            print(f"Could not determine total pages: {e}")
             total_pages = 1
         print(f"Total pages detected: {total_pages}")
         await page.close()

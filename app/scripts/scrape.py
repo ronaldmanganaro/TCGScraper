@@ -11,8 +11,8 @@ import argparse
 import logging
 import os
 
-DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
-
+#DISCORD_WEBHOOK = os.getenv("DISCORD_WEBHOOK")
+DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1420127534598848572/ooBttCltht5DZtO5SCvnV1d7z1wD8DIrn3VUxuyDl5KtFZ5CivPe-k0K5I0gC4KVijnx"
 def send_discord_alert(message, webhook_url):
     data = {"content": message}
     requests.post(webhook_url, json=data)
@@ -56,8 +56,16 @@ wait = WebDriverWait(driver, 10)
 driver.get(URL_TEMPLATE.format(page=1))
 try:
     pagination = wait.until(EC.presence_of_element_located((By.CLASS_NAME, "search-pagination")))
-    total_pages = int(pagination.find_elements(By.TAG_NAME, "a")[-2].text)
-except:
+    # Find all spans with class 'tcg-standard-button__content' and get the max page number
+    page_spans = pagination.find_elements(By.CLASS_NAME, "tcg-standard-button__content")
+    page_numbers = []
+    for span in page_spans:
+        text = span.text.strip()
+        if text.isdigit():
+            page_numbers.append(int(text))
+    total_pages = max(page_numbers) if page_numbers else 1
+except Exception as e:
+    print(f"Could not determine total pages: {e}")
     total_pages = 1
 print(f"Total pages detected: {total_pages}")
 

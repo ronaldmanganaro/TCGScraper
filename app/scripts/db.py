@@ -18,8 +18,8 @@ def connectDB() -> connection:
     dbname = 'tcgplayerdb'
     user = 'rmangana'
     password = 'password'
-    host = '52.73.212.127'
-    port = 5432
+    host = 'tcg-toolkit.com'
+    port = 30032
 
     try:
         newConnection =  psycopg2.connect(

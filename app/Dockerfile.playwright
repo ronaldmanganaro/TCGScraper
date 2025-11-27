@@ -19,10 +19,10 @@ RUN pip install --no-cache-dir playwright && playwright install
 
 # Set working directory
 WORKDIR /app
-COPY app /app
+COPY . /app
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Run your script using xvfb-run to simulate an X display
 ENTRYPOINT ["python3", "./scripts/scrape-playwright.py"]

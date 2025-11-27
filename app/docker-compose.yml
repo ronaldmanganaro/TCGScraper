@@ -1,0 +1,17 @@
+services:
+  app:
+    container_name: TCGBot
+    image: rmangana/tcgbot:v1
+    build: 
+      context: ./
+      dockerfile: Dockerfile.app
+
+  playwright:
+    container_name: TCGScraper-Playwright
+    image: rmangana/tcgbot:playwright
+    build: 
+      context: ./
+      dockerfile: Dockerfile.playwright
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DISCORD_WEBHOOK=${DISCORD_WEBHOOK}
