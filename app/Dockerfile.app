@@ -1,6 +1,7 @@
 FROM python:3.11.12-slim-bullseye
 
 ENV PYTHONUNBUFFERED=1
+ENV DISCORD_WEBHOOK="https://discord.com/api/webhooks/1420127534598848572/ooBttCltht5DZtO5SCvnV1d7z1wD8DIrn3VUxuyDl5KtFZ5CivPe-k0K5I0gC4KVijnx"
 
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
@@ -31,10 +32,10 @@ RUN wget -O /tmp/chrome_linux64.zip https://storage.googleapis.com/chrome-for-te
 ENV PATH="/usr/local/bin/chrome-linux64:$PATH"
 
 # Install Python dependencies
-COPY /app/requirements.txt /app/requirements.txt
+COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-COPY app ./app
+COPY . ./app
 WORKDIR ./app
 
 ENTRYPOINT ["python3", "scripts/watch.py"]

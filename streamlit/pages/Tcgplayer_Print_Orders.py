@@ -12,6 +12,8 @@ from io import BytesIO
 from reportlab.lib.pagesizes import landscape
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
+import csv
+
 
 def preprocess_text(text):
     # Remove boilerplate and repeated seller info (all occurrences, flexible pattern)
@@ -354,6 +356,10 @@ def create_labels_pdf(orders, return_address, include_order_form=True):
     c.save()
     buffer.seek(0)
     return buffer
+
+#def create_labels_excel(csv):
+#$   with csv.reader(csv.splitlines()) as reader:
+        
 
 def main():
     if 'clear_orders' not in st.session_state:

@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y \
     python3-psycopg2
 
 # Copy initialization script and database script
-COPY docker/initDB.sh /initDB.sh
-COPY docker/initDB.py /initDB.py
+COPY scripts/initDB.sh /initDB.sh
+COPY scripts/initDB.py /initDB.py
 
 # Make the script executable
 RUN chmod +x /initDB.sh /initDB.py
