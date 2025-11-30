@@ -2,7 +2,18 @@
 package_update: true
 package_upgrade: false
 
-hostname: "${K3S_NODE_NAME}"
-
 runcmd:
-  - 'curl -sfL https://get.k3s.io | K3S_TOKEN=${K3S_TOKEN} sh -'
+  - |
+      PUBLIC_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+      PRIVATE_IP=$(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
+
+      curl -sfL https://get.k3s.io | \
+        K3S_TOKEN="${K3S_TOKEN}" \
+        INSTALL_K3S_EXEC="server \
+          --node-name ${K3S_NODE_NAME} \
+          --tls-san $PUBLIC_IP \
+          --tls-san $PRIVATE_IP \
+          --advertise-address $PUBLIC_IP \
+          --bind-address $PRIVATE_IP \
+          --https-listen-port 6443" \
+        sh -

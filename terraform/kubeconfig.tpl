@@ -1,23 +1,20 @@
 apiVersion: v1
 kind: Config
-preferences: {}
-
 clusters:
-- name: ${cluster_name}
+- name: k3s
   cluster:
-    server: https://${server_ip}:6443
-    certificate-authority-data: ${ca_data}
+    certificate-authority-data: ${CA_CERT_B64}
+    server: ${SERVER}
 
 users:
-- name: ${cluster_name}-user
+- name: argocd-bootstrap
   user:
-    client-certificate-data: ${client_cert}
-    client-key-data: ${client_key}
+    token: ${TOKEN}
 
 contexts:
-- name: ${cluster_name}-context
+- name: k3s-context
   context:
-    user: ${cluster_name}-user
-    cluster: ${cluster_name}
+    cluster: k3s
+    user: argocd-bootstrap
 
-current-context: ${cluster_name}-context
+current-context: k3s-context

@@ -1,6 +1,7 @@
 FROM python:3.11.12-slim-bullseye
 
 ENV PYTHONUNBUFFERED=1
+ENV DISCORD_WEBHOOK="https://discord.com/api/webhooks/1420127534598848572/ooBttCltht5DZtO5SCvnV1d7z1wD8DIrn3VUxuyDl5KtFZ5CivPe-k0K5I0gC4KVijnx"
 
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone

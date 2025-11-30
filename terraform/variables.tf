@@ -31,6 +31,11 @@ variable "argocd_url" {
   type = string
 }
 
+variable "argocd_ip" {
+  type = string
+}
+
 variable "argocd_password" {
   type = string
 }
+

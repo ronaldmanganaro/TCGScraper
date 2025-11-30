@@ -11,12 +11,15 @@ provider "linode" {
   token = var.linode_token
 }
 
+###############################################
+# 1) FIREWALL
+###############################################
+
 resource "linode_firewall" "dev_fw" {
   label           = "dev-firewall"
   inbound_policy  = "DROP"
   outbound_policy = "ACCEPT"
 
-  // SSH from anywhere (consider restricting to your IP)
   inbound {
     label    = "ssh"
     action   = "ACCEPT"
@@ -25,7 +28,6 @@ resource "linode_firewall" "dev_fw" {
     ipv4     = ["0.0.0.0/0"]
   }
 
-  // K3s API server
   inbound {
     label    = "k3s"
     action   = "ACCEPT"
@@ -34,16 +36,14 @@ resource "linode_firewall" "dev_fw" {
     ipv4     = ["0.0.0.0/0"]
   }
 
-  // K3s API server
   inbound {
-    label    = "k3s"
+    label    = "k3s-udp"
     action   = "ACCEPT"
     protocol = "UDP"
     ports    = "6443, 6444"
     ipv4     = ["0.0.0.0/0"]
   }
 
-  // HTTP/HTTPS for apps
   inbound {
     label    = "http-https"
     action   = "ACCEPT"
@@ -52,7 +52,6 @@ resource "linode_firewall" "dev_fw" {
     ipv4     = ["0.0.0.0/0"]
   }
 
-  // NodePort range (optional if you use NodePort services)
   inbound {
     label    = "nodeport"
     action   = "ACCEPT"
@@ -61,7 +60,6 @@ resource "linode_firewall" "dev_fw" {
     ipv4     = ["0.0.0.0/0"]
   }
 
-  // Internal/cluster traffic (you can narrow this to specific CIDRs later)
   inbound {
     label    = "internal"
     action   = "ACCEPT"
@@ -79,28 +77,24 @@ resource "linode_firewall" "dev_fw" {
   }
 }
 
-locals {
-  server_ips_sorted = sort(linode_instance.server.ipv4)
-}
-
-#########################
-# 1) K3S SERVER NODE
-#########################
+###############################################
+# 2) K3S SERVER
+###############################################
 
 resource "linode_instance" "server" {
-  label          = "k3s-server-test"
-  region         = "us-southeast"
-  type           = "g6-nanode-1"
-  image          = "linode/ubuntu24.04"
-  private_ip = true
-  firewall_id = linode_firewall.dev_fw.id
-  root_pass      = var.root_pass
+  label           = "k3s-server-test"
+  region          = "us-southeast"
+  type            = "g6-nanode-1"
+  image           = "linode/ubuntu24.04"
+  private_ip      = true
+  firewall_id     = linode_firewall.dev_fw.id
+  root_pass       = var.root_pass
   authorized_keys = [var.ssh_key]
 
   metadata {
     user_data = base64encode(
       templatefile("${path.module}/cloud-init-server.yaml", {
-        K3S_TOKEN = tostring(var.k3s_token)
+        K3S_TOKEN     = tostring(var.k3s_token)
         K3S_NODE_NAME = "k3s-server-test"
       })
     )
@@ -109,32 +103,37 @@ resource "linode_instance" "server" {
   tags = ["dev"]
 }
 
-# Fetch server’s public IP
-output "server_ip" {
-  value = tolist(linode_instance.server.ipv4)[0]
+locals {
+  server_ips_sorted = sort(linode_instance.server.ipv4)
+  server_public_ip  = local.server_ips_sorted[0]
+  server_private_ip = local.server_ips_sorted[1]
 }
 
-#########################
-# 2) K3S WORKER NODES (3x)
-#########################
+output "server_ip" {
+  value = local.server_public_ip
+}
+
+###############################################
+# 3) WORKER NODES
+###############################################
 
 resource "linode_instance" "worker" {
   depends_on = [linode_instance.server]
-  count  = 3
-  label  = "k3s-worker-${count.index}"
-  region = "us-southeast"
-  type   = "g6-nanode-1"
-  image  = "linode/ubuntu24.04"
+  count      = 3
+  label      = "k3s-worker-${count.index}"
+  region     = "us-southeast"
+  type       = "g6-nanode-1"
+  image      = "linode/ubuntu24.04"
   private_ip = true
   firewall_id = linode_firewall.dev_fw.id
-  root_pass      = var.root_pass
+  root_pass   = var.root_pass
   authorized_keys = [var.ssh_key]
 
   metadata {
     user_data = base64encode(
       templatefile("${path.module}/cloud-init-agent.yaml", {
-        SERVER_IP = local.server_ips_sorted[1]
-        K3S_TOKEN = tostring(var.k3s_token)
+        SERVER_IP     = local.server_private_ip
+        K3S_TOKEN     = tostring(var.k3s_token)
         K3S_NODE_NAME = "k3s-worker-${count.index}"
       })
     )
@@ -144,9 +143,5 @@ resource "linode_instance" "worker" {
 }
 
 output "worker_ips" {
-  value = [
-    for w in linode_instance.worker :
-    sort(w.ipv4)[0]
-  ]
+  value = [for w in linode_instance.worker : sort(w.ipv4)[1]]
 }
-
