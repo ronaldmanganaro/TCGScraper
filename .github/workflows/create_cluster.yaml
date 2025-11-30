@@ -24,12 +24,12 @@ jobs:
       run: |
         mkdir -p terraform
         cat <<EOF > terraform/terraform.tfvars
-        linode_token    = "${{ secrets.TF_LINODE_TOKEN }}"
-        root_pass       = "${{ secrets.TF_ROOT_PASS }}"
-        ssh_key         = "${{ secrets.TF_SSH_KEY }}"
-        home_ip         = "${{ secrets.TF_HOME_IP }}"
+        linode_token    = "${{ secrets.LINODE_TOKEN }}"
+        root_pass       = "${{ secrets.ROOT_PASS }}"
+        ssh_key         = "${{ secrets.SSH_KEY }}"
+        home_ip         = "${{ secrets.HOME_IP }}"
         private_key_path = "$HOME/.ssh/id_rsa"
-        k3s_token       = "${{ secrets.TF_K3S_TOKEN }}"
+        k3s_token       = "${{ secrets.K3S_TOKEN }}"
         argocd_url      = "${{ secrets.ARGOCD_URL }}"
         argocd_ip       = "${{ secrets.ARGOCD_IP }}"
         argocd_password = "${{ secrets.ARGOCD_PASSWORD }}"
