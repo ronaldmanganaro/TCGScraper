@@ -15,6 +15,7 @@ jobs:
     - name: Write SSH private key
       shell: powershell
       run: |
+        Set-ExecutionPolicy Bypass -Scope Process -Force
         New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.ssh" | Out-Null
         Set-Content -Path "$env:USERPROFILE\.ssh\id_rsa" -Value "${{ secrets.TF_PRIVATE_KEY }}"
         icacls "$env:USERPROFILE\.ssh\id_rsa" /inheritance:r /grant:r "$($env:USERNAME):R"
