@@ -13,17 +13,16 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Write SSH private key
-      shell: powershell
+      shell: bash
       run: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.ssh" | Out-Null
-        Set-Content -Path "$env:USERPROFILE\.ssh\id_rsa" -Value "${{ secrets.TF_PRIVATE_KEY }}"
-        icacls "$env:USERPROFILE\.ssh\id_rsa" /inheritance:r /grant:r "$($env:USERNAME):R"
+        mkdir -p ~/.ssh
+        echo "${{ secrets.TF_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
 
     - name: Write terraform.tfvars
       shell: bash
       run: |
-        cat <<EOF > terraform.tfvars
+        cat <<EOF > terraform/terraform.tfvars
         linode_token    = "${{ secrets.TF_LINODE_TOKEN }}"
         root_pass       = "${{ secrets.TF_ROOT_PASS }}"
         ssh_key         = "${{ secrets.TF_SSH_KEY }}"
