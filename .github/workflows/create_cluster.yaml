@@ -12,14 +12,12 @@ jobs:
 
     - name: Terraform Init & Apply
       id: tf
-      shell: bash
       run: |
         terraform init
         terraform apply -auto-approve
         echo "server_ip=$(terraform output -raw server_ip)" >> $GITHUB_OUTPUT
 
     - name: Download kubeconfig
-      shell: bash
       run: |
         scp -o StrictHostKeyChecking=no `
           root@${{ steps.tf.outputs.server_ip }}:/etc/rancher/k3s/k3s.yaml `
