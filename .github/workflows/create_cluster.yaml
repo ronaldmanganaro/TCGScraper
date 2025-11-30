@@ -35,7 +35,7 @@ jobs:
       shell: bash
       run: |
         export KUBECONFIG=$PWD/k3s.yaml
-        kubectl apply -f .github/workflows/bootstrap-sa.yaml
+        kubectl apply -f k8s/bootstrap-sa.yaml
 
     - name: Extract token & CA
       id: creds
