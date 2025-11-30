@@ -5,25 +5,46 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted   # because your runner is Windows
+    runs-on: self-hosted   # Windows runner
+    outputs:
+      server_ip: ${{ steps.tf.outputs.server_ip }}
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Terraform Init & Apply
       id: tf
+      shell: bash
       run: |
         terraform init
         terraform apply -auto-approve
         echo "server_ip=$(terraform output -raw server_ip)" >> $GITHUB_OUTPUT
 
-    - name: Download kubeconfig
-      run: |
-        scp -o StrictHostKeyChecking=no `
-          root@${{ steps.tf.outputs.server_ip }}:/etc/rancher/k3s/k3s.yaml `
-          k3s.yaml
+  configure_k3s:
+    runs-on: self-hosted
+    needs: deploy
+    outputs:
+      token: ${{ steps.creds.outputs.token }}
+      ca: ${{ steps.creds.outputs.ca }}
+      server: ${{ steps.creds.outputs.server }}
 
-    - name: Verify kubectl can connect
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Download kubeconfig
+      shell: powershell
+      run: |
+        scp.exe -o StrictHostKeyChecking=no `
+        "root@${{ needs.deploy.outputs.server_ip }}:/etc/rancher/k3s/k3s.yaml" `
+        "k3s.yaml"
+
+
+    - name: Patch kubeconfig server IP (required)
+      shell: bash
+      run: |
+        sed -i "s/127.0.0.1/${{ needs.deploy.outputs.server_ip }}/" k3s.yaml
+
+    - name: Verify kubectl connectivity
       shell: bash
       run: |
         export KUBECONFIG=$PWD/k3s.yaml
@@ -33,20 +54,53 @@ jobs:
       shell: bash
       run: |
         export KUBECONFIG=$PWD/k3s.yaml
-        kubectl apply -f k8s/bootstrap-sa.yaml
+        cat <<EOF | kubectl apply -f -
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: argocd-bootstrap
+          namespace: kube-system
+        ---
+        apiVersion: v1
+        kind: Secret
+        metadata:
+          name: argocd-bootstrap-token
+          namespace: kube-system
+          annotations:
+            kubernetes.io/service-account.name: argocd-bootstrap
+        type: kubernetes.io/service-account-token
+        EOF
 
     - name: Extract token & CA
       id: creds
       shell: bash
       run: |
         export KUBECONFIG=$PWD/k3s.yaml
+
         TOKEN=$(kubectl get secret argocd-bootstrap-token -n kube-system -o jsonpath="{.data.token}" | base64 -d)
         CA=$(kubectl get secret argocd-bootstrap-token -n kube-system -o jsonpath="{.data['ca.crt']}")
-        SERVER="https://${{ steps.tf.outputs.server_ip }}:6443"
+        SERVER="https://${{ needs.deploy.outputs.server_ip }}:6443"
 
         echo "token=$TOKEN" >> $GITHUB_OUTPUT
         echo "ca=$CA" >> $GITHUB_OUTPUT
         echo "server=$SERVER" >> $GITHUB_OUTPUT
+
+    - name: Save kubeconfig for next job
+      shell: powershell
+      run: |
+        Copy-Item k3s.yaml "$env:GITHUB_WORKSPACE\k3s.yaml"
+
+  configure_argocd:
+    runs-on: self-hosted
+    needs: configure_k3s
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Restore kubeconfig
+      shell: powershell
+      run: |
+        Copy-Item "$env:GITHUB_WORKSPACE\k3s.yaml" "k3s.yaml"
 
     - name: Install ArgoCD CLI (Windows)
       shell: powershell
