@@ -14,7 +14,6 @@ jobs:
 
     - name: Terraform Init & Apply
       id: tf
-      shell: bash
       run: |
         terraform init
         terraform apply -auto-approve
@@ -37,12 +36,6 @@ jobs:
         scp.exe -o StrictHostKeyChecking=no `
         "root@${{ needs.deploy.outputs.server_ip }}:/etc/rancher/k3s/k3s.yaml" `
         "k3s.yaml"
-
-
-    - name: Patch kubeconfig server IP (required)
-      shell: bash
-      run: |
-        sed -i "s/127.0.0.1/${{ needs.deploy.outputs.server_ip }}/" k3s.yaml
 
     - name: Verify kubectl connectivity
       shell: bash
