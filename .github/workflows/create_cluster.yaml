@@ -5,7 +5,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: Linux   # Windows runner
+    runs-on: Linux
     outputs:
       server_ip: ${{ steps.tf.outputs.server_ip }}
 
@@ -16,12 +16,13 @@ jobs:
       shell: bash
       run: |
         mkdir -p ~/.ssh
-        echo "${{ secrets.TF_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        echo "${{ secrets.TF_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
     - name: Write terraform.tfvars
       shell: bash
       run: |
+        mkdir -p terraform
         cat <<EOF > terraform/terraform.tfvars
         linode_token    = "${{ secrets.TF_LINODE_TOKEN }}"
         root_pass       = "${{ secrets.TF_ROOT_PASS }}"
@@ -36,6 +37,7 @@ jobs:
 
     - name: Terraform Init & Apply
       id: tf
+      shell: bash
       run: |
         cd terraform
         terraform init
@@ -54,11 +56,11 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Download kubeconfig
-      shell: powershell
+      shell: bash
       run: |
-        scp.exe -o StrictHostKeyChecking=no `
-        "root@${{ needs.deploy.outputs.server_ip }}:/etc/rancher/k3s/k3s.yaml" `
-        "k3s.yaml"
+        ssh -o StrictHostKeyChecking=no \
+          root@${{ needs.deploy.outputs.server_ip }} \
+          'cat /etc/rancher/k3s/k3s.yaml' > k3s.yaml
 
     - name: Verify kubectl connectivity
       shell: bash
@@ -101,10 +103,11 @@ jobs:
         echo "ca=$CA" >> $GITHUB_OUTPUT
         echo "server=$SERVER" >> $GITHUB_OUTPUT
 
-    - name: Save kubeconfig for next job
-      shell: powershell
-      run: |
-        Copy-Item k3s.yaml "$env:GITHUB_WORKSPACE\k3s.yaml"
+    - name: Upload kubeconfig as artifact for next job
+      uses: actions/upload-artifact@v4
+      with:
+        name: kubeconfig
+        path: k3s.yaml
 
   configure_argocd:
     runs-on: Linux
@@ -113,30 +116,30 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Restore kubeconfig
-      shell: powershell
-      run: |
-        Copy-Item "$env:GITHUB_WORKSPACE\k3s.yaml" "k3s.yaml"
+    - name: Download kubeconfig artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: kubeconfig
 
-    - name: Install ArgoCD CLI (Windows)
-      shell: powershell
+    - name: Install ArgoCD CLI (Linux)
+      shell: bash
       run: |
-        Invoke-WebRequest `
-          -Uri "https://github.com/argoproj/argo-cd/releases/latest/download/argocd-windows-amd64.exe" `
-          -OutFile "argocd.exe"
+        curl -sSL -o argocd https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+        chmod +x argocd
+        sudo mv argocd /usr/local/bin/
 
     - name: Login to ArgoCD
-      shell: powershell
+      shell: bash
       run: |
-        .\argocd.exe login $env:ARGOCD_SERVER `
-          --username $env:ARGOCD_USERNAME `
-          --password $env:ARGOCD_PASSWORD `
+        argocd login ${{ secrets.ARGOCD_SERVER }} \
+          --username ${{ secrets.ARGOCD_USERNAME }} \
+          --password ${{ secrets.ARGOCD_PASSWORD }} \
           --insecure
 
     - name: Register cluster in ArgoCD
-      shell: powershell
+      shell: bash
       run: |
-        .\argocd.exe cluster add `
-          --name "k3s-${{ github.run_id }}" `
-          --kubeconfig "$PWD/k3s.yaml" `
+        argocd cluster add \
+          --name "k3s-${{ github.run_id }}" \
+          --kubeconfig k3s.yaml \
           --yes
