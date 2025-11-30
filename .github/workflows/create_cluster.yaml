@@ -12,6 +12,28 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Write SSH private key
+      shell: powershell
+      run: |
+        New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.ssh" | Out-Null
+        Set-Content -Path "$env:USERPROFILE\.ssh\id_rsa" -Value "${{ secrets.TF_PRIVATE_KEY }}"
+        icacls "$env:USERPROFILE\.ssh\id_rsa" /inheritance:r /grant:r "$($env:USERNAME):R"
+
+    - name: Write terraform.tfvars
+      shell: bash
+      run: |
+        cat <<EOF > terraform.tfvars
+        linode_token    = "${{ secrets.TF_LINODE_TOKEN }}"
+        root_pass       = "${{ secrets.TF_ROOT_PASS }}"
+        ssh_key         = "${{ secrets.TF_SSH_KEY }}"
+        home_ip         = "${{ secrets.TF_HOME_IP }}"
+        private_key_path = "$HOME/.ssh/id_rsa"
+        k3s_token       = "${{ secrets.TF_K3S_TOKEN }}"
+        argocd_url      = "${{ secrets.ARGOCD_URL }}"
+        argocd_ip       = "${{ secrets.ARGOCD_IP }}"
+        argocd_password = "${{ secrets.ARGOCD_PASSWORD }}"
+        EOF
+
     - name: Terraform Init & Apply
       id: tf
       run: |
