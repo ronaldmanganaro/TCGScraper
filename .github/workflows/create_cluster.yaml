@@ -15,6 +15,7 @@ jobs:
     - name: Terraform Init & Apply
       id: tf
       run: |
+        cd terraform
         terraform init
         terraform apply -auto-approve
         echo "server_ip=$(terraform output -raw server_ip)" >> $GITHUB_OUTPUT
