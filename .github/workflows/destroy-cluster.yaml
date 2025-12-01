@@ -5,6 +5,10 @@ on:
 
 jobs:
   destroy:
+    env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+        AWS_EC2_METADATA_DISABLED: true
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

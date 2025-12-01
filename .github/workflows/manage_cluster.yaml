@@ -20,7 +20,10 @@ jobs:
     runs-on: Linux
     outputs:
       server_ip: ${{ steps.tf.outputs.server_ip }}
-
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
     steps:
 
     - name: Checkout
@@ -41,12 +44,13 @@ jobs:
         linode_token    = "${{ secrets.LINODE_TOKEN }}"
         root_pass       = "${{ secrets.ROOT_PASS }}"
         ssh_key         = "${{ secrets.SSH_KEY }}"
-        home_ip         = "${{ secrets.HOME_IP }}"
+        home_ip         = "${{ secrets.HOME_IP }}"I ha
         private_key_path = "$HOME/.ssh/id_rsa_rgbdekstop"
         k3s_token       = "${{ secrets.K3S_TOKEN }}"
         argocd_url      = "${{ secrets.ARGOCD_URL }}"
         argocd_ip       = "${{ secrets.ARGOCD_IP }}"
         argocd_password = "${{ secrets.ARGOCD_PASSWORD }}"
+        minio_url       = "${{ secrets.MINIO_URL }}"
         EOF
 
     - name: Terraform Init & Apply
@@ -151,7 +155,10 @@ jobs:
     if: ${{ github.event.inputs.action == 'apply' }}
     runs-on: Linux
     needs: configure_k3s
-
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      AWS_EC2_METADATA_DISABLED: true
     steps:
 
     - name: Checkout

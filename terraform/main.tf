@@ -11,6 +11,21 @@ provider "linode" {
   token = var.linode_token
 }
 
+terraform {
+  backend "s3" {
+    bucket = "terraform"
+    key    = "terraform.tfstate"
+    region = "minio"
+    endpoint = "http://192.168.68.90:9000"
+    force_path_style            = true
+    skip_credentials_validation = true
+    skip_region_validation      = true
+    skip_metadata_api_check     = true
+    skip_requesting_account_id  = true
+  }
+}
+
+
 ###############################################
 # 1) FIREWALL
 ###############################################

@@ -39,3 +39,6 @@ variable "argocd_password" {
   type = string
 }
 
+variable "minio_url" {
+  type = string
+}
