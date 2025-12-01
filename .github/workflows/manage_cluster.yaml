@@ -210,7 +210,6 @@ jobs:
         linode_token    = "${{ secrets.LINODE_TOKEN }}"
         root_pass       = "${{ secrets.ROOT_PASS }}"
         ssh_key         = "${{ secrets.SSH_KEY }}"
-        home_ip         = "${{ secrets.HOME_IP }}"
         private_key_path = "$HOME/.ssh/id_rsa_rgbdekstop"
         k3s_token       = "${{ secrets.K3S_TOKEN }}"
         argocd_url      = "${{ secrets.ARGOCD_URL }}"
