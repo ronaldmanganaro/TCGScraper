@@ -59,7 +59,7 @@ jobs:
       shell: bash
       run: |
         ssh -o StrictHostKeyChecking=no \
-          root@${{ needs.deploy.outputs.server_ip }} \
+          root@${{ needs.deploy.outputs.server_ip }} -i ~/.ssh/id_rsa_rgbdekstop \
           'cat /etc/rancher/k3s/k3s.yaml' > k3s.yaml
 
     - name: Verify kubectl connectivity
