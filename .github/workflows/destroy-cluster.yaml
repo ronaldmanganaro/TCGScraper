@@ -35,7 +35,9 @@ jobs:
             path: terraform
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+        run: |
+            cd terraform
+            terraform destroy -auto-approve
 
 
       - name: Terraform Init
