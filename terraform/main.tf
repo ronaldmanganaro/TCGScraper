@@ -105,8 +105,8 @@ resource "linode_instance" "server" {
 
 locals {
   server_ips_sorted = sort(linode_instance.server.ipv4)
-  server_public_ip  = local.server_ips_sorted[1]
-  server_private_ip = local.server_ips_sorted[0]
+  server_public_ip  = linode_instance.server.ip_address
+  server_private_ip = linode_instance.server.private_ip_address
 }
 
 output "server_ip" {
