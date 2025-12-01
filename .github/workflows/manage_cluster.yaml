@@ -1,16 +1,30 @@
-name: Create Cluster
+name: Manage Cluster
 
 on:
   workflow_dispatch:
+    inputs:
+      action:
+        description: "Choose apply or destroy"
+        type: choice
+        options:
+          - apply
+          - destroy
 
 jobs:
-  deploy:
-    runs-on: Linux
+
+  ###########################################################################
+  # APPLY WORKFLOW
+  ###########################################################################
+  apply:
+    if: ${{ github.event.inputs.action == 'apply' }}
+    runs-on: ubuntu-latest
     outputs:
       server_ip: ${{ steps.tf.outputs.server_ip }}
 
     steps:
-    - uses: actions/checkout@v4
+
+    - name: Checkout
+      uses: actions/checkout@v4
 
     - name: Write SSH private key
       shell: bash
@@ -44,7 +58,7 @@ jobs:
         terraform apply -auto-approve
         echo "server_ip=$(terraform output -raw server_ip)" >> $GITHUB_OUTPUT
 
-    - name: Upload state
+    - name: Upload tfstate
       uses: actions/upload-artifact@v4
       with:
         name: tfstate
@@ -52,28 +66,41 @@ jobs:
           terraform/terraform.tfstate
           terraform/terraform.tfstate.backup
 
+  ###########################################################################
+  # CONFIGURE K3S
+  ###########################################################################
   configure_k3s:
-    runs-on: Linux
-    needs: deploy
+    if: ${{ github.event.inputs.action == 'apply' }}
+    runs-on: ubuntu-latest
+    needs: apply
     outputs:
       token: ${{ steps.creds.outputs.token }}
       ca: ${{ steps.creds.outputs.ca }}
       server: ${{ steps.creds.outputs.server }}
 
     steps:
-    - uses: actions/checkout@v4
 
-    - name: Download kubeconfig
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Write SSH private key again (same key needed)
+      shell: bash
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.TF_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+
+    - name: Download kubeconfig from server
       shell: bash
       run: |
         ssh -o StrictHostKeyChecking=no \
-          root@${{ needs.deploy.outputs.server_ip }} -i ~/.ssh/id_rsa_rgbdekstop \
+          root@${{ needs.apply.outputs.server_ip }} -i ~/.ssh/id_rsa \
           'cat /etc/rancher/k3s/k3s.yaml' > k3s.yaml
 
-    - name: Verify kubectl connectivity
+    - name: Fix server IP & test kubectl
       shell: bash
       run: |
-        sed -i "s/127\.0\.0\.1/${{ needs.deploy.outputs.server_ip }}/g" ./k3s.yaml
+        sed -i "s/127\.0\.0\.1/${{ needs.apply.outputs.server_ip }}/g" ./k3s.yaml
         export KUBECONFIG=$PWD/k3s.yaml
         kubectl get nodes
 
@@ -103,27 +130,32 @@ jobs:
       shell: bash
       run: |
         export KUBECONFIG=$PWD/k3s.yaml
-
         TOKEN=$(kubectl get secret argocd-bootstrap-token -n kube-system -o jsonpath="{.data.token}" | base64 -d)
         CA=$(kubectl get secret argocd-bootstrap-token -n kube-system -o jsonpath="{.data['ca.crt']}")
-        SERVER="https://${{ needs.deploy.outputs.server_ip }}:6443"
+        SERVER="https://${{ needs.apply.outputs.server_ip }}:6443"
 
         echo "token=$TOKEN" >> $GITHUB_OUTPUT
         echo "ca=$CA" >> $GITHUB_OUTPUT
         echo "server=$SERVER" >> $GITHUB_OUTPUT
 
-    - name: Upload kubeconfig as artifact for next job
+    - name: Upload kubeconfig artifact
       uses: actions/upload-artifact@v4
       with:
         name: kubeconfig
         path: k3s.yaml
 
+  ###########################################################################
+  # CONFIGURE ARGOCD
+  ###########################################################################
   configure_argocd:
-    runs-on: Linux
+    if: ${{ github.event.inputs.action == 'apply' }}
+    runs-on: ubuntu-latest
     needs: configure_k3s
 
     steps:
-    - uses: actions/checkout@v4
+
+    - name: Checkout
+      uses: actions/checkout@v4
 
     - name: Download kubeconfig artifact
       uses: actions/download-artifact@v4
@@ -145,3 +177,52 @@ jobs:
           --name "k3s-${{ github.run_id }}" \
           --kubeconfig k3s.yaml \
           --yes
+
+  ###########################################################################
+  # DESTROY WORKFLOW
+  ###########################################################################
+  destroy:
+    if: ${{ github.event.inputs.action == 'destroy' }}
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Download tfstate
+      uses: actions/download-artifact@v4
+      with:
+        name: tfstate
+        path: terraform
+
+    - name: Write terraform.tfvars
+      shell: bash
+      run: |
+        mkdir -p terraform
+        cat <<EOF > terraform/terraform.tfvars
+        linode_token    = "${{ secrets.LINODE_TOKEN }}"
+        root_pass       = "${{ secrets.ROOT_PASS }}"
+        ssh_key         = "${{ secrets.SSH_KEY }}"
+        home_ip         = "${{ secrets.HOME_IP }}"
+        private_key_path = "$HOME/.ssh/id_rsa_rgbdekstop"
+        k3s_token       = "${{ secrets.K3S_TOKEN }}"
+        argocd_url      = "${{ secrets.ARGOCD_URL }}"
+        argocd_ip       = "${{ secrets.ARGOCD_IP }}"
+        argocd_password = "${{ secrets.ARGOCD_PASSWORD }}"
+        EOF
+
+    - name: Terraform Init
+      shell: bash
+      run: |
+        cd terraform
+        terraform init
+
+    - name: Terraform Destroy
+      shell: bash
+      run: |
+        cd terraform
+        terraform destroy -auto-approve
