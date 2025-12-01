@@ -7,7 +7,7 @@ spec:
   source:
     repoURL: git@github.com:ronaldmanganaro/TCGScraper.git
     path: k8s/deploy/overlays/test
-    targetRevision: main
+    targetRevision: feature-TestCluster
   destination:
     server: k3s
     namespace: streamlit
