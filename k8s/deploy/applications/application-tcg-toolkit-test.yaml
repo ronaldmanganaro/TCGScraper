@@ -9,7 +9,7 @@ spec:
     path: k8s/deploy/overlays/test
     targetRevision: feature-TestCluster
   destination:
-    server: k3s
+    name: k3s
     namespace: streamlit
   syncPolicy:
     automated:
