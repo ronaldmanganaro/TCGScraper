@@ -44,6 +44,14 @@ jobs:
         terraform apply -auto-approve
         echo "server_ip=$(terraform output -raw server_ip)" >> $GITHUB_OUTPUT
 
+    - name: Upload state
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfstate
+        path: |
+          terraform.tfstate
+          terraform.tfstate.backup
+
   configure_k3s:
     runs-on: Linux
     needs: deploy
@@ -65,6 +73,7 @@ jobs:
     - name: Verify kubectl connectivity
       shell: bash
       run: |
+        sed -i "s/127\.0\.0\.1/${{ needs.deploy.outputs.server_ip }}/g" path/to/file
         export KUBECONFIG=$PWD/k3s.yaml
         kubectl get nodes
 

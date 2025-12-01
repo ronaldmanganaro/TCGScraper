@@ -28,6 +28,16 @@ jobs:
           argocd_password = "${{ secrets.ARGOCD_PASSWORD }}"
           EOF
 
+      - name: Download state
+        uses: actions/download-artifact@v4
+        with:
+            name: tfstate
+            path: terraform
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+
+
       - name: Terraform Init
         run: |
             cd terraform 
