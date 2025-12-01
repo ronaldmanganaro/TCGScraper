@@ -49,8 +49,8 @@ jobs:
       with:
         name: tfstate
         path: |
-          terraform.tfstate
-          terraform.tfstate.backup
+          terraform/terraform.tfstate
+          terraform/terraform.tfstate.backup
 
   configure_k3s:
     runs-on: Linux
@@ -73,7 +73,7 @@ jobs:
     - name: Verify kubectl connectivity
       shell: bash
       run: |
-        sed -i "s/127\.0\.0\.1/${{ needs.deploy.outputs.server_ip }}/g" path/to/file
+        sed -i "s/127\.0\.0\.1/${{ needs.deploy.outputs.server_ip }}/g" ./k3s.yaml
         export KUBECONFIG=$PWD/k3s.yaml
         kubectl get nodes
 
