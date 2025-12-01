@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tcg-toolkit-test
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:ronaldmanganaro/TCGScraper.git
+    path: k8s/deploy/overlays/test
+    targetRevision: main
+  destination:
+    server: k3s
+    namespace: streamlit
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

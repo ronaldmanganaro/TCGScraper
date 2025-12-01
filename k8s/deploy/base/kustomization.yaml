@@ -1,0 +1,9 @@
+resources:
+  - frontend-deployment.yaml
+  - frontend-ingress.yaml
+  - frontend-service.yaml
+  - certificate.yaml
+
+patchesStrategicMerge:
+  - patch-ingress.yaml
+  - patch-env.yaml

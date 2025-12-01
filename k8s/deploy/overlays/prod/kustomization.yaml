@@ -1,0 +1,9 @@
+bases: 
+  - ../../base
+
+resources:
+  - cluster-issuer.yaml
+  - certificate.yaml
+
+patchesStrategicMerge:
+  - patch-ingress.yaml
