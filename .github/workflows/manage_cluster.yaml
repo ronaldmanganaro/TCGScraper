@@ -61,14 +61,6 @@ jobs:
         terraform apply -auto-approve
         echo "server_ip=$(terraform output -raw server_ip)" >> $GITHUB_OUTPUT
 
-    - name: Upload tfstate
-      uses: actions/upload-artifact@v4
-      with:
-        name: tfstate
-        path: |
-          terraform/terraform.tfstate
-          terraform/terraform.tfstate.backup
-
   ###########################################################################
   # CONFIGURE K3S
   ###########################################################################
@@ -97,7 +89,7 @@ jobs:
       shell: bash
       run: |
         ssh -o StrictHostKeyChecking=no \
-          root@${{ needs.apply.outputs.server_ip }} -i ~/.ssh/id_rsa_rgbdesktop \
+          root@${{ needs.apply.outputs.server_ip }} -i ~/.ssh/id_rsa \
           'cat /etc/rancher/k3s/k3s.yaml' > k3s.yaml
 
     - name: Fix server IP & test kubectl
