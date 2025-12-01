@@ -1,4 +1,4 @@
-name: Deploy K3s & Register with ArgoCD
+name: Create Cluster
 
 on:
   workflow_dispatch:
