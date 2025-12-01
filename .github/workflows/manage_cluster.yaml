@@ -171,10 +171,9 @@ jobs:
     - name: Register cluster in ArgoCD
       shell: bash
       run: |
-        argocd cluster add \
-          --name "k3s-${{ github.run_id }}" \
-          --kubeconfig k3s.yaml \
-          --yes
+        kubectl config --kubeconfig=k3s.yaml rename-context $(kubectl config --kubeconfig=k3s.yaml current-context) k3s
+        kubectl config --kubeconfig=k3s.yaml use-context k3s
+        argocd cluster add k3s --kubeconfig k3s.yaml --yes
 
   ###########################################################################
   # DESTROY WORKFLOW
@@ -220,3 +219,16 @@ jobs:
       run: |
         cd terraform
         terraform destroy -auto-approve
+
+    - name: Login to ArgoCD
+      shell: bash
+      run: |
+        argocd login ${{ secrets.ARGOCD_SERVER }} \
+          --username ${{ secrets.ARGOCD_USERNAME }} \
+          --password ${{ secrets.ARGOCD_PASSWORD }} \
+          --insecure
+
+    - name: Register cluster in ArgoCD
+      shell: bash
+      run: |
+        argocd cluster rm k3s --yes
