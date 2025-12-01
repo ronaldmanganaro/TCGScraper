@@ -17,7 +17,7 @@ jobs:
   ###########################################################################
   apply:
     if: ${{ github.event.inputs.action == 'apply' }}
-    runs-on: ubuntu-latest
+    runs-on: Linux
     outputs:
       server_ip: ${{ steps.tf.outputs.server_ip }}
 
@@ -71,7 +71,7 @@ jobs:
   ###########################################################################
   configure_k3s:
     if: ${{ github.event.inputs.action == 'apply' }}
-    runs-on: ubuntu-latest
+    runs-on: Linux
     needs: apply
     outputs:
       token: ${{ steps.creds.outputs.token }}
@@ -149,7 +149,7 @@ jobs:
   ###########################################################################
   configure_argocd:
     if: ${{ github.event.inputs.action == 'apply' }}
-    runs-on: ubuntu-latest
+    runs-on: Linux
     needs: configure_k3s
 
     steps:
@@ -183,7 +183,7 @@ jobs:
   ###########################################################################
   destroy:
     if: ${{ github.event.inputs.action == 'destroy' }}
-    runs-on: ubuntu-latest
+    runs-on: Linux
 
     steps:
 
