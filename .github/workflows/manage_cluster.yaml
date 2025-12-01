@@ -89,7 +89,7 @@ jobs:
       shell: bash
       run: |
         ssh -o StrictHostKeyChecking=no \
-          root@${{ needs.apply.outputs.server_ip }} -i ~/.ssh/id_rsa \
+          root@${{ needs.apply.outputs.server_ip }} -i ~/.ssh/id_rsa_rgbdesktop \
           'cat /etc/rancher/k3s/k3s.yaml' > k3s.yaml
 
     - name: Fix server IP & test kubectl
