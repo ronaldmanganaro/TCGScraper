@@ -228,7 +228,7 @@ jobs:
           --password ${{ secrets.ARGOCD_PASSWORD }} \
           --insecure
 
-    - name: Register cluster in ArgoCD
+    - name: Remove cluster in ArgoCD
       shell: bash
       run: |
         argocd cluster rm k3s --yes
