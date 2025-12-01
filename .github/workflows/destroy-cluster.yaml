@@ -1,0 +1,36 @@
+name: Destroy Cluster
+
+on:
+  workflow_dispatch:
+
+jobs:
+  destroy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Write terraform.tfvars
+        shell: bash
+        run: |
+          mkdir -p terraform
+          cat <<EOF > terraform/terraform.tfvars
+          linode_token    = "${{ secrets.LINODE_TOKEN }}"
+          root_pass       = "${{ secrets.ROOT_PASS }}"
+          ssh_key         = "${{ secrets.SSH_KEY }}"
+          home_ip         = "${{ secrets.HOME_IP }}"
+          private_key_path = "$HOME/.ssh/id_rsa_rgbdekstop"
+          k3s_token       = "${{ secrets.K3S_TOKEN }}"
+          argocd_url      = "${{ secrets.ARGOCD_URL }}"
+          argocd_ip       = "${{ secrets.ARGOCD_IP }}"
+          argocd_password = "${{ secrets.ARGOCD_PASSWORD }}"
+          EOF
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
