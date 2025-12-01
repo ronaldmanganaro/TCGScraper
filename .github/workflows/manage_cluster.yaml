@@ -216,6 +216,7 @@ jobs:
         argocd_url      = "${{ secrets.ARGOCD_URL }}"
         argocd_ip       = "${{ secrets.ARGOCD_IP }}"
         argocd_password = "${{ secrets.ARGOCD_PASSWORD }}"
+        minio_url       = "${{ secrets.MINIO_URL }}"
         EOF
 
     - name: Terraform Init
