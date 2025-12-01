@@ -3,5 +3,5 @@ resources:
   - cluster-issuer.yaml
   - certificate.yaml
 
-patchesStrategicMerge:
+patches:
   - patch-ingress.yaml

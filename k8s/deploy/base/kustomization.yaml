@@ -4,6 +4,6 @@ resources:
   - frontend-service.yaml
   - certificate.yaml
 
-patchesStrategicMerge:
+patches:
   - patch-ingress.yaml
   - patch-env.yaml
