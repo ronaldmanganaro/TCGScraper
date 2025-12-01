@@ -13,10 +13,6 @@ variable "ssh_key" {
     type        = string
 }
 
-variable "home_ip" {
-  description = "Your home IP for SSH firewall allowlist"
-}
-
 variable "private_key_path" {
     description = "Path to the private SSH key for accessing the Linode instance"
     type        = string
