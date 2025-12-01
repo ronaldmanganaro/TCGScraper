@@ -1,7 +1,5 @@
-bases: 
-  - ../../base
-
 resources:
+  - ../../base
   - cluster-issuer.yaml
   - certificate.yaml
 
