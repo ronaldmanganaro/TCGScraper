@@ -13,8 +13,6 @@ spec:
       labels:
         app: streamlit-app
     spec:
-      nodeSelector:
-        role: streamlit
       tolerations:
       - key: "node.kubernetes.io/disk-pressure"
         operator: "Exists"
