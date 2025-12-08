@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: tcg-database-service
+  namespace: streamlit
+spec:
+  selector:
+    app: tcg-database
+  ports:
+    - port: 5432
+      targetPort: 5432
