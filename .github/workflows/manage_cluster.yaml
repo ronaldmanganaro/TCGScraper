@@ -155,7 +155,7 @@ jobs:
       run: |
         kubectl config --kubeconfig=k3s.yaml rename-context $(kubectl config --kubeconfig=k3s.yaml current-context) k3s-test
         kubectl config --kubeconfig=k3s.yaml use-context k3s-test
-        argocd cluster add k3s-test --kubeconfig k3s.yaml --yes
+        argocd cluster add --insecure k3s-test --kubeconfig k3s.yaml --yes
         argocd app sync tcg-toolkit-test
 
   ###########################################################################
