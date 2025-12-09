@@ -5,3 +5,7 @@ resources:
   - frontend-deployment.yaml
   - frontend-ingress.yaml
   - frontend-service.yaml
+  - database-service.yaml
+  - database-deployment.yaml
+
+  
