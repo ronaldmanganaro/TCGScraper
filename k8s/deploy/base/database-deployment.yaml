@@ -14,8 +14,6 @@ spec:
       labels:
         app: tcg-database
     spec:
-      nodeSelector:
-        role: streamlit
       containers:
       - name: tcg-database
         image: rmangana/tcgplayerdb:k8s
