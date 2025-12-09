@@ -68,6 +68,11 @@ jobs:
     if: ${{ github.event.inputs.action == 'apply' }}
     runs-on: Linux
     needs: apply
+    outputs:
+      token: ${{ steps.creds.outputs.token }}
+      ca: ${{ steps.creds.outputs.ca }}
+      server: ${{ steps.creds.outputs.server }}
+
     steps:
 
     - name: Checkout
@@ -115,12 +120,25 @@ jobs:
         type: kubernetes.io/service-account-token
         EOF
 
+    - name: Extract token & CA
+      id: creds
+      shell: bash
+      run: |
+        export KUBECONFIG=$PWD/k3s.yaml
+        TOKEN=$(kubectl get secret argocd-bootstrap-token -n kube-system -o jsonpath="{.data.token}" | base64 -d)
+        CA=$(kubectl get secret argocd-bootstrap-token -n kube-system -o jsonpath="{.data['ca.crt']}")
+        SERVER="https://${{ needs.apply.outputs.server_ip }}:6443"
+
+        echo "token=$TOKEN" >> $GITHUB_OUTPUT
+        echo "ca=$CA" >> $GITHUB_OUTPUT
+        echo "server=$SERVER" >> $GITHUB_OUTPUT
+
     - name: Upload kubeconfig artifact
       uses: actions/upload-artifact@v4
       with:
         name: kubeconfig
         path: k3s.yaml
-
+        
   ###########################################################################
   # CONFIGURE ARGOCD
   ###########################################################################
