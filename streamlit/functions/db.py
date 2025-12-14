@@ -24,8 +24,8 @@ def connectDB(isTest=False) -> connection:
         dbname = 'tcgplayerdb'
     user = 'rmangana'
     password = 'password'
-    host = '52.73.212.127'
-    port = 5432
+    host = 'tcg-toolkit.com'
+    port = 30032
 
     try:
         newConnection = psycopg2.connect(
@@ -51,8 +51,8 @@ def connectDB(dbname, isTest=False) -> connection:
 
     user = 'rmangana'
     password = 'password'
-    host = '52.73.212.127'
-    port = 5432
+    host = 'tcg-toolkit.com'
+    port = 30032
 
     try:
         newConnection = psycopg2.connect(
@@ -183,6 +183,23 @@ def get_price_date(connection: connection, card_name, card_number):
         logging.info(f"Finished querying price date for card: {card_name}")
         cursor.close()
 
+def get_price_date_by_link(connection: connection, link: str):
+    """Return full price history for a card identified by its TCGplayer link, newest first."""
+    cursor = connection.cursor()
+    query = """
+        SELECT date, lowest_price, market_price, listing_quantity, velocity
+        FROM public.prices
+        WHERE link = %s
+        ORDER BY date DESC
+    """
+    try:
+        cursor.execute(query, (link,))
+        return cursor.fetchall()
+    except Exception as e:
+        logging.error(f"Error querying price date by link: {e}")
+        return None
+    finally:
+        cursor.close()
 
 def estimate_velocity(connection: connection, card_name, card_number):
     cursor = connection.cursor()

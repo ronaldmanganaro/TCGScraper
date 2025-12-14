@@ -258,7 +258,7 @@ def footer():
         <div class="footer-bar">
             <span>Need help? Have a feature suggestion or bug report? Join our <a href="{discord_url}" class="discord-link" target="_blank">Discord</a>!</span>
             <span style="margin-left: 1.5em;">
-                <a href="https://www.buymeacoffee.com/ronaldmangu" class="coffee-link" target="_blank">
+                <a href="https://www.buymeacoffee.com/tcgtoolkit" class="coffee-link" target="_blank">
                     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" />
                 </a>
             </span>

@@ -44,7 +44,8 @@ cards = [
     "92174/pokemon-xy-furious-fists-m-heracross-ex",
     "94157/pokemon-xy-phantom-forces-m-manectric-ex",
     "96413/pokemon-xy-promos-kingdra-xy39-prerelease",
-    "131006/pokemon-sm-guardians-rising-sylveon-gx"
+    "131006/pokemon-sm-guardians-rising-sylveon-gx",
+    "285800/digimon-card-game-starter-deck-12-jesmon-from-master-to-disciple"
 ]
 
 def send_discord_alert(message, webhook_url):

@@ -163,7 +163,8 @@ def inventory_tabs(df, selected_columns):
         st.write(f"**Total Marketplace Value (Quantity x Marketplace Price):** ${total_marketplace_value:.2f}")
         st.write(f"**Total Market Value (Quantity x Market Price):** ${total_market_value:.2f}")
     with tab2:
-        price_dif_df = df.copy()
+        # Exclude cards with zero quantity from price differential analysis
+        price_dif_df = df[df["Total Quantity"] > 0].copy()
         price_dif_df["percentage_difference"] = (
             (price_dif_df["TCG Marketplace Price"] - price_dif_df["TCG Market Price"]) /
             price_dif_df["TCG Market Price"] * 100
