@@ -14,12 +14,12 @@ pages = [
     st.Page('pages/PokemonPriceTracker.py'),
     st.Page('pages/Manabox.py'),
     st.Page('pages/Manage_Inventory.py'),
-    st.Page('pages/Tcgplayer_Print_Orders.py')
-]
+    st.Page('pages/Tcgplayer_Print_Orders.py'),
+    st.Page('pages/Underpriced_Cards_Snapshot.py')
+    ]
 if st.session_state.get('current_user') == 'rmangana':
     pages.append(st.Page('pages/Update_TCGplayer_IDs.py'))
     pages.append(st.Page('pages/Cloud_Control.py'))
-    
     pages.append(st.Page('pages/test_crop.py'))
 
 pg = st.navigation(pages, position="hidden")

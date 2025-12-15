@@ -236,6 +236,9 @@ def show_pages_sidebar():
             st.switch_page("pages/Manage_Inventory.py")
         if st.button("🖨️ TCGPlayer Print", use_container_width=True):
             st.switch_page("pages/Tcgplayer_Print_Orders.py")
+        if st.button("Pokemon Snapshot", use_container_width=True):
+            st.switch_page("pages/Underpriced_Cards_Snapshot.py")
+            
         if st.session_state.get('current_user') == 'rmangana':
             if st.button("🔄 Update TCGplayer IDs", use_container_width=True):
                 st.switch_page("pages/Update_TCGplayer_IDs.py")

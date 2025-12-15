@@ -5,7 +5,8 @@ import logging
 import plotly.express as px
 import plotly.graph_objects as go
 import asyncio
-from math import ceil
+import pyperclip
+from psycopg2.extras import RealDictCursor
 
 widgets.show_pages_sidebar()
 
@@ -13,63 +14,20 @@ price_df, fig = None, None
 if 'card_list' not in st.session_state:
     st.session_state.card_list = []
 
-# --- Top row: dropdown | Min/Max listings | Query button (unchanged, fast) ---
-col1, col2, col3 = st.columns([3, 2, 1])
+# Create columns for the dropdown and number input
+col1, col2 = st.columns([3, 1])
 
-with col1:
-    pkm_selectbox = st.selectbox(
-        "Pokemon Card Name, Card Number",
-        st.session_state.card_list,
-        index=0 if st.session_state.card_list else None,
-        key="pkm_selectbox",
-    )
+# New row for Query and Pull Historical Data buttons, aligned under the inputs
+btn_col1, btn_col2, btn_col3 = st.columns([1, 1, 1])
 
-    # Clickable TCGPlayer link under dropdown
-    selected_url = None
-    selected_label = st.session_state.get("pkm_selectbox")
-    if selected_label and "card_tuples" in st.session_state:
-        for card in st.session_state.card_tuples:
-            label = f"{card[0]}, ({card[1]}) [Listings: {card[3]}]"
-            if label == selected_label:
-                selected_url = card[2]
-                break
-    if selected_url:
-        st.markdown(f"[**TCGPlayer Link**]({selected_url})")
-
-with col2:
-    min_col, max_col = st.columns(2)
-    with min_col:
-        min_listing = st.number_input(
-            "Min Listings",
-            min_value=0,
-            max_value=10000,
-            value=st.session_state.get("min_listing", 0),
-            step=1,
-            key="min_listing",
-        )
-    with max_col:
-        max_listing = st.number_input(
-            "Max Listings",
-            min_value=1,
-            max_value=10000,
-            value=st.session_state.get("max_listing", 5),
-            step=1,
-            key="max_listing",
-        )
-
-with col3:
-    st.caption(
-        "Query loads cards whose current listing count is between Min and Max Listings."
-    )
+with btn_col1:
     if st.button("Query", use_container_width=True):
+
         with st.spinner("Querying..."):
             connection = db.connectDB("tcgplayerdb")
             try:
                 cards = db.get_card_name(
-                    connection, st.session_state.get("max_listing", 5)
-                )
-                min_l = st.session_state.get("min_listing", 0)
-                cards = [c for c in cards if c[3] >= min_l]
+                    connection, st.session_state.min_quantity_selectbox)
                 st.session_state.card_list = [
                     f"{card[0]}, ({card[1]}) [Listings: {card[3]}]" for card in cards
                 ]
@@ -80,121 +38,106 @@ with col3:
                 except Exception:
                     pass
         st.toast("Query complete!")
-        st.balloons()
+        st.balloons()  # 🎈 Balloons animation
 
-# --- Underpriced search section: ONLY runs when its own button is clicked ---
-st.markdown("---")
-st.subheader("Market Price Anomalies")
-
-opt_col1, opt_col2, opt_col3 = st.columns(3)
-with opt_col1:
-    pct_threshold = st.number_input(
-        "Min % Above Lowest",
-        min_value=0.0,
-        max_value=1000.0,
-        value=st.session_state.get("underpriced_min_pct", 25.0),
-        step=1.0,
-        help="Minimum percentage that Market Price must be above Lowest Price.",
-        key="underpriced_min_pct",
-    )
-with opt_col2:
-    diff_threshold = st.number_input(
-        "Min $ Difference",
-        min_value=0.0,
-        max_value=10000.0,
-        value=st.session_state.get("underpriced_min_diff", 0.0),
-        step=0.1,
-        help="Minimum absolute dollar gap between Market and Lowest price.",
-        key="underpriced_min_diff",
-    )
-with opt_col3:
-    min_listings_under = st.number_input(
-        "Min Listings (Card)",
-        min_value=0,
-        max_value=10000,
-        value=st.session_state.get("underpriced_min_listings", 0),
-        step=1,
-        help="Ignore cards whose latest listing quantity is below this.",
-        key="underpriced_min_listings",
-    )
-
-col_anom_btn, _ = st.columns([1, 3])
-with col_anom_btn:
-    if st.button("Find Underpriced Cards", use_container_width=True):
-        if "card_tuples" not in st.session_state or not st.session_state.card_tuples:
-            st.info("Run Query first to load cards into the dropdown.")
+with btn_col2:
+    if st.button("Pull Historical Data", use_container_width=True):
+        selected_url = None
+        if "card_tuples" in st.session_state:
+            for card in st.session_state.card_tuples:
+                if card[0] in st.session_state.pkm_selectbox:
+                    selected_url = card[2]
+                    break
+        if selected_url:
+            with st.spinner("Pulling historical data..."):
+                logging.info(f"Scraping url {selected_url}...")
+                asyncio.run(
+                    fetch_all_sales.scrape_table_update_db(selected_url))
+                st.rerun()
+            st.balloons()  # 🎈 Balloons animation
         else:
-            total_cards = len(st.session_state.card_tuples)
-            st.write(f"Scanning **{total_cards}** cards for underpriced opportunities...")
-            if total_cards > 500:
-                st.warning(
-                    "Large result set detected. This search may take a bit longer than usual "
-                    "(you can narrow it with Min/Max Listings)."
-                )
+            st.toast("No URL found for selected card.")
 
-            with st.spinner("Searching for underpriced cards in the current dropdown..."):
-                conn = db.connectDB("tcgplayerdb")
-                try:
-                    cur = conn.cursor()
-                    card_keys = [(c[0], c[1]) for c in st.session_state.card_tuples]
-                    values_clause = ",".join(["(%s,%s)"] * len(card_keys))
-                    params = []
-                    for name, num in card_keys:
-                        params.extend([name, num])
+with btn_col3:
+    if st.button("Copy Card Url", use_container_width=True):
+        # Get the URL for the selected card
+        selected_url = None
+        if "card_tuples" in st.session_state:
+            for card in st.session_state.card_tuples:
+                if card[0] in st.session_state.pkm_selectbox:
+                    selected_url = card[2]
+                    break
+        if selected_url:
+            pyperclip.copy(selected_url)
+            st.toast('Link Copied to Clipboard!', icon='😍')
+            st.snow()
+        else:
+            st.toast("No URL found for selected card.")
+# Filters header
+st.markdown("### Filters")
 
-                    params.extend([
-                        int(min_listings_under),
-                        float(pct_threshold) / 100.0,
-                        float(diff_threshold),
-                    ])
+# Create columns for the dropdown, number input, and filters
+filter_col1, filter_col2, filter_col3 = st.columns([3, 2, 3])
 
-                    query = f"""
-                        WITH selected_cards(card, card_number) AS (
-                            VALUES {values_clause}
-                        )
-                        SELECT p.card, p.card_number, p.set_name,
-                               p.lowest_price, p.market_price, p.listing_quantity, p.link
-                        FROM public.prices p
-                        JOIN selected_cards s
-                          ON p.card = s.card AND p.card_number = s.card_number
-                        WHERE p.date = (
-                            SELECT MAX(date) FROM public.prices p2
-                            WHERE p2.card = p.card AND p2.card_number = p.card_number
-                        )
-                          AND p.lowest_price IS NOT NULL
-                          AND p.market_price IS NOT NULL
-                          AND p.lowest_price > 0
-                          AND p.listing_quantity >= %s
-                          AND p.market_price >= p.lowest_price * (1 + %s)
-                          AND (p.market_price - p.lowest_price) >= %s
-                        ORDER BY (p.market_price - p.lowest_price) DESC
-                        LIMIT 200
-                    """
-                    cur.execute(query, params)
-                    rows = cur.fetchall()
-                finally:
-                    try:
-                        conn.close()
-                    except Exception:
-                        pass
+with filter_col1:
+    search_text = st.text_input(
+        "Filter cards",
+        "",
+        key="card_name_filter",
+        placeholder="Type part of a card name or number..."
+    )
+with filter_col2:
+    min_listing = st.number_input(
+        "Min Listings",
+        min_value=0,
+        value=0,
+        step=1,
+        key="min_listing_filter"
+    )
+with filter_col3:
+    max_listing = st.number_input(
+        "Max Listings",
+        min_value=0,
+        # Default to max listing quantity
+        value=st.session_state.get("min_quantity_selectbox", 10000),
+        step=1,
+        key="max_listing_filter"
+    )
 
-            if rows:
-                anom_df = pd.DataFrame(
-                    rows,
-                    columns=[
-                        "Card", "Card Number", "Set", "Lowest Price", "Market Price",
-                        "Listing Quantity", "Link",
-                    ],
-                )
-                anom_df["Diff"] = anom_df["Market Price"] - anom_df["Lowest Price"]
-                anom_df["% Above Lowest"] = (
-                    (anom_df["Market Price"] / anom_df["Lowest Price"] - 1) * 100
-                ).round(2)
-                st.session_state["underpriced_cards_df"] = anom_df
-                st.success(f"Found {len(anom_df)} potentially underpriced cards.")
-            else:
-                st.session_state["underpriced_cards_df"] = None
-                st.info("No underpriced cards found with current criteria.")
+# Filter the card list based on search_text and listing quantity range (case-insensitive)
+
+
+def extract_listing(card_str):
+    # Assumes format: "Name, (Number) [Listings: X]"
+    try:
+        return int(card_str.split("[Listings:")[1].split("]")[0].strip())
+    except Exception:
+        return 0
+
+
+filtered_card_list = [
+    card for card in st.session_state.card_list
+    if search_text.lower() in card.lower()
+    and min_listing <= extract_listing(card) <= max_listing
+]
+
+with col1:
+    pkm_selectbox = st.selectbox(
+        "Pokemon Card Name, Card Number",
+        filtered_card_list,
+        index=0 if filtered_card_list else None,
+        key="pkm_selectbox"
+    )
+
+with col2:
+    min_quantity_selectbox = st.number_input(
+        "Max Listing Quantity",
+        min_value=1,
+        max_value=10000,
+        value=5,  # default value
+        step=1,
+        key="min_quantity_selectbox"
+    )
 
 if st.session_state.pkm_selectbox:
     connection = db.connectDB("tcgplayerdb")
@@ -220,38 +163,37 @@ if st.session_state.pkm_selectbox:
                 price_data = db.get_price_date_by_link(connection, selected_link)
 
                 if price_data and len(price_data[0]):
-                    # NOTE: price_data from DB is [date, lowest_price, market_price, listing_quantity, velocity]
                     price_df = pd.DataFrame(price_data, columns=[
                         "date", "lowest_price", "market_price", "listing_quantity", "velocity"
                     ])
-                    # Removed the column swap so lowest_price and market_price map directly
                     price_df["date"] = pd.to_datetime(price_df["date"])
-                    price_df["lowest_price"] = price_df["lowest_price"].astype(float)
-                    price_df["market_price"] = price_df["market_price"].astype(float)
+                    price_df["lowest_price"] = price_df["lowest_price"].astype(
+                        float)
+                    price_df["market_price"] = price_df["market_price"].astype(
+                        float)
                     price_df = price_df.sort_values("date")
 
-                    # Line chart: Lowest vs Market price over time
-                    fig = go.Figure()
-                    fig.add_trace(go.Scatter(
-                        x=price_df["date"],
-                        y=price_df["lowest_price"],
-                        mode="lines+markers",
-                        name="Lowest Price",
-                    ))
-                    fig.add_trace(go.Scatter(
-                        x=price_df["date"],
-                        y=price_df["market_price"],
-                        mode="lines+markers",
-                        name="Market Price",
-                    ))
-
-                    fig.update_layout(
-                        title=f"Lowest vs Market Price for {card_name} ({card_number})",
-                        xaxis_title="Date",
-                        yaxis_title="Price",
-                        hovermode="x unified",
-                        xaxis_tickangle=-45,
+                    # Melt the data for grouped bar chart
+                    melted_df = price_df.melt(
+                        id_vars=["date"],
+                        value_vars=["lowest_price", "market_price"],
+                        var_name="Price Type",
+                        value_name="Price"
                     )
+
+                    # Create grouped bar chart with Plotly Express
+                    fig = px.bar(
+                        melted_df,
+                        x="date",
+                        y="Price",
+                        color="Price Type",
+                        barmode="group",
+                        labels={"date": "Date", "Price": "Price",
+                                "Price Type": "Price Type"},
+                        title=f"Lowest Price vs Market Price for {card_name} ({card_number})"
+                    )
+
+                    fig.update_layout(xaxis_tickangle=-45)
 
                 else:
                     st.warning("Price data shape does not match expected columns.")
@@ -263,17 +205,8 @@ if st.session_state.pkm_selectbox:
         except Exception:
             pass
 
-# Extend tabs to include Underpriced Cards view
-if 'underpriced_cards_df' in st.session_state:
-    tab1, tab2, tab3, tab4 = st.tabs([
-        "Price Data", "Lowest vs Market Price", "Velocity", "Underpriced Cards",
-    ])
-else:
-    tab1, tab2, tab3 = st.tabs([
-        "Price Data", "Lowest vs Market Price", "Velocity",
-    ])
-    tab4 = None
-
+tab1, tab2, tab3 = st.tabs(
+    ["Price Data", "Market vs Market Price", "Velocity"])
 with tab1:
     if price_df is not None:
         st.dataframe(price_df, use_container_width=True)
@@ -282,6 +215,19 @@ with tab1:
 
 with tab2:
     if fig is not None:
+        fig.update_layout(
+            template="plotly_white",
+            xaxis_tickangle=-45,
+            xaxis_title="Date",
+            yaxis_title="Price",
+            legend_title="Price Type",
+            hovermode="x unified",
+            bargap=0.2,
+            font=dict(size=14),
+            title_font=dict(size=20),
+            plot_bgcolor="#f9f9f9",
+            paper_bgcolor="#f9f9f9"
+        )
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.write("No Data")
@@ -314,11 +260,84 @@ with tab3:
     else:
         st.write("No Data")
 
-if tab4 is not None:
-    with tab4:
-        if st.session_state.get("underpriced_cards_df") is not None:
-            st.dataframe(st.session_state["underpriced_cards_df"], use_container_width=True)
+st.markdown("---")
+st.subheader("Underpriced Cards (Latest Snapshot from DB)")
+
+col1, col2, col3 = st.columns(3)
+with col1:
+    latest_max_pct = st.slider(
+        "Max lowest vs market %",
+        min_value=10,
+        max_value=100,
+        value=70,
+        step=5,
+        help="Show cards where lowest_price is at most this % of market_price (latest date only).",
+        key="latest_underpriced_max_pct",
+    )
+with col2:
+    latest_min_qty = st.number_input(
+        "Min listing quantity",
+        min_value=1,
+        value=4,
+        step=1,
+        key="latest_underpriced_min_qty",
+    )
+with col3:
+    latest_max_qty = st.number_input(
+        "Max listing quantity",
+        min_value=1,
+        value=20,
+        step=1,
+        key="latest_underpriced_max_qty",
+    )
+
+if st.button("Run Latest Snapshot Query", use_container_width=True, key="btn_latest_underpriced"):
+    if latest_min_qty > latest_max_qty:
+        st.error("Min quantity cannot be greater than max quantity.")
+    else:
+        sql = """
+            WITH latest_date AS (
+                SELECT MAX(date) AS dt
+                FROM prices
+            )
+            SELECT
+                p.card,
+                p.link,
+                p.lowest_price,
+                p.market_price,
+                p.listing_quantity,
+                ROUND(
+                    (p.lowest_price / NULLIF(p.market_price, 0)) * 100,
+                    2
+                ) AS lowest_vs_market_pct
+            FROM prices p
+            JOIN latest_date ld
+              ON p.date = ld.dt
+            WHERE p.lowest_price IS NOT NULL
+              AND p.market_price IS NOT NULL
+              AND p.lowest_price > 0
+              AND p.lowest_price <= p.market_price * %s
+              AND p.listing_quantity >= %s
+              AND p.listing_quantity <= %s
+            ORDER BY lowest_vs_market_pct ASC, p.market_price DESC;
+        """
+        conn = db.connectDB("tcgplayerdb")
+        try:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                cur.execute(sql, (latest_max_pct / 100.0, latest_min_qty, latest_max_qty))
+                rows = cur.fetchall()
+            latest_df = pd.DataFrame(rows)
+        except Exception as e:
+            st.error(f"Error running latest snapshot query: {e}")
+            latest_df = None
+        finally:
+            conn.close()
+
+        if latest_df is None or latest_df.empty:
+            st.info("No results for the selected filters.")
         else:
-            st.write("Run 'Find Underpriced Cards' to see results.")
+            if "link" in latest_df.columns:
+                latest_df["link"] = latest_df["link"].apply(lambda url: f"[Open]({url})" if url else "")
+            st.dataframe(latest_df, use_container_width=True)
 
 widgets.footer()
